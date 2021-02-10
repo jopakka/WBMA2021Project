@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
 const mediaArray = [
   {
     key: '0',
@@ -39,6 +40,7 @@ const mediaArray = [
     filename: 'http://placekitten.com/2039/1920',
   },
 ];
+
 const App = () => {
   return (
     <View style={styles.container}>
