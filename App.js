@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 const mediaArray = [
   {
     key: '0',
