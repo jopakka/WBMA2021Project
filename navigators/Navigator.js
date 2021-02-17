@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -6,6 +6,8 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import Home from '../views/Home';
+import {MainContext} from '../contexts/MainContext';
+import Login from '../views/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,15 +41,30 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
+  const {isLoggedIn} = useContext(MainContext);
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={TabScreen}
-        options={({route}) => ({
-          headerTitle: getFocusedRouteNameFromRoute(route),
-        })}
-      />
+      {isLoggedIn ? (
+        <>
+          <Stack.Screen
+            name="Home"
+            component={TabScreen}
+            options={({route}) => ({
+              headerTitle: getFocusedRouteNameFromRoute(route),
+            })}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={() => ({
+              headerShown: false,
+            })}
+          ></Stack.Screen>
+        </>
+      )}
     </Stack.Navigator>
   );
 };
