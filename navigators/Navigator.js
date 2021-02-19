@@ -10,6 +10,7 @@ import Home from '../views/Home';
 import {MainContext} from '../contexts/MainContext';
 import Login from '../views/Login';
 import Profile from '../views/Profile';
+import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
@@ -54,6 +55,7 @@ const StackScreen = () => {
               headerTitle: getFocusedRouteNameFromRoute(route),
             })}
           />
+          <Stack.Screen name="Update Profile" component={UpdateProfile} />
         </>
       ) : (
         <>
