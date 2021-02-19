@@ -21,6 +21,10 @@ const Profile = ({navigation}) => {
     setLoading(false);
   };
 
+  const doUpdate = () => {
+    navigation.navigate('Update Profile');
+  };
+
   useEffect(() => {
     console.log('profile', user);
   }, []);
@@ -29,10 +33,10 @@ const Profile = ({navigation}) => {
     <Card>
       <View style={styles.cardInfo}>
         <Card.Image
-          source={{uri: 'http://placekitten.com/300'}}
+          source={{uri: 'http://placekitten.com/150'}}
           style={styles.img}
         />
-        <View>
+        <View style={styles.userDetails}>
           <Text style={styles.desc}>Username</Text>
           <Text style={styles.userInfo}>{user.username}</Text>
           <Text style={styles.desc}>Full name</Text>
@@ -44,6 +48,7 @@ const Profile = ({navigation}) => {
         </View>
       </View>
       <Card.Divider />
+      <Button title="Update" buttonStyle={styles.update} onPress={doUpdate} />
       <Button
         title="Logout"
         type="solid"
@@ -59,9 +64,14 @@ const styles = StyleSheet.create({
   cardInfo: {
     flexDirection: 'row',
     marginBottom: 15,
+    justifyContent: 'center',
+  },
+  userDetails: {
+    flexGrow: 1,
   },
   img: {
-    height: undefined,
+    flexGrow: 1,
+    height: 150,
     width: 150,
     aspectRatio: 1,
     borderRadius: 75,
@@ -76,6 +86,9 @@ const styles = StyleSheet.create({
   },
   logout: {
     backgroundColor: 'red',
+  },
+  update: {
+    marginBottom: 10,
   },
 });
 
