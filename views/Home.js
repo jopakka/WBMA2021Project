@@ -5,6 +5,7 @@ import {Button} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import List from '../components/List';
 
 const Home = ({navigation}) => {
   const {setIsLoggedIn} = useContext(MainContext);
@@ -17,6 +18,7 @@ const Home = ({navigation}) => {
     <View>
       <Text>Home page</Text>
       <Button title={'logout'} onPress={logout}></Button>
+      <List navigation={navigation} />
     </View>
   );
 };

@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import {baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
@@ -14,6 +15,34 @@ const doFetch = async (url, options = {}) => {
     // if all goes well
     return json;
   }
+};
+
+const useLoadMedia = () => {
+  const [mediaArray, setMediaArray] = useState([]);
+
+  const loadMedia = async (limit = 5) => {
+    try {
+      const listJson = await doFetch(baseUrl + 'media?limit=' + limit);
+
+      const media = await Promise.all(
+        listJson.map(async (item) => {
+          const fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
+          console.log('media file data', fileJson);
+          return fileJson;
+        })
+      );
+      console.log('media array data', media);
+
+      setMediaArray(media);
+    } catch (error) {
+      console.error('loadmedia error', error.message);
+    }
+  };
+
+  useEffect(() => {
+    loadMedia(10);
+  }, []);
+  return mediaArray;
 };
 
 const useLogin = () => {
@@ -90,4 +119,4 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
-export {useLogin, useUser};
+export {useLogin, useUser, useLoadMedia};
