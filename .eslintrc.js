@@ -28,7 +28,12 @@ module.exports = {
     'react/jsx-uses-vars': 'error',
     'no-console': 0,
     'require-jsdoc': 0,
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
   settings: {
     react: {

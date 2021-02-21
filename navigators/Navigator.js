@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -8,6 +9,9 @@ import {
 import Home from '../views/Home';
 import {MainContext} from '../contexts/MainContext';
 import Login from '../views/Login';
+import Profile from '../views/Profile';
+import UpdateProfile from '../views/UpdateProfile';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -15,27 +19,25 @@ const Stack = createStackNavigator();
 const TabScreen = () => {
   return (
     <Tab.Navigator
-      // screenOptions={({route}) => ({
-      //   tabBarIcon: ({focused, color, size}) => {
-      //     let iconName;
-      //     if (route.name === 'Home') {
-      //       iconName = focused ? 'home' : 'home-outline';
-      //     } else if (route.name === 'Profile') {
-      //       iconName = focused ? 'person' : 'person-outline';
-      //     } else if (route.name === 'Upload') {
-      //       iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
-      //     } else if (route.name === 'My Files') {
-      //       iconName = focused ? 'images' : 'images-outline';
-      //     }
-      //     return <Ionicons name={iconName} size={size} color={color} />;
-      //   },
-      // })}
+      screenOptions={({route}) => ({
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
       tabBarOptions={{
         activeTintColor: 'orange',
         inactiveTintColor: 'gray',
       }}
     >
       <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };
@@ -53,6 +55,7 @@ const StackScreen = () => {
               headerTitle: getFocusedRouteNameFromRoute(route),
             })}
           />
+          <Stack.Screen name="Update Profile" component={UpdateProfile} />
         </>
       ) : (
         <>
