@@ -26,8 +26,19 @@ const useLoadMedia = () => {
 
       const media = await Promise.all(
         listJson.map(async (item) => {
-          const fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
+          let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           // console.log('media file data', fileJson);
+          try {
+            const otherData = JSON.parse(fileJson.description);
+            delete fileJson.description;
+            fileJson = {
+              ...fileJson,
+              ...otherData,
+            };
+            // console.log('media file data', fileJson);
+          } catch (e) {
+            console.warn('Not valid json string');
+          }
           return fileJson;
         })
       );
