@@ -49,7 +49,11 @@ const RegisterForm = ({navigation}) => {
         const userData = await postLogin(inputs);
         await AsyncStorage.setItem('userToken', userData.token);
         setIsLoggedIn(true);
-        setUser(userData.user);
+        const newUser = {
+          ...userData.user,
+          ...otherData,
+        };
+        setUser(newUser);
       } catch (error) {
         console.log('Registration error', error.message);
         Alert.alert('Registration failed', error.message);
