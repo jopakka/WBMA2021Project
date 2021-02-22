@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {View, Alert} from 'react-native';
-import {Text, Button, Input} from 'react-native-elements';
+import {Text, Button, Input, CheckBox} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import useSignUpForm from '../hooks/RegisterHooks';
 import {useLogin, useUser} from '../hooks/ApiHooks';
@@ -10,6 +10,7 @@ import {MainContext} from '../contexts/MainContext';
 const RegisterForm = ({navigation}) => {
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
+  const [employer, setEmpoyer] = useState(false);
   const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {
     inputs,
@@ -21,15 +22,22 @@ const RegisterForm = ({navigation}) => {
   } = useSignUpForm();
   const {postRegister} = useUser();
   const {postLogin} = useLogin();
-
+  const formData = new FormData();
   const doRegister = async () => {
     setLoading(true);
+    const otherData = {
+      full_name: inputs.full_name,
+      employer: employer,
+    };
+
     if (!validateOnSend()) {
       Alert.alert('Input validation failed');
       console.log('validateOnSend failed');
       return;
     } else {
       delete inputs.confirmPassword;
+      formData.append('full_name', JSON.stringify(otherData));
+      console.log('FormData', formData);
       try {
         const result = await postRegister(inputs);
         console.log('doRegister ok', result.message);
@@ -99,6 +107,13 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('full_name', event.nativeEvent.text);
         }}
         errorMessage={registerErrors.full_name}
+      />
+      <CheckBox
+        checked={employer}
+        title="Employer?"
+        onPress={() => {
+          setEmpoyer(!employer);
+        }}
       />
       {<Button title="Register!" onPress={doRegister} />}
     </View>
