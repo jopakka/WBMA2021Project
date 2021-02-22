@@ -27,11 +27,11 @@ const useLoadMedia = () => {
       const media = await Promise.all(
         listJson.map(async (item) => {
           const fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
-          console.log('media file data', fileJson);
+          // console.log('media file data', fileJson);
           return fileJson;
         })
       );
-      console.log('media array data', media);
+      // console.log('media array data', media);
 
       setMediaArray(media);
     } catch (error) {
@@ -87,7 +87,13 @@ const useUser = () => {
       headers: {'x-access-token': token},
     };
     try {
-      const userData = await doFetch(baseUrl + 'users/user', options);
+      let userData = await doFetch(baseUrl + 'users/user', options);
+      const otherData = JSON.parse(userData.full_name);
+      delete userData.full_name;
+      userData = {
+        ...userData,
+        ...otherData,
+      };
       return userData;
     } catch (error) {
       throw new Error(error.message);
@@ -116,7 +122,24 @@ const useUser = () => {
     }
   };
 
-  return {postRegister, checkToken, checkIsUserAvailable, getUser};
+  const updateUser = async (data, token) => {
+    const options = {
+      method: 'put',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    try {
+      const result = await doFetch(baseUrl + 'users', options);
+      return result;
+    } catch (e) {
+      throw new Error('apiHooks updateUser: ' + e);
+    }
+  };
+
+  return {postRegister, checkToken, checkIsUserAvailable, getUser, updateUser};
 };
 
 export {useLogin, useUser, useLoadMedia};

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Platform, View, Alert, ScrollView} from 'react-native';
+import {Text, Platform, View, Alert, ScrollView, Switch} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button, Card, Input} from 'react-native-elements';
 import {useContext} from 'react';
@@ -8,15 +8,17 @@ import {StyleSheet} from 'react-native';
 import useProfileForm from '../hooks/ProfileHooks';
 import * as ImagePicker from 'expo-image-picker';
 import {useUser} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UpdateProfile = ({navigation}) => {
-  const {user} = useContext(MainContext);
-  const [loading, setLoading] = useState(false);
+  const {user, setUser} = useContext(MainContext);
+  const {updateUser} = useUser();
   const {inputs, handleInputChange, errors, setInputs} = useProfileForm();
   const [file, setFile] = useState();
-  const {checkIsUserAvailable} = useUser();
+  const [employer, setEmployer] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const pickFile = async (library) => {
+  const pickFile = async () => {
     const options = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -57,19 +59,46 @@ const UpdateProfile = ({navigation}) => {
     navigation.pop();
   };
 
-  const doUpdate = () => {
-    Alert.alert(
-      'Update',
-      'This should update profile and redirect user back to profile page'
-    );
+  const doUpdate = async () => {
+    setLoading(true);
+    const otherData = {
+      employer: employer,
+      full_name: inputs.full_name,
+    };
+
+    const data = {
+      full_name: JSON.stringify(otherData),
+    };
+
+    const newUser = {
+      ...user,
+      ...otherData,
+    };
+
+    // console.log('new user', newUser);
+
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const result = await updateUser(data, token);
+      console.log('doUpdate', result);
+      setUser(newUser);
+      navigation.pop();
+    } catch (e) {
+      console.error('doUpdate', e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const toggleEmployer = () => setEmployer(!employer);
+
   useEffect(() => {
-    console.log('UpdateProfile', user);
+    // console.log('UpdateProfile', user);
     setInputs({
       full_name: user.full_name,
     });
     setFile({uri: 'http://placekitten.com/150'});
+    setEmployer(user.employer);
   }, []);
 
   return (
@@ -93,20 +122,18 @@ const UpdateProfile = ({navigation}) => {
           onChangeText={(txt) => handleInputChange('full_name', txt)}
           errorMessage={errors.full_name}
         />
-        <View style={styles.buttons}>
-          <Button
-            containerStyle={styles.btn}
-            buttonStyle={styles.btnCancel}
-            title="Cancel"
-            onPress={doCancel}
-          />
-          <Button
-            containerStyle={styles.btn}
-            buttonStyle={styles.btnUpdate}
-            title="Update"
-            onPress={doUpdate}
-          />
+        <View style={styles.switchGroup}>
+          <Text style={styles.desc}>Employer</Text>
+          <Switch value={employer} onValueChange={toggleEmployer} />
         </View>
+
+        <Card.Divider style={styles.divider} />
+        <Button
+          buttonStyle={styles.btnCancel}
+          title="Cancel"
+          onPress={doCancel}
+        />
+        <Button title="Update" onPress={doUpdate} loading={loading} />
       </Card>
     </ScrollView>
   );
@@ -116,6 +143,9 @@ const styles = StyleSheet.create({
   cardInfo: {
     flexDirection: 'row',
     marginBottom: 15,
+  },
+  divider: {
+    marginTop: 15,
   },
   img: {
     height: 150,
@@ -136,18 +166,18 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 15,
   },
   btn: {
     flexGrow: 1,
   },
   btnCancel: {
     backgroundColor: 'red',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
+    marginBottom: 10,
   },
-  btnUpdate: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
+  switchGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
