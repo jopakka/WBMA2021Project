@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Card} from 'react-native-elements';
+import {Button, Card, CheckBox} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {StyleSheet} from 'react-native';
 import {View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
@@ -31,20 +30,17 @@ const Profile = ({navigation}) => {
 
   return (
     <Card>
+      <Card.Title h3>{user.username}</Card.Title>
       <View style={styles.cardInfo}>
         <Card.Image
           source={{uri: 'http://placekitten.com/150'}}
           style={styles.img}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.desc}>Username</Text>
-          <Text style={styles.userInfo}>{user.username}</Text>
           <Text style={styles.desc}>Full name</Text>
           <Text style={styles.userInfo}>{user.full_name}</Text>
-          <Text style={styles.desc}>User since</Text>
-          <Text style={styles.userInfo}>
-            {moment(user.time_created).format('D.M.YYYY')}
-          </Text>
+          <Text style={styles.desc}>Employer</Text>
+          <CheckBox checked={user.employer} containerStyle={styles.checkBox} />
         </View>
       </View>
       <Card.Divider />
@@ -70,7 +66,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   img: {
-    flexGrow: 1,
     height: 150,
     width: 150,
     aspectRatio: 1,
@@ -89,6 +84,9 @@ const styles = StyleSheet.create({
   },
   update: {
     marginBottom: 10,
+  },
+  checkBox: {
+    padding: 0,
   },
 });
 
