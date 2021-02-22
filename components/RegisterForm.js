@@ -36,10 +36,13 @@ const RegisterForm = ({navigation}) => {
       return;
     } else {
       delete inputs.confirmPassword;
-      formData.append('full_name', JSON.stringify(otherData));
       console.log('FormData', formData);
+      const data = {
+        ...inputs,
+        full_name: JSON.stringify(otherData),
+      };
       try {
-        const result = await postRegister(inputs);
+        const result = await postRegister(data);
         console.log('doRegister ok', result.message);
         Alert.alert(result.message);
         // automatic login after register
