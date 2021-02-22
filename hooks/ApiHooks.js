@@ -99,12 +99,16 @@ const useUser = () => {
     };
     try {
       let userData = await doFetch(baseUrl + 'users/user', options);
-      const otherData = JSON.parse(userData.full_name);
-      delete userData.full_name;
-      userData = {
-        ...userData,
-        ...otherData,
-      };
+      try {
+        const otherData = JSON.parse(userData.full_name);
+        delete userData.full_name;
+        userData = {
+          ...userData,
+          ...otherData,
+        };
+      } catch (e) {
+        console.warn('checkToken warning', e.message);
+      }
       return userData;
     } catch (error) {
       throw new Error(error.message);
