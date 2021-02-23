@@ -12,10 +12,11 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Button, Card, Divider, Image, Input, Text} from 'react-native-elements';
-import {useMedia} from '../hooks/ApiHooks';
+import {Button, Card, Image, Input, Text} from 'react-native-elements';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
+import {appID} from '../utils/variables';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -24,6 +25,7 @@ const Upload = ({navigation}) => {
   const {setUpdate} = useContext(MainContext);
 
   const {upload} = useMedia();
+  const {postTag} = useTag();
   const {handleInputChange, inputs, uploadErrors, reset} = useUploadForm();
 
   const doUpload = async () => {
@@ -47,6 +49,12 @@ const Upload = ({navigation}) => {
       const userToken = await AsyncStorage.getItem('userToken');
       const resp = await upload(formData, userToken);
       console.log('upload response', resp);
+
+      const tagResponse = await postTag(
+        {file_id: resp.file_id, tag: appID},
+        userToken
+      );
+      console.log('posting appID', tagResponse);
       Alert.alert(
         'Upload',
         'File is uploaded successfully',

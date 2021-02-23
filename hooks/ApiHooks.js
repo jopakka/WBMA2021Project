@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {baseUrl} from '../utils/variables';
+import {appID, baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
@@ -25,7 +25,7 @@ const useLoadMedia = () => {
 
   const loadMedia = async (limit = 5) => {
     try {
-      const listJson = await doFetch(baseUrl + 'media?limit=' + limit);
+      const listJson = await doFetch(baseUrl + 'tags/' + appID);
 
       const media = await Promise.all(
         listJson.map(async (item) => {
@@ -54,7 +54,7 @@ const useLoadMedia = () => {
   };
 
   useEffect(() => {
-    loadMedia(10);
+    loadMedia();
   }, [update]);
   return mediaArray;
 };
@@ -156,6 +156,24 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser, updateUser};
 };
 
+const useTag = () => {
+  const postTag = async (tag, token) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-access-token': token},
+      body: JSON.stringify(tag),
+    };
+    try {
+      const result = await doFetch(baseUrl + 'tags', options);
+      return result;
+    } catch (error) {
+      throw new Error('postTag error:', error.message);
+    }
+  };
+
+  return {postTag};
+};
+
 const useMedia = () => {
   const upload = async (fd, token) => {
     const options = {
@@ -175,4 +193,4 @@ const useMedia = () => {
   return {upload};
 };
 
-export {useLogin, useUser, useLoadMedia, useMedia};
+export {useLogin, useUser, useLoadMedia, useMedia, useTag};
