@@ -1,4 +1,6 @@
-import {useEffect, useState} from 'react';
+import axios from 'axios';
+import {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
 import {baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
@@ -19,6 +21,7 @@ const doFetch = async (url, options = {}) => {
 
 const useLoadMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
+  const {update} = useContext(MainContext);
 
   const loadMedia = async (limit = 5) => {
     try {
@@ -52,7 +55,7 @@ const useLoadMedia = () => {
 
   useEffect(() => {
     loadMedia(10);
-  }, []);
+  }, [update]);
   return mediaArray;
 };
 
@@ -153,4 +156,23 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser, updateUser};
 };
 
-export {useLogin, useUser, useLoadMedia};
+const useMedia = () => {
+  const upload = async (fd, token) => {
+    const options = {
+      method: 'POST',
+      headers: {'x-access-token': token},
+      data: fd,
+      url: baseUrl + 'media',
+    };
+    console.log('apihooks upload', options);
+    try {
+      const response = await axios(options);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+  return {upload};
+};
+
+export {useLogin, useUser, useLoadMedia, useMedia};
