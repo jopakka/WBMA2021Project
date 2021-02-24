@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {parse, parseMedia, parseUser} from '../utils/helpers';
+import {parse} from '../utils/helpers';
 import {baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
@@ -54,8 +54,7 @@ const useLogin = () => {
       body: JSON.stringify(userCredentials),
     };
     try {
-      let userData = await doFetch(baseUrl + 'login/', options);
-      userData = parse(userData, 'full_name');
+      const userData = await doFetch(baseUrl + 'login/', options);
       return userData;
     } catch (error) {
       throw new Error(error.message);
