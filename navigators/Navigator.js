@@ -13,6 +13,8 @@ import Profile from '../views/Profile';
 import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SingleJob from '../views/SingleJob';
+import {StyleSheet} from 'react-native';
+import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
 
 const Tab = createBottomTabNavigator();
@@ -36,9 +38,10 @@ const TabScreen = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: 'orange',
+        activeTintColor: '#75B09C',
         inactiveTintColor: 'gray',
       }}
+      sceneContainerStyle={GlobalStyles.appBackground}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Upload" component={Upload} />
@@ -58,9 +61,16 @@ const StackScreen = () => {
             component={TabScreen}
             options={({route}) => ({
               headerTitle: getFocusedRouteNameFromRoute(route),
+              headerStyle: styles.header,
             })}
           />
-          <Stack.Screen name="Update Profile" component={UpdateProfile} />
+          <Stack.Screen
+            name="Update Profile"
+            component={UpdateProfile}
+            options={() => ({
+              headerStyle: styles.header,
+            })}
+          />
           <Stack.Screen name="Job Offer" component={SingleJob} />
         </>
       ) : (
@@ -85,5 +95,11 @@ const Navigator = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#E0BE36',
+  },
+});
 
 export default Navigator;

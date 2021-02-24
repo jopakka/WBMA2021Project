@@ -1,13 +1,14 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import List from '../components/List';
+import {StatusBar} from 'expo-status-bar';
 
 const Home = ({navigation}) => {
   return (
     <View>
-      <Text>Home page</Text>
       <List navigation={navigation} />
+      <StatusBar style="light" backgroundColor="#998650" />
     </View>
   );
 };

@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Text, Platform, View, Alert, ScrollView, Switch} from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Card, Input} from 'react-native-elements';
+import {
+  Button,
+  Card,
+  CheckBox,
+  Divider,
+  Image,
+  Input,
+} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {StyleSheet} from 'react-native';
@@ -9,6 +16,9 @@ import useProfileForm from '../hooks/ProfileHooks';
 import * as ImagePicker from 'expo-image-picker';
 import {useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ListButtonElement from '../components/ListButtonElement';
+import {StatusBar} from 'expo-status-bar';
+import NiceDivider from '../components/NiceDivider';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -55,23 +65,22 @@ const UpdateProfile = ({navigation}) => {
     return true;
   };
 
-  const doCancel = () => {
-    navigation.pop();
-  };
-
   const doUpdate = async () => {
     setLoading(true);
+
     const otherData = {
       employer: employer,
       full_name: inputs.full_name,
     };
 
     const data = {
+      email: inputs.email,
       full_name: JSON.stringify(otherData),
     };
 
     const newUser = {
       ...user,
+      email: inputs.email,
       ...otherData,
     };
 
@@ -96,88 +105,121 @@ const UpdateProfile = ({navigation}) => {
     // console.log('UpdateProfile', user);
     setInputs({
       full_name: user.full_name,
+      email: user.email,
     });
     setFile({uri: 'http://placekitten.com/150'});
     setEmployer(user.employer);
   }, []);
 
   return (
-    <ScrollView>
-      <Card>
-        <View style={styles.imgHolder}>
-          {file && (
-            <Card.Image
-              source={{uri: file.uri}}
-              style={styles.img}
-              onPress={pickFile}
-            />
-          )}
-        </View>
-        <Text style={styles.desc}>Username</Text>
-        <Text style={styles.userInfo}>{user.username}</Text>
-        <Text style={styles.desc}>Full name</Text>
+    <ScrollView contentContainerStyle={styles.scroll}>
+      <Image
+        source={{uri: 'http://placekitten.com/300'}}
+        containerStyle={styles.img}
+      ></Image>
+      <Divider style={{height: 25}} />
+      <View style={[styles.box, styles.info]}>
+        <Text style={[styles.infoText, styles.infoTitle]}>Full name</Text>
         <Input
           value={inputs.full_name}
-          placeholder="Min. 3 characters"
-          onChangeText={(txt) => handleInputChange('full_name', txt)}
+          onChangeText={(text) => handleInputChange('full_name', text)}
+          inputContainerStyle={styles.inputContainer}
+          inputStyle={styles.input}
           errorMessage={errors.full_name}
+          errorStyle={{fontSize: 14, color: 'white'}}
         />
-        <View style={styles.switchGroup}>
-          <Text style={styles.desc}>Employer</Text>
-          <Switch value={employer} onValueChange={toggleEmployer} />
-        </View>
+        <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
+        <Input
+          value={inputs.email}
+          onChangeText={(text) => handleInputChange('email', text)}
+          inputContainerStyle={styles.inputContainer}
+          inputStyle={styles.input}
+          errorMessage={errors.email}
+          errorStyle={{fontSize: 14, color: 'white'}}
+        />
+        <CheckBox
+          checked={employer}
+          title="Employer"
+          onPress={toggleEmployer}
+          textStyle={styles.checkText}
+          containerStyle={styles.check}
+          checkedColor="#E0BE36"
+        />
+      </View>
 
-        <Card.Divider style={styles.divider} />
-        <Button
-          buttonStyle={styles.btnCancel}
-          title="Cancel"
-          onPress={doCancel}
-        />
-        <Button title="Update" onPress={doUpdate} loading={loading} />
-      </Card>
+      <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+      <View style={styles.box}>
+        <ListButtonElement text="Update" onPress={doUpdate} />
+      </View>
+
+      <StatusBar style="light" backgroundColor="#998650" />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  cardInfo: {
-    flexDirection: 'row',
-    marginBottom: 15,
-  },
-  divider: {
-    marginTop: 15,
-  },
-  img: {
-    height: 150,
-    width: 150,
-    aspectRatio: 1,
-    borderRadius: 75,
-  },
-  imgHolder: {
+  scroll: {
+    padding: 20,
     alignItems: 'center',
   },
-  desc: {
+  img: {
+    width: 200,
+    height: 200,
+    borderRadius: 5,
+  },
+  name: {
+    textAlign: 'center',
+  },
+  box: {
+    width: '100%',
+    backgroundColor: '#75B09C',
+    borderRadius: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    elevation: 10,
+  },
+  info: {
+    padding: 20,
+  },
+  infoText: {
+    color: 'white',
+    fontSize: 15,
+  },
+  infoTitle: {
+    textTransform: 'uppercase',
+  },
+  infoDesc: {
     fontWeight: 'bold',
   },
-  userInfo: {
-    fontSize: 20,
-    marginBottom: 10,
+  buttonContainer: {
+    backgroundColor: '#FFF0',
+    padding: 20,
   },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 15,
+  buttonText: {
+    color: 'white',
   },
-  btn: {
-    flexGrow: 1,
+  inputContainer: {
+    borderColor: '#E0BE36',
+    borderBottomWidth: 3,
   },
-  btnCancel: {
-    backgroundColor: 'red',
-    marginBottom: 10,
+  input: {
+    color: 'white',
   },
-  switchGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  checkText: {
+    textTransform: 'uppercase',
+    color: 'white',
+  },
+  check: {
+    backgroundColor: '#FFF0',
+    borderWidth: 0,
+    padding: 0,
+    paddingHorizontal: 0,
   },
 });
 

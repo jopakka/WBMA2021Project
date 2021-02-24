@@ -17,6 +17,15 @@ const constraints = {
       message: 'must be atleast 3 chars',
     },
   },
+  email: {
+    presence: {
+      message: 'cannot be empty',
+    },
+    format: {
+      pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      message: 'is not valid',
+    },
+  },
 };
 
 const useProfileForm = (callback) => {
