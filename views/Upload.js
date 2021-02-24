@@ -22,6 +22,7 @@ const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
   const [filetype, setFiletype] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [payMethod, setPayMethod] = useState([]);
   const {setUpdate} = useContext(MainContext);
 
   const {upload} = useMedia();
@@ -30,9 +31,14 @@ const Upload = ({navigation}) => {
 
   const doUpload = async () => {
     const formData = new FormData();
+    const otherData = {
+      description: inputs.description,
+      payMethod: payMethod,
+      wage: inputs.wage,
+    };
 
     formData.append('title', inputs.title);
-    formData.append('description', inputs.description);
+    formData.append('description', JSON.stringify(otherData));
 
     const filename = image.split('/').pop();
     const match = /\.(\w+)$/.exec(filename);
@@ -43,6 +49,8 @@ const Upload = ({navigation}) => {
       name: filename,
       type: type,
     });
+
+    console.log('Formdata information', formData);
 
     try {
       setIsUploading(true);
@@ -144,14 +152,22 @@ const Upload = ({navigation}) => {
           <View style={styles.payment}>
             <View style={{flex: 1}}>
               <DropDownPicker
+                placeholder="Choose payment method"
                 items={[
-                  {label: 'Hourly Wage', value: '1'},
-                  {label: 'Contract Salary', value: '0'},
+                  {label: 'Hourly Wage', value: 'hourlyWage'},
+                  {label: 'Contract Salary', value: 'contractSalary'},
                 ]}
+                onChangeItem={(item) => {
+                  setPayMethod(item.value);
+                }}
               />
             </View>
             <View style={{flex: 1}}>
-              <Input placeholder="0$" />
+              <Input
+                placeholder="0$"
+                value={inputs.wage}
+                onChangeText={(txt) => handleInputChange('wage', txt)}
+              />
             </View>
           </View>
           <Button title="Choose from library" onPress={() => pickImage(true)} />

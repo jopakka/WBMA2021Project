@@ -25,6 +25,7 @@ const useUploadForm = (callback) => {
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
+    wage: '',
   });
 
   const [uploadErrors, setUploadErrors] = useState({});
@@ -50,6 +51,7 @@ const useUploadForm = (callback) => {
     setInputs({
       title: '',
       description: '',
+      wage: '',
     });
     setUploadErrors({});
   };
