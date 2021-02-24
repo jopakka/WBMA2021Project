@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {parse, parseMedia, parseUser} from '../utils/helpers';
 import {baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
@@ -27,18 +28,7 @@ const useLoadMedia = () => {
       const media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
-          // console.log('media file data', fileJson);
-          try {
-            const otherData = JSON.parse(fileJson.description);
-            delete fileJson.description;
-            fileJson = {
-              ...fileJson,
-              ...otherData,
-            };
-            // console.log('media file data', fileJson);
-          } catch (e) {
-            console.warn('Not valid json string');
-          }
+          fileJson = parse(fileJson, 'description');
           return fileJson;
         })
       );
@@ -64,7 +54,8 @@ const useLogin = () => {
       body: JSON.stringify(userCredentials),
     };
     try {
-      const userData = await doFetch(baseUrl + 'login/', options);
+      let userData = await doFetch(baseUrl + 'login/', options);
+      userData = parse(userData, 'full_name');
       return userData;
     } catch (error) {
       throw new Error(error.message);
@@ -99,16 +90,7 @@ const useUser = () => {
     };
     try {
       let userData = await doFetch(baseUrl + 'users/user', options);
-      try {
-        const otherData = JSON.parse(userData.full_name);
-        delete userData.full_name;
-        userData = {
-          ...userData,
-          ...otherData,
-        };
-      } catch (e) {
-        console.warn('checkToken warning', e.message);
-      }
+      userData = parse(userData, 'full_name');
       return userData;
     } catch (error) {
       throw new Error(error.message);
