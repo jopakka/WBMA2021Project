@@ -59,7 +59,13 @@ const StackScreen = () => {
               headerStyle: styles.header,
             })}
           />
-          <Stack.Screen name="Update Profile" component={UpdateProfile} />
+          <Stack.Screen
+            name="Update Profile"
+            component={UpdateProfile}
+            options={() => ({
+              headerStyle: styles.header,
+            })}
+          />
         </>
       ) : (
         <>

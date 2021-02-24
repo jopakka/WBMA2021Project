@@ -18,6 +18,8 @@ import {
   TouchableHighlight,
   TouchableNativeFeedback,
 } from 'react-native-gesture-handler';
+import ListButtonElement from '../components/ListButtonElement';
+import NiceDivider from '../components/NiceDivider';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
@@ -53,9 +55,7 @@ const Profile = ({navigation}) => {
       <View style={[styles.box, styles.info]}>
         <Text style={[styles.infoText, styles.infoTitle]}>Username</Text>
         <Text style={[styles.infoText, styles.infoDesc]}>{user.username}</Text>
-        <Divider style={{height: 10, backgroundColor: '#FFF0'}} />
-        <Divider style={{height: 1, backgroundColor: '#FFF'}} />
-        <Divider style={{height: 10, backgroundColor: '#FFF0'}} />
+        <NiceDivider />
         <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
         <Text style={[styles.infoText, styles.infoDesc]}>{user.email}</Text>
       </View>
@@ -63,16 +63,7 @@ const Profile = ({navigation}) => {
       <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
       <View style={styles.box}>
-        <TouchableNativeFeedback onPress={doUpdate}>
-          <ListItem containerStyle={styles.buttonContainer}>
-            <ListItem.Content>
-              <ListItem.Title style={styles.buttonText}>
-                Update Profile
-              </ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Chevron color="white" size={24} />
-          </ListItem>
-        </TouchableNativeFeedback>
+        <ListButtonElement text="Update Profile" onPress={doUpdate} />
         <Divider
           style={{
             height: 1,
@@ -81,14 +72,7 @@ const Profile = ({navigation}) => {
             marginEnd: 20,
           }}
         />
-        <TouchableNativeFeedback onPress={doLogout}>
-          <ListItem containerStyle={styles.buttonContainer}>
-            <ListItem.Content>
-              <ListItem.Title style={styles.buttonText}>Logout</ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Chevron color="white" size={24} />
-          </ListItem>
-        </TouchableNativeFeedback>
+        <ListButtonElement text="Logout" onPress={doLogout} />
       </View>
 
       <StatusBar style="light" backgroundColor="#998650" />
