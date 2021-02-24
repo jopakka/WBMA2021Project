@@ -12,6 +12,7 @@ import Login from '../views/Login';
 import Profile from '../views/Profile';
 import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SingleJob from '../views/SingleJob';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,6 +57,7 @@ const StackScreen = () => {
             })}
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
+          <Stack.Screen name="Job Offer" component={SingleJob} />
         </>
       ) : (
         <>
