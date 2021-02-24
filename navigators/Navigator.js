@@ -14,6 +14,7 @@ import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {StyleSheet} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
+import Upload from '../views/Upload';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -29,6 +30,8 @@ const TabScreen = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'Upload') {
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -40,6 +43,7 @@ const TabScreen = () => {
       sceneContainerStyle={GlobalStyles.appBackground}
     >
       <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Upload" component={Upload} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );

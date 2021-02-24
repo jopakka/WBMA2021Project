@@ -1,25 +1,25 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
+import {Avatar, ListItem as RNEListItem} from 'react-native-elements';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ListItem = ({singleMedia}) => {
   return (
-    <TouchableOpacity style={styles.row}>
-      <View style={styles.imagebox}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: singleMedia.thumbnails
-              ? uploadsUrl + singleMedia.thumbnails.w160
-              : 'http:placekitten.com/160',
-          }}
+    <TouchableOpacity>
+      <RNEListItem bottomDivider>
+        <Avatar
+          size="large"
+          rounded
+          source={{uri: uploadsUrl + singleMedia.thumbnails.w160}}
         />
-      </View>
-      <View style={styles.textbox}>
-        <Text style={styles.listTitle}>{singleMedia.title}</Text>
-        <Text>{singleMedia.description}</Text>
-      </View>
+        <RNEListItem.Content>
+          <RNEListItem.Title h4>{singleMedia.title}</RNEListItem.Title>
+          <RNEListItem.Subtitle>{singleMedia.description}</RNEListItem.Subtitle>
+        </RNEListItem.Content>
+        <RNEListItem.Chevron />
+      </RNEListItem>
     </TouchableOpacity>
   );
 };
