@@ -12,6 +12,7 @@ import Login from '../views/Login';
 import Profile from '../views/Profile';
 import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SingleJob from '../views/SingleJob';
 import {StyleSheet} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
@@ -70,6 +71,7 @@ const StackScreen = () => {
               headerStyle: styles.header,
             })}
           />
+          <Stack.Screen name="Job Offer" component={SingleJob} />
         </>
       ) : (
         <>
