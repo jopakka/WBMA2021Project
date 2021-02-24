@@ -57,8 +57,7 @@ const useLogin = () => {
       body: JSON.stringify(userCredentials),
     };
     try {
-      let userData = await doFetch(baseUrl + 'login/', options);
-      userData = parse(userData, 'full_name');
+      const userData = await doFetch(baseUrl + 'login/', options);
       return userData;
     } catch (error) {
       throw new Error(error.message);
