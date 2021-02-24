@@ -7,24 +7,12 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ListItem = ({singleMedia}) => {
   return (
-<<<<<<< HEAD
     <TouchableOpacity>
       <RNEListItem bottomDivider>
         <Avatar
           size="large"
           rounded
           source={{uri: uploadsUrl + singleMedia.thumbnails.w160}}
-=======
-    <TouchableOpacity style={styles.row}>
-      <View style={styles.imagebox}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: singleMedia.thumbnails
-              ? uploadsUrl + singleMedia.thumbnails.w160
-              : 'http:placekitten.com/160',
-          }}
->>>>>>> f64fea29ce78b06d3f01f2eed39af6c0a39bc9c6
         />
         <RNEListItem.Content>
           <RNEListItem.Title h4>{singleMedia.title}</RNEListItem.Title>

@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 import axios from 'axios';
-import {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {appID, baseUrl} from '../utils/variables';
-=======
-import {useEffect, useState} from 'react';
-import {parse, parseMedia, parseUser} from '../utils/helpers';
-import {baseUrl} from '../utils/variables';
->>>>>>> f64fea29ce78b06d3f01f2eed39af6c0a39bc9c6
+import {parse} from '../utils/helpers';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
