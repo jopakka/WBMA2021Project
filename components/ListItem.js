@@ -1,11 +1,18 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
+import {Image, ListItem as RNEListItem} from 'react-native-elements';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ListItem = ({singleMedia}) => {
+const ListItem = ({singleMedia, navigation}) => {
   return (
-    <TouchableOpacity style={styles.row}>
+    <TouchableOpacity
+      style={styles.row}
+      onPress={() => {
+        navigation.navigate('Job Offer', {file: singleMedia});
+      }}
+    >
       <View style={styles.imagebox}>
         <Image
           style={styles.image}
@@ -15,10 +22,11 @@ const ListItem = ({singleMedia}) => {
               : 'http:placekitten.com/160',
           }}
         />
-      </View>
-      <View style={styles.textbox}>
-        <Text style={styles.listTitle}>{singleMedia.title}</Text>
-        <Text>{singleMedia.description}</Text>
+        <RNEListItem.Content>
+          <RNEListItem.Title h4>{singleMedia.title}</RNEListItem.Title>
+          <RNEListItem.Subtitle>{singleMedia.description}</RNEListItem.Subtitle>
+        </RNEListItem.Content>
+        <RNEListItem.Chevron />
       </View>
     </TouchableOpacity>
   );
@@ -52,6 +60,7 @@ const styles = StyleSheet.create({
 
 ListItem.propTypes = {
   singleMedia: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 export default ListItem;
