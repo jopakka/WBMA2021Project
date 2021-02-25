@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {appID, baseUrl} from '../utils/variables';
 import {parse} from '../utils/helpers';
+import {MAPBOX_TOKEN} from '@env';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
@@ -178,4 +179,26 @@ const useMedia = () => {
   return {upload};
 };
 
-export {useLogin, useUser, useLoadMedia, useMedia, useTag};
+const useLocation = () => {
+  const searchLocation = async () => {
+    const options = {
+      Method: 'GET',
+    };
+    try {
+      const searchResp = await fetch(
+        'https://api.mapbox.com/geocoding/v5/mapbox.places/paris.json?access_token=' +
+          MAPBOX_TOKEN,
+        options
+      );
+      console.log('Search Response', searchResp);
+      return searchResp;
+    } catch (error) {
+      console.error('Search failed', error);
+      throw new Error(error.message);
+    }
+  };
+
+  return {searchLocation};
+};
+
+export {useLogin, useUser, useLoadMedia, useMedia, useTag, useLocation};

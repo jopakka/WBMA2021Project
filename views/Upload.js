@@ -12,7 +12,14 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Button, Card, Image, Input, Text} from 'react-native-elements';
+import {
+  Button,
+  Card,
+  Image,
+  Input,
+  SearchBar,
+  Text,
+} from 'react-native-elements';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -23,6 +30,8 @@ const Upload = ({navigation}) => {
   const [filetype, setFiletype] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [payMethod, setPayMethod] = useState([]);
+  const [search, setSearch] = useState('');
+
   const {setUpdate} = useContext(MainContext);
 
   const {upload} = useMedia();
@@ -170,6 +179,11 @@ const Upload = ({navigation}) => {
               />
             </View>
           </View>
+          <SearchBar
+            placeholder="Search for location"
+            onChangeText={() => {}}
+            value={search}
+          />
           <Button title="Choose from library" onPress={() => pickImage(true)} />
           {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
           <Button
