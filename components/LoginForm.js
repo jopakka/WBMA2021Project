@@ -30,9 +30,6 @@ const LoginForm = ({navigation}) => {
 
   return (
     <View>
-      <Text style={{textAlign: 'center'}} h3>
-        Login
-      </Text>
       <FormTextInput
         autoCapitalize="none"
         placeholder="username"

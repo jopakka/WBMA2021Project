@@ -1,23 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Card,
-  CheckBox,
-  Divider,
-  Image,
-  ListItem,
-  Text,
-} from 'react-native-elements';
-import {useContext} from 'react';
+import {Avatar, Divider, Text} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'expo-status-bar';
-import {
-  TouchableHighlight,
-  TouchableNativeFeedback,
-} from 'react-native-gesture-handler';
 import ListButtonElement from '../components/ListButtonElement';
 import NiceDivider from '../components/NiceDivider';
 
@@ -37,15 +24,13 @@ const Profile = ({navigation}) => {
     navigation.navigate('Update Profile');
   };
 
-  useEffect(() => {
-    console.log('profile', user);
-  }, []);
-
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
-      <Image
-        source={{uri: 'http://placekitten.com/300'}}
+      <Avatar
+        title={user.full_name[0]}
+        source={{uri: user.avatar}}
         containerStyle={styles.img}
+        avatarStyle={{borderRadius: 10}}
       />
       <Divider style={{height: 10}} />
       <Text h4 style={styles.name}>
@@ -88,7 +73,6 @@ const styles = StyleSheet.create({
   img: {
     width: 200,
     height: 200,
-    borderRadius: 5,
   },
   name: {
     textAlign: 'center',

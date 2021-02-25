@@ -6,6 +6,7 @@ import useSignUpForm from '../hooks/RegisterHooks';
 import {useLogin, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
+import {uploadsUrl} from '../utils/variables';
 
 const RegisterForm = ({navigation}) => {
   // eslint-disable-next-line no-unused-vars
@@ -28,6 +29,7 @@ const RegisterForm = ({navigation}) => {
     const otherData = {
       full_name: inputs.full_name,
       employer: employer,
+      avatar: `${uploadsUrl}ca41a9b6c2671dcc58af87829095368d.png`,
     };
 
     if (!validateOnSend()) {
@@ -64,9 +66,6 @@ const RegisterForm = ({navigation}) => {
 
   return (
     <View>
-      <Text style={{textAlign: 'center'}} h3>
-        Register
-      </Text>
       <Input
         autoCapitalize="none"
         placeholder="username"

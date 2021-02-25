@@ -10,9 +10,10 @@ const ListButtonElement = ({
   chevronSize = 24,
   containerStyle = {},
   onPress = () => {},
+  disabled = false,
 }) => {
   return (
-    <TouchableNativeFeedback onPress={onPress}>
+    <TouchableNativeFeedback onPress={onPress} disabled={disabled}>
       <ListItem containerStyle={[styles.buttonContainer, containerStyle]}>
         <ListItem.Content>
           <ListItem.Title style={{color: color, textTransform: 'uppercase'}}>
@@ -38,6 +39,7 @@ ListButtonElement.propTypes = {
   chevronSize: PropTypes.number,
   containerStyle: PropTypes.object,
   onPress: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default ListButtonElement;
