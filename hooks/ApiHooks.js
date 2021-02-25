@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {appID, baseUrl} from '../utils/variables';
 import {parse} from '../utils/helpers';
