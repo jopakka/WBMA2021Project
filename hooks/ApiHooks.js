@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {appID, baseUrl} from '../utils/variables';
+import {appID, baseUrl, uploadsUrl} from '../utils/variables';
 import {parse} from '../utils/helpers';
 
 // general function for fetching (options default value is empty object)
@@ -51,6 +51,8 @@ const useLoadMedia = () => {
 
 const useLogin = () => {
   const postLogin = async (userCredentials) => {
+    const {getFilesByTag} = useTag();
+
     const options = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -58,6 +60,15 @@ const useLogin = () => {
     };
     try {
       const userData = await doFetch(baseUrl + 'login/', options);
+      // console.log('userData', userData);
+      const imgs = await getFilesByTag(
+        `${appID}_avatar_${userData.user.user_id}`
+      );
+      // console.log('imgs', imgs);
+      if (imgs.length > 0) {
+        userData.user.avatar = `${uploadsUrl}${imgs.pop().filename}`;
+        // console.log('userData', userData);
+      }
       return userData;
     } catch (error) {
       throw new Error(error.message);
@@ -86,6 +97,8 @@ const useUser = () => {
   };
 
   const checkToken = async (token) => {
+    const {getFilesByTag} = useTag();
+
     const options = {
       method: 'GET',
       headers: {'x-access-token': token},
@@ -93,6 +106,10 @@ const useUser = () => {
     try {
       let userData = await doFetch(baseUrl + 'users/user', options);
       userData = parse(userData, 'full_name');
+      const imgs = await getFilesByTag(`${appID}_avatar_${userData.user_id}`);
+      if (imgs.length > 0) {
+        userData.avatar = `${uploadsUrl}${imgs.pop().filename}`;
+      }
       return userData;
     } catch (error) {
       throw new Error(error.message);
@@ -100,12 +117,18 @@ const useUser = () => {
   };
 
   const getUser = async (id, token) => {
+    const {getFilesByTag} = useTag();
+
     const options = {
       method: 'GET',
       headers: {'x-access-token': token},
     };
     try {
       const userData = await doFetch(baseUrl + 'users/' + id, options);
+      const imgs = await getFilesByTag(`${appID}_avatar_${userData.user_id}`);
+      if (imgs.length > 0) {
+        userData.avatar = `${uploadsUrl}${imgs.pop().filename}`;
+      }
       return userData;
     } catch (error) {
       throw new Error(error.message);
@@ -156,7 +179,16 @@ const useTag = () => {
     }
   };
 
-  return {postTag};
+  const getFilesByTag = async (tag) => {
+    try {
+      const result = await doFetch(baseUrl + 'tags/' + encodeURI(tag));
+      return result;
+    } catch (error) {
+      throw new Error('postTag error:', error.message);
+    }
+  };
+
+  return {postTag, getFilesByTag};
 };
 
 const useMedia = () => {
@@ -175,7 +207,17 @@ const useMedia = () => {
       throw new Error(error.message);
     }
   };
-  return {upload};
+
+  const getFile = async (id) => {
+    try {
+      const resp = await doFetch(baseUrl + 'media/' + id);
+      return resp;
+    } catch (e) {
+      throw new Error('getFile error: ' + e.message);
+    }
+  };
+
+  return {upload, getFile};
 };
 
 export {useLogin, useUser, useLoadMedia, useMedia, useTag};

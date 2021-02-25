@@ -1,14 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text, Platform, View, Alert, ScrollView, Switch} from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Card,
-  CheckBox,
-  Divider,
-  Image,
-  Input,
-} from 'react-native-elements';
+import {CheckBox, Divider, Image, Input} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {StyleSheet} from 'react-native';
@@ -18,11 +11,14 @@ import {useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
-import NiceDivider from '../components/NiceDivider';
+import {useMedia, useTag} from '../hooks/ApiHooks';
+import {appID, uploadsUrl} from '../utils/variables';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
   const {updateUser} = useUser();
+  const {upload, getFile} = useMedia();
+  const {postTag} = useTag();
   const {inputs, handleInputChange, errors, setInputs} = useProfileForm();
   const [file, setFile] = useState();
   const [employer, setEmployer] = useState(false);
@@ -88,8 +84,34 @@ const UpdateProfile = ({navigation}) => {
 
     try {
       const token = await AsyncStorage.getItem('userToken');
+
+      console.log('file', file);
+
+      if (file) {
+        const formData = new FormData();
+        const filename = file.uri.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename);
+        let type = match ? `${file.type}/${match[1]}` : file.type;
+        if (type === 'image/jpg') type = 'image/jpeg';
+        formData.append('file', {
+          uri: file.uri,
+          name: filename,
+          type: type,
+        });
+        formData.append('title', `avatar_${user.user_id}`);
+        const fileUpload = await upload(formData, token);
+        // console.log('fileUpload', fileUpload);
+        const tagResponse = await postTag(
+          {file_id: fileUpload.file_id, tag: `${appID}_avatar_${user.user_id}`},
+          token
+        );
+        const fileResp = await getFile(fileUpload.file_id);
+        newUser.avatar = `${uploadsUrl}${fileResp.filename}`;
+      }
+
+      // console.log('tagResponse', tagResponse);
       const result = await updateUser(data, token);
-      console.log('doUpdate', result);
+      // console.log('doUpdate', result);
       setUser(newUser);
       navigation.pop();
     } catch (e) {
@@ -107,15 +129,18 @@ const UpdateProfile = ({navigation}) => {
       full_name: user.full_name,
       email: user.email,
     });
-    setFile({uri: 'http://placekitten.com/150'});
+    setFile();
     setEmployer(user.employer);
   }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
       <Image
-        source={{uri: 'http://placekitten.com/300'}}
+        source={{
+          uri: file ? file.uri : user.avatar,
+        }}
         containerStyle={styles.img}
+        onPress={pickFile}
       ></Image>
       <Divider style={{height: 25}} />
       <View style={[styles.box, styles.info]}>
@@ -150,7 +175,11 @@ const UpdateProfile = ({navigation}) => {
       <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
       <View style={styles.box}>
-        <ListButtonElement text="Update" onPress={doUpdate} />
+        <ListButtonElement
+          text="Update"
+          onPress={doUpdate}
+          disabled={loading}
+        />
       </View>
 
       <StatusBar style="light" backgroundColor="#998650" />
