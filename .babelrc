@@ -1,14 +1,3 @@
 {
-<<<<<<< HEAD
   "plugins": [["module:react-native-dotenv"]]
-=======
-  "plugins": [
-    [
-      "module:react-native-dotenv",
-      {
-        "allowUndefined": false
-      }
-    ]
-  ]
->>>>>>> job-offer-page
 }
