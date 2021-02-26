@@ -29,6 +29,7 @@ const useLoadMedia = () => {
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
 
+      console.log('listJson', listJson);
       const media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
@@ -36,7 +37,7 @@ const useLoadMedia = () => {
           return fileJson;
         })
       );
-      // console.log('media array data', media);
+      console.log('media array data', media);
 
       setMediaArray(media);
     } catch (error) {
@@ -180,22 +181,27 @@ const useMedia = () => {
 };
 
 const useLocation = () => {
-  const searchLocation = async () => {
+  const [locationArray, setLocationArray] = useState([]);
+
+  const searchLocation = async (search) => {
     const options = {
-      Method: 'GET',
+      method: 'GET',
     };
     try {
-      const searchResp = await fetch(
-        'https://api.mapbox.com/geocoding/v5/mapbox.places/paris.json?access_token=' +
+      const searchResp = await axios(
+        'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
+          search +
+          '.json?types=place&access_token=' +
           MAPBOX_TOKEN,
         options
       );
-      console.log('Search Response', searchResp);
-      return searchResp;
+
+      setLocationArray(searchResp.data.features);
     } catch (error) {
       console.error('Search failed', error);
       throw new Error(error.message);
     }
+    return locationArray;
   };
 
   return {searchLocation};

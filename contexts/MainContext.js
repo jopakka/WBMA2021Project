@@ -7,6 +7,8 @@ const MainProvider = ({children}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(false);
+  const [locationArray, setLocationArray] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState({});
 
   return (
     <MainContext.Provider
@@ -17,6 +19,10 @@ const MainProvider = ({children}) => {
         setUser,
         update,
         setUpdate,
+        locationArray,
+        setLocationArray,
+        selectedLocation,
+        setSelectedLocation,
       }}
     >
       {children}

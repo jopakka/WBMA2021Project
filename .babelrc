@@ -1,8 +1,10 @@
 {
   "plugins": [
-    ["module:react-native-dotenv"],
-    {
-      "allowUndefined": false
-    }
+    [
+      "module:react-native-dotenv",
+      {
+        "allowUndefined": false
+      }
+    ]
   ]
 }

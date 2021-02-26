@@ -20,10 +20,11 @@ import {
   SearchBar,
   Text,
 } from 'react-native-elements';
-import {useMedia, useTag} from '../hooks/ApiHooks';
+import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appID} from '../utils/variables';
+import LocationList from '../components/LocationList';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -33,17 +34,23 @@ const Upload = ({navigation}) => {
   const [search, setSearch] = useState('');
 
   const {setUpdate} = useContext(MainContext);
+  const {setLocationArray} = useContext(MainContext);
+  const {selectedLocation} = useContext(MainContext);
 
   const {upload} = useMedia();
   const {postTag} = useTag();
   const {handleInputChange, inputs, uploadErrors, reset} = useUploadForm();
+  const {searchLocation} = useLocation();
 
   const doUpload = async () => {
     const formData = new FormData();
+
     const otherData = {
       description: inputs.description,
       payMethod: payMethod,
       wage: inputs.wage,
+      place_name: selectedLocation.place_name,
+      coordinates: selectedLocation.coordinates,
     };
 
     formData.append('title', inputs.title);
@@ -136,6 +143,16 @@ const Upload = ({navigation}) => {
     reset();
   };
 
+  const fetchLocation = async (txt) => {
+    try {
+      const location = await searchLocation(txt);
+      setLocationArray(location);
+    } catch (error) {
+      console.error('fetch location error', error.message);
+    }
+    return location;
+  };
+
   return (
     <ScrollView>
       <KeyboardAvoidingView behavior="position" enabled>
@@ -181,10 +198,24 @@ const Upload = ({navigation}) => {
           </View>
           <SearchBar
             placeholder="Search for location"
-            onChangeText={() => {}}
+            onChangeText={(txt) => {
+              setSearch(txt);
+              console.log('text', txt);
+              console.log('search', search);
+              if (txt.length > 2) {
+                fetchLocation(txt);
+              }
+            }}
             value={search}
           />
-          <Button title="Choose from library" onPress={() => pickImage(true)} />
+          <View>
+            <LocationList />
+          </View>
+          <Button
+            title="Choose from library"
+            style={{marginBottom: 50, marginTop: 50}}
+            onPress={() => pickImage(true)}
+          />
           {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
           <Button
             title="Upload file"
@@ -201,7 +232,6 @@ const Upload = ({navigation}) => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   image: {
     flex: 1,
