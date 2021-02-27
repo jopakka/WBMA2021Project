@@ -38,7 +38,6 @@ const useLoadMedia = () => {
         })
       );
       console.log('media array data', media);
-
       setMediaArray(media);
     } catch (error) {
       console.error('loadmedia error', error.message);

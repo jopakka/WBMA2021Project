@@ -19,9 +19,10 @@ const SingleJob = ({route}) => {
       const userToken = await AsyncStorage.getItem('userToken');
       let userData = await getUser(file.user_id, userToken);
       userData = parse(userData, 'full_name');
+      console.log('username', userData);
       setOwner(userData);
     } catch (error) {
-      console.error('fetchOwner error', error.message);
+      console.error('fetchOwner error in SingleJob', error.message);
     }
   };
 
