@@ -248,4 +248,66 @@ const useLocation = () => {
   return {searchLocation};
 };
 
-export {useLogin, useUser, useLoadMedia, useMedia, useTag, useLocation};
+const useComments = () => {
+  const {getUser} = useUser();
+  const {userToken} = useContext(MainContext);
+
+  const getCommentsByFile = async (id) => {
+    try {
+      const response = await doFetch(`${baseUrl}comments/file/${id}`);
+      const commentInfo = await Promise.all(
+        response.map(async (item) => {
+          let userJson = await getUser(item.user_id, userToken);
+          userJson = parse(userJson, 'full_name');
+          item.user = userJson;
+          return item;
+        })
+      );
+      return commentInfo;
+    } catch (e) {
+      throw new Error('getCommentsByFile: ' + e.message);
+    }
+  };
+
+  const deleteComment = async (id) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': userToken},
+    };
+    try {
+      const response = await doFetch(`${baseUrl}comments/${id}`, options);
+      return response;
+    } catch (e) {
+      throw new Error('getCommentsBdeleteCommentyFile: ' + e.message);
+    }
+  };
+
+  const postComment = async (id, comment) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': userToken,
+      },
+      body: JSON.stringify({file_id: id, comment}),
+    };
+    try {
+      const response = await doFetch(`${baseUrl}comments`, options);
+      return response;
+    } catch (e) {
+      throw new Error('postComment: ' + e.message);
+    }
+  };
+
+  return {getCommentsByFile, deleteComment, postComment};
+};
+
+export {
+  useLogin,
+  useUser,
+  useLoadMedia,
+  useMedia,
+  useTag,
+  useLocation,
+  useComments,
+};

@@ -8,6 +8,7 @@ const MainProvider = ({children}) => {
   const [user, setUser] = useState({});
   const [userToken, setUserToken] = useState({});
   const [update, setUpdate] = useState(false);
+  const [updateComments, setUpdateComments] = useState(false);
   const [locationArray, setLocationArray] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({});
 
@@ -22,6 +23,8 @@ const MainProvider = ({children}) => {
         setUserToken,
         update,
         setUpdate,
+        updateComments,
+        setUpdateComments,
         locationArray,
         setLocationArray,
         selectedLocation,
