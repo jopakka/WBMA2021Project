@@ -4,6 +4,7 @@ import {MainContext} from '../contexts/MainContext';
 import {appID, baseUrl, uploadsUrl} from '../utils/variables';
 import {parse} from '../utils/helpers';
 import {MAPBOX_TOKEN} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
@@ -24,8 +25,9 @@ const doFetch = async (url, options = {}) => {
 const useLoadMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
+  const {getUser} = useUser();
 
-  const loadMedia = async (limit = 5) => {
+  const loadMedia = async (token) => {
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
 
@@ -34,6 +36,12 @@ const useLoadMedia = () => {
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
+
+          let userinfo = await getUser(item.user_id, token);
+          userinfo = parse(userinfo, 'full_name');
+          console.log('userinfo', userinfo);
+          fileJson.userinfo = userinfo;
+          console.log('fileJson', fileJson);
           return fileJson;
         })
       );
@@ -44,8 +52,9 @@ const useLoadMedia = () => {
     }
   };
 
-  useEffect(() => {
-    loadMedia();
+  useEffect(async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    loadMedia(userToken);
   }, [update]);
   return mediaArray;
 };
@@ -248,4 +257,71 @@ const useLocation = () => {
   return {searchLocation};
 };
 
-export {useLogin, useUser, useLoadMedia, useMedia, useTag, useLocation};
+const useFavourite = () => {
+  const postFavourite = async (id, token) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-access-token': token},
+      body: JSON.stringify(id),
+    };
+    try {
+      const result = await doFetch(baseUrl + 'favourites', options);
+      return result;
+    } catch (error) {
+      throw new Error('postTag error:', error.message);
+    }
+  };
+
+  return {postFavourite};
+};
+
+const useLoadFavourites = () => {
+  const [favouriteArray, setFavouriteArray] = useState([]);
+  const {update} = useContext(MainContext);
+  const {getUser} = useUser();
+
+  const getFavourites = async (token) => {
+    try {
+      const options = {
+        headers: {'x-access-token': token},
+      };
+      const listJson = await doFetch(baseUrl + 'favourites', options);
+
+      const favourites = await Promise.all(
+        listJson.map(async (item) => {
+          let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
+          fileJson = parse(fileJson, 'description');
+
+          let userinfo = await getUser(item.user_id, token);
+          userinfo = parse(userinfo, 'full_name');
+          console.log('userinfo', userinfo);
+          fileJson.userinfo = userinfo;
+          console.log('fileJson', fileJson);
+          return fileJson;
+        })
+      );
+
+      console.log('favourite files', favourites);
+      setFavouriteArray(favourites);
+    } catch (error) {
+      console.error('getFavourites error', error.message);
+    }
+  };
+
+  useEffect(async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    getFavourites(userToken);
+  }, [update]);
+  return favouriteArray;
+};
+
+export {
+  useLogin,
+  useUser,
+  useLoadMedia,
+  useMedia,
+  useTag,
+  useLocation,
+  useFavourite,
+  useLoadFavourites,
+};

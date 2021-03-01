@@ -51,6 +51,7 @@ const Upload = ({navigation}) => {
       wage: inputs.wage,
       place_name: selectedLocation.place_name,
       coordinates: selectedLocation.coordinates,
+      text: selectedLocation.text,
     };
 
     formData.append('title', inputs.title);

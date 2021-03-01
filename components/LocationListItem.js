@@ -15,6 +15,7 @@ const LocationListItem = ({singleLocation}) => {
       onPress={() => {
         const locationData = {
           place_name: singleLocation.place_name,
+          text: singleLocation.text,
           coordinates: singleLocation.center,
         };
         setSelectedLocation(locationData);

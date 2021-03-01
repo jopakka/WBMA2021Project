@@ -16,6 +16,7 @@ import SingleJob from '../views/SingleJob';
 import {StyleSheet} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
+import Favourite from '../views/Favourite';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -33,6 +34,8 @@ const TabScreen = () => {
             iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === 'Upload') {
             iconName = focused ? 'add-circle' : 'add-circle-outline';
+          } else if (route.name === 'Favourites') {
+            iconName = focused ? 'star' : 'star-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -45,6 +48,7 @@ const TabScreen = () => {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Upload" component={Upload} />
+      <Tab.Screen name="Favourites" component={Favourite} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
