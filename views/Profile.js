@@ -29,8 +29,8 @@ const Profile = ({navigation}) => {
       <Avatar
         title={user.full_name[0]}
         source={{uri: user.avatar}}
-        containerStyle={styles.img}
-        avatarStyle={{borderRadius: 10}}
+        containerStyle={styles.imgContainer}
+        avatarStyle={{borderRadius: 100}}
       />
       <Divider style={{height: 10}} />
       <Text h4 style={styles.name}>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
-  img: {
+  imgContainer: {
     width: 200,
     height: 200,
   },
