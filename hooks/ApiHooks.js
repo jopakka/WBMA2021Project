@@ -29,6 +29,7 @@ const useLoadMedia = () => {
 
   const loadMedia = async (token) => {
     try {
+      console.log('token', token);
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
 
       console.log('listJson', listJson);
@@ -52,9 +53,12 @@ const useLoadMedia = () => {
     }
   };
 
-  useEffect(async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-    loadMedia(userToken);
+  useEffect(() => {
+    const getToken = async () => {
+      const token = await AsyncStorage.getItem('userToken');
+      return token;
+    };
+    loadMedia(getToken);
   }, [update]);
   return mediaArray;
 };
@@ -283,7 +287,10 @@ const useLoadFavourites = () => {
   const getFavourites = async (token) => {
     try {
       const options = {
-        headers: {'x-access-token': token},
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token,
+        },
       };
       const listJson = await doFetch(baseUrl + 'favourites', options);
 
@@ -308,9 +315,11 @@ const useLoadFavourites = () => {
     }
   };
 
-  useEffect(async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-    getFavourites(userToken);
+  useEffect(() => {
+    const getToken = async () => {
+      return await AsyncStorage.getItem('userToken');
+    };
+    getFavourites(getToken);
   }, [update]);
   return favouriteArray;
 };
