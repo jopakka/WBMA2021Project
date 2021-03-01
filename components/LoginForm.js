@@ -12,7 +12,7 @@ import {parse} from '../utils/helpers';
 const LoginForm = ({navigation}) => {
   const {inputs, handleInputChange} = useLogInForm();
   const {postLogin} = useLogin();
-  const {setUser, setIsLoggedIn} = useContext(MainContext);
+  const {setUser, setIsLoggedIn, setUserToken} = useContext(MainContext);
 
   const doLogin = async () => {
     try {
@@ -21,6 +21,7 @@ const LoginForm = ({navigation}) => {
       Alert.alert(userData.message);
       setUser(parse(userData.user, 'full_name'));
       setIsLoggedIn(true);
+      setUserToken(userData.token);
       await AsyncStorage.setItem('userToken', userData.token);
     } catch (error) {
       console.log('Login error', error.message);
