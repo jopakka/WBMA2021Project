@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {TouchableNativeFeedback} from 'react-native-gesture-handler';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 import {ListItem} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 
@@ -13,7 +13,11 @@ const ListButtonElement = ({
   disabled = false,
 }) => {
   return (
-    <TouchableNativeFeedback onPress={onPress} disabled={disabled}>
+    <TouchableHighlight
+      onPress={onPress}
+      disabled={disabled}
+      underlayColor="#A0CA92"
+    >
       <ListItem containerStyle={[styles.buttonContainer, containerStyle]}>
         <ListItem.Content>
           <ListItem.Title style={{color: color, textTransform: 'uppercase'}}>
@@ -22,7 +26,7 @@ const ListButtonElement = ({
         </ListItem.Content>
         <ListItem.Chevron color={color} size={chevronSize} />
       </ListItem>
-    </TouchableNativeFeedback>
+    </TouchableHighlight>
   );
 };
 

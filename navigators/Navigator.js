@@ -21,6 +21,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const TabScreen = () => {
+  const {user} = useContext(MainContext);
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -44,7 +45,7 @@ const TabScreen = () => {
       sceneContainerStyle={GlobalStyles.appBackground}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Upload" component={Upload} />
+      {user.employer && <Tab.Screen name="Upload" component={Upload} />}
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
