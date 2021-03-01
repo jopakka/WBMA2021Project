@@ -12,7 +12,7 @@ const RegisterForm = ({navigation}) => {
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [employer, setEmpoyer] = useState(false);
-  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
   const {
     inputs,
     handleInputChange,
@@ -49,6 +49,7 @@ const RegisterForm = ({navigation}) => {
         Alert.alert(result.message);
         // automatic login after register
         const userData = await postLogin(inputs);
+        setUserToken(userData.token);
         await AsyncStorage.setItem('userToken', userData.token);
         setIsLoggedIn(true);
         const newUser = {

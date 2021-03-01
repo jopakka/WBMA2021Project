@@ -13,6 +13,7 @@ import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {appID, uploadsUrl} from '../utils/variables';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -141,7 +142,14 @@ const UpdateProfile = ({navigation}) => {
         }}
         containerStyle={styles.img}
         onPress={pickFile}
-      ></Image>
+      >
+        <Ionicons
+          name="add-circle"
+          size={40}
+          color="white"
+          style={styles.add}
+        />
+      </Image>
       <Divider style={{height: 25}} />
       <View style={[styles.box, styles.info]}>
         <Text style={[styles.infoText, styles.infoTitle]}>Full name</Text>
@@ -196,6 +204,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 5,
+    justifyContent: 'flex-end',
+  },
+  add: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#0C0F0A',
   },
   name: {
     textAlign: 'center',
