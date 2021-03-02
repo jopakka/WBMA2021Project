@@ -17,7 +17,7 @@ import RegisterForm from '../components/RegisterForm';
 import {Card, ListItem, Text} from 'react-native-elements';
 
 const Login = ({navigation}) => {
-  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
   const [formToggle, setFormToggle] = useState(true);
   const {checkToken} = useUser();
 
@@ -27,6 +27,7 @@ const Login = ({navigation}) => {
     if (userToken) {
       try {
         const userData = await checkToken(userToken);
+        setUserToken(userToken);
         setIsLoggedIn(true);
         setUser(userData);
         navigation.navigate('Home');

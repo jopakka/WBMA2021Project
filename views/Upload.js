@@ -52,6 +52,7 @@ const Upload = ({navigation}) => {
       place_name: selectedLocation.place_name,
       coordinates: selectedLocation.coordinates,
       text: selectedLocation.text,
+      favourite: 'star-outline',
     };
 
     formData.append('title', inputs.title);
@@ -156,7 +157,10 @@ const Upload = ({navigation}) => {
 
   return (
     <ScrollView>
-      <KeyboardAvoidingView behavior="position" enabled>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        enabled
+      >
         <Card>
           <Text h4 style={styles.title}>
             Post a Job Offer
