@@ -1,20 +1,29 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Card, Input, Text} from 'react-native-elements';
+import {Button, Card, Divider, Input, Text} from 'react-native-elements';
 import {uploadsUrl} from '../utils/variables';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useUser, useComments} from '../hooks/ApiHooks';
+import {useUser, useComments, useMedia} from '../hooks/ApiHooks';
 import {parse} from '../utils/helpers';
 import CommentList from '../components/CommentList';
 import {MainContext} from '../contexts/MainContext';
 import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ListButtonElement from '../components/ListButtonElement';
 
-const SingleJob = ({route}) => {
+const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
   const {getUser} = useUser();
-  const {updateComments, setUpdateComments, user} = useContext(MainContext);
+  const {deleteFile} = useMedia();
+  const {
+    updateComments,
+    setUpdateComments,
+    user,
+    userToken,
+    update,
+    setUpdate,
+  } = useContext(MainContext);
   const {getCommentsByFile, postComment} = useComments();
   const [owner, setOwner] = useState({});
   const [comment, setComment] = useState('');
@@ -54,6 +63,23 @@ const SingleJob = ({route}) => {
     }
   };
 
+  const askDelete = () => {
+    Alert.alert('Are you sure?', 'Do you want to this job offer?', [
+      {text: 'Cancel'},
+      {text: 'Delete', onPress: doDelete},
+    ]);
+  };
+
+  const doDelete = async () => {
+    try {
+      await deleteFile(file.file_id, userToken);
+      setUpdate(!update);
+      navigation.pop();
+    } catch (e) {
+      Alert.alert('Error while deleting comment', e.message);
+    }
+  };
+
   useEffect(() => {
     // console.log('SingleFile', file);
     fetchOwner();
@@ -65,7 +91,7 @@ const SingleJob = ({route}) => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scroll}>
         <Card>
           <Card.Title h3> {file.title}</Card.Title>
           <Card.Divider />
@@ -84,11 +110,20 @@ const SingleJob = ({route}) => {
           <Text style={styles.userInfo}>Pay here</Text>
           <Button title={'Contact employer'}></Button>
         </Card>
+
         <Card>
           <Card.Title>Comments</Card.Title>
           <Card.Divider />
           <CommentList comments={comments} />
         </Card>
+
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        {user.user_id === file.user_id && (
+          <View style={styles.box}>
+            <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
+          </View>
+        )}
       </ScrollView>
       {user !== null && (
         <Input
@@ -107,6 +142,10 @@ const SingleJob = ({route}) => {
   );
 };
 const styles = StyleSheet.create({
+  scroll: {
+    padding: 20,
+    alignItems: 'stretch',
+  },
   jobInfo: {
     flexDirection: 'row',
     marginBottom: 15,
@@ -132,10 +171,24 @@ const styles = StyleSheet.create({
   contact: {
     height: 30,
   },
+  box: {
+    width: '100%',
+    backgroundColor: '#75B09C',
+    borderRadius: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    elevation: 10,
+  },
 });
 
 SingleJob.propTypes = {
   route: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 export default SingleJob;

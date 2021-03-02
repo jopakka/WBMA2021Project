@@ -239,7 +239,20 @@ const useMedia = () => {
     }
   };
 
-  return {upload, getFile, updateFile};
+  const deleteFile = async (id, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token, 'Content-type': 'application/json'},
+    };
+    try {
+      const result = await doFetch(baseUrl + 'media/' + id, options);
+      return result;
+    } catch (e) {
+      throw new Error('deleteFile: ' + e.message);
+    }
+  };
+
+  return {upload, getFile, updateFile, deleteFile};
 };
 
 const useLocation = () => {
