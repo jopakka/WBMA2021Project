@@ -8,7 +8,7 @@ import {useUser, useComments} from '../hooks/ApiHooks';
 import {parse} from '../utils/helpers';
 import CommentList from '../components/CommentList';
 import {MainContext} from '../contexts/MainContext';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SingleJob = ({route}) => {
