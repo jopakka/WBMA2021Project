@@ -5,7 +5,7 @@ import moment from 'moment';
 import {MainContext} from '../contexts/MainContext';
 import {Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native';
 import {useComments} from '../hooks/ApiHooks';
 
 const CommentListItem = ({singleComment}) => {
