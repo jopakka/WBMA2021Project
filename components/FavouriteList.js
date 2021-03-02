@@ -9,7 +9,7 @@ const FavouriteList = ({navigation}) => {
 
   return (
     <FlatList
-      data={favouriteArray}
+      data={favouriteArray.reverse()}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <FavouriteListItem navigation={navigation} singleMedia={item} />

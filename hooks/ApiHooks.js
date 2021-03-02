@@ -357,7 +357,7 @@ const useLoadFavourites = () => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
 
-          let userinfo = await getUser(item.user_id, userToken);
+          let userinfo = await getUser(fileJson.user_id, userToken);
           userinfo = parse(userinfo, 'full_name');
           console.log('userinfo', userinfo);
           fileJson.userinfo = userinfo;
