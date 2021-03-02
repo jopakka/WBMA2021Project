@@ -28,8 +28,13 @@ const useLoadMedia = () => {
   const {getUser} = useUser();
 
   const loadMedia = async () => {
+    const options = {
+      headers: {'x-access-token': userToken},
+    };
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
+
+      const favList = await doFetch(baseUrl + 'favourites', options);
 
       console.log('listJson', listJson);
       const media = await Promise.all(
@@ -40,6 +45,14 @@ const useLoadMedia = () => {
           let userinfo = await getUser(item.user_id, userToken);
           userinfo = parse(userinfo, 'full_name');
           fileJson.userinfo = userinfo;
+
+          fileJson.favourite = false;
+          for (const element of favList) {
+            if (element.file_id === item.file_id) {
+              fileJson.favourite = true;
+              break;
+            }
+          }
           return fileJson;
         })
       );
@@ -335,6 +348,7 @@ const useLoadFavourites = () => {
           userinfo = parse(userinfo, 'full_name');
           console.log('userinfo', userinfo);
           fileJson.userinfo = userinfo;
+          fileJson.favourite = true;
           console.log('fileJson', fileJson);
           return fileJson;
         })

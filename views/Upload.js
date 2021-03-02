@@ -52,7 +52,6 @@ const Upload = ({navigation}) => {
       place_name: selectedLocation.place_name,
       coordinates: selectedLocation.coordinates,
       text: selectedLocation.text,
-      favourite: 'star-outline',
     };
 
     formData.append('title', inputs.title);

@@ -3,44 +3,15 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
 import {Avatar, ListItem as RNEListItem} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native';
-import {useFavourite, useMedia} from '../hooks/ApiHooks';
+import {useFavourite} from '../hooks/ApiHooks';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {View} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ListItem = ({singleMedia, navigation}) => {
   const [iconStatus, setIconStatus] = useState(singleMedia.favourite);
 
   const {postFavourite, deleteFavourite} = useFavourite();
-  const {updateFile} = useMedia();
-
-  const doFavUpdate = async (fav) => {
-    const otherData = {
-      description: singleMedia.description,
-      payMethod: singleMedia.payMethod,
-      wage: singleMedia.wage,
-      place_name: singleMedia.place_name,
-      coordinates: singleMedia.coordinates,
-      text: singleMedia.text,
-      favourite: fav,
-    };
-
-    const data = {
-      description: JSON.stringify(otherData),
-    };
-
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      console.log('data', data);
-      console.log('file_id', singleMedia.file_id);
-      console.log('token', token);
-      const result = await updateFile(singleMedia.file_id, data, token);
-      return result;
-    } catch (e) {
-      console.error('doUpdate', e.message);
-    }
-  };
 
   return (
     <TouchableOpacity
@@ -71,11 +42,11 @@ const ListItem = ({singleMedia, navigation}) => {
 
         <TouchableOpacity
           onPress={async () => {
-            if (singleMedia.favourite === 'star') {
+            if (singleMedia.favourite === true) {
               try {
                 const favourite = await deleteFavourite(singleMedia.file_id);
-                setIconStatus('star-outline');
-                await doFavUpdate('star-outline');
+                singleMedia.favourite = false;
+                setIconStatus(false);
                 console.log('favourite deleted', favourite);
               } catch (error) {
                 console.error(error.message);
@@ -85,8 +56,8 @@ const ListItem = ({singleMedia, navigation}) => {
                 const favourite = await postFavourite({
                   file_id: singleMedia.file_id,
                 });
-                setIconStatus('star');
-                await doFavUpdate('star');
+                singleMedia.favourite = true;
+                setIconStatus(true);
                 console.log('favourite posted', favourite);
               } catch (error) {
                 console.error(error.message);
@@ -94,7 +65,7 @@ const ListItem = ({singleMedia, navigation}) => {
             }
           }}
         >
-          <Ionicons name={iconStatus} size={50} />
+          <Ionicons name={iconStatus ? 'star' : 'star-outline'} size={50} />
         </TouchableOpacity>
       </RNEListItem>
     </TouchableOpacity>
