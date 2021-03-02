@@ -58,7 +58,7 @@ const TabScreen = () => {
 const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerStyle: styles.header}}>
       {isLoggedIn ? (
         <>
           <Stack.Screen
@@ -66,16 +66,9 @@ const StackScreen = () => {
             component={TabScreen}
             options={({route}) => ({
               headerTitle: getFocusedRouteNameFromRoute(route),
-              headerStyle: styles.header,
             })}
           />
-          <Stack.Screen
-            name="Update Profile"
-            component={UpdateProfile}
-            options={() => ({
-              headerStyle: styles.header,
-            })}
-          />
+          <Stack.Screen name="Update Profile" component={UpdateProfile} />
           <Stack.Screen name="Job Offer" component={SingleJob} />
         </>
       ) : (
