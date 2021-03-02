@@ -89,7 +89,7 @@ const Upload = ({navigation}) => {
             onPress: () => {
               setUpdate(!update);
               doReset();
-              navigation.navigate('Home');
+              navigation.pop();
             },
           },
         ],
