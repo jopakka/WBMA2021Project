@@ -33,7 +33,7 @@ const Upload = ({navigation}) => {
   const [payMethod, setPayMethod] = useState([]);
   const [search, setSearch] = useState('');
 
-  const {setUpdate} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
   const {setLocationArray} = useContext(MainContext);
   const {selectedLocation} = useContext(MainContext);
 
@@ -87,7 +87,7 @@ const Upload = ({navigation}) => {
           {
             text: 'OK',
             onPress: () => {
-              setUpdate(true);
+              setUpdate(!update);
               doReset();
               navigation.navigate('Home');
             },
