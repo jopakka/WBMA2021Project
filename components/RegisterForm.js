@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {View, Alert} from 'react-native';
-import {Text, Button, CheckBox} from 'react-native-elements';
+import {Text, CheckBox} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import useSignUpForm from '../hooks/RegisterHooks';
 import {useLogin, useUser} from '../hooks/ApiHooks';
@@ -14,7 +14,7 @@ import ListButtonElement from './ListButtonElement';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import GlobalStyles from '../styles/GlobalStyles';
 
-const RegisterForm = ({navigation, formToggle}) => {
+const RegisterForm = ({navigation, formToggle = () => {}}) => {
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [employer, setEmpoyer] = useState(false);
@@ -29,7 +29,6 @@ const RegisterForm = ({navigation, formToggle}) => {
   } = useSignUpForm();
   const {postRegister} = useUser();
   const {postLogin} = useLogin();
-  const formData = new FormData();
 
   const doRegister = async () => {
     setLoading(true);
@@ -51,9 +50,7 @@ const RegisterForm = ({navigation, formToggle}) => {
         full_name: JSON.stringify(otherData),
       };
       try {
-        const result = await postRegister(data);
-        // console.log('doRegister ok', result.message);
-        // Alert.alert(result.message);
+        await postRegister(data);
         // automatic login after register
         const userData = await postLogin(inputs);
         setUserToken(userData.token);
@@ -160,21 +157,17 @@ const RegisterForm = ({navigation, formToggle}) => {
 
       <View style={TextBoxStyles.box}>
         <ListButtonElement text="Register!" onPress={doRegister} />
-        {formToggle && (
-          <>
-            <NiceDivider
-              space={0}
-              style={{
-                marginStart: 20,
-                marginEnd: 20,
-              }}
-            />
-            <ListButtonElement
-              text="Already registered? Login here."
-              onPress={formToggle}
-            />
-          </>
-        )}
+        <NiceDivider
+          space={0}
+          style={{
+            marginStart: 20,
+            marginEnd: 20,
+          }}
+        />
+        <ListButtonElement
+          text="Already registered? Login here."
+          onPress={formToggle}
+        />
       </View>
     </>
   );

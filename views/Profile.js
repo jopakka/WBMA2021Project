@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Avatar, Divider, Text} from 'react-native-elements';
@@ -14,14 +14,11 @@ import {useEffect} from 'react';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
-  const [loading, setLoading] = useState(false);
 
   const doLogout = async () => {
-    setLoading(true);
     setIsLoggedIn(false);
     await AsyncStorage.clear();
     navigation.navigate('Login');
-    setLoading(false);
   };
 
   const doUpdate = () => {
@@ -37,8 +34,8 @@ const Profile = ({navigation}) => {
       <Avatar
         title={user.full_name[0]}
         source={{uri: user.avatar}}
-        containerStyle={{height: 200, width: 200}}
-        avatarStyle={{borderRadius: 100}}
+        containerStyle={GlobalStyles.profileImage}
+        rounded
       />
       <Divider style={{height: 10}} />
 
@@ -57,7 +54,7 @@ const Profile = ({navigation}) => {
 
       <NiceDivider color="#FFF0" lineHeight={0} />
 
-      <View style={styles.box}>
+      <View style={TextBoxStyles.box}>
         <ListButtonElement text="Update Profile" onPress={doUpdate} />
         <NiceDivider
           space={0}

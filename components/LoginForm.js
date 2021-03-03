@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-import {Button, Divider, Text} from 'react-native-elements';
+import {Alert, View} from 'react-native';
+import {Text} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import FormTextInput from './FormTextInput';
 import useLogInForm from '../hooks/LoginHooks';
@@ -8,13 +8,12 @@ import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {parse} from '../utils/helpers';
-import FormStyles from '../styles/FormStyles';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import ListButtonElement from './ListButtonElement';
 import NiceDivider from './NiceDivider';
 import GlobalStyles from '../styles/GlobalStyles';
 
-const LoginForm = ({navigation, formToggle}) => {
+const LoginForm = ({navigation, formToggle = () => {}}) => {
   const {inputs, handleInputChange} = useLogInForm();
   const {postLogin} = useLogin();
   const {setUser, setIsLoggedIn, setUserToken} = useContext(MainContext);
@@ -68,31 +67,21 @@ const LoginForm = ({navigation, formToggle}) => {
 
       <View style={TextBoxStyles.box}>
         <ListButtonElement text="Sign in!" onPress={doLogin} />
-        {formToggle && (
-          <>
-            <NiceDivider
-              space={0}
-              style={{
-                marginStart: 20,
-                marginEnd: 20,
-              }}
-            />
-            <ListButtonElement
-              text="No account? Register here."
-              onPress={formToggle}
-            />
-          </>
-        )}
+        <NiceDivider
+          space={0}
+          style={{
+            marginStart: 20,
+            marginEnd: 20,
+          }}
+        />
+        <ListButtonElement
+          text="No account? Register here."
+          onPress={formToggle}
+        />
       </View>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    textAlign: 'center',
-  },
-});
 
 LoginForm.propTypes = {
   navigation: PropTypes.object,

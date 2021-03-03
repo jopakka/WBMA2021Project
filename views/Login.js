@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
-  StyleSheet,
   View,
   KeyboardAvoidingView,
   Keyboard,
@@ -14,11 +13,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUser} from '../hooks/ApiHooks';
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
-import {Card, ListItem, Text} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import GlobalStyles from '../styles/GlobalStyles';
-import NiceDivider from '../components/NiceDivider';
-import TextBoxStyles from '../styles/TextBoxStyles';
-import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
 import {colors} from '../utils/variables';
 
@@ -57,8 +53,8 @@ const Login = ({navigation}) => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
-          <View style={styles.appTitle}>
-            <Text h2>Officium</Text>
+          <View style={GlobalStyles.appTitleContainer}>
+            <Text style={GlobalStyles.appTitle}>Officium</Text>
           </View>
           {formToggle ? (
             <LoginForm navigation={navigation} formToggle={formToggleAction} />
@@ -74,29 +70,6 @@ const Login = ({navigation}) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    padding: 12,
-    flex: 1,
-    justifyContent: 'space-around',
-  },
-  appTitle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  form: {
-    flex: 6,
-  },
-  text: {
-    alignSelf: 'center',
-    padding: 20,
-  },
-});
 
 Login.propTypes = {
   navigation: PropTypes.object,

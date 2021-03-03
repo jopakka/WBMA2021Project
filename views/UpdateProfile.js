@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Platform, View, Alert, ScrollView} from 'react-native';
+import {
+  Text,
+  Platform,
+  View,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {CheckBox, Divider, Image} from 'react-native-elements';
 import {useContext} from 'react';
@@ -144,63 +151,70 @@ const UpdateProfile = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
-      <Image
-        source={{
-          uri: file ? file.uri : user.avatar,
-        }}
-        containerStyle={GlobalStyles.profileImage}
-        onPress={pickFile}
-      >
-        <Ionicons
-          name="add-circle"
-          size={40}
-          color="white"
-          style={styles.add}
-        />
-      </Image>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+        <Image
+          source={{
+            uri: file ? file.uri : user.avatar,
+          }}
+          containerStyle={GlobalStyles.profileImage}
+          onPress={pickFile}
+        >
+          <Ionicons
+            name="add-circle"
+            size={40}
+            color="white"
+            style={styles.add}
+          />
+        </Image>
 
-      <Divider style={{height: 25}} />
+        <Divider style={{height: 25}} />
 
-      <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
-        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Full name</Text>
-        <FormTextInput
-          autoCapitalize="words"
-          placeholder="Full Name"
-          value={inputs.full_name}
-          onChangeText={(text) => handleInputChange('full_name', text)}
-          errorMessage={errors.full_name}
-        />
+        <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Full name
+          </Text>
+          <FormTextInput
+            autoCapitalize="words"
+            placeholder="Full Name"
+            value={inputs.full_name}
+            onChangeText={(text) => handleInputChange('full_name', text)}
+            errorMessage={errors.full_name}
+          />
 
-        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
-        <FormTextInput
-          value={inputs.email}
-          onChangeText={(text) => handleInputChange('email', text)}
-          errorMessage={errors.email}
-        />
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+          <FormTextInput
+            value={inputs.email}
+            placeholder="Email"
+            onChangeText={(text) => handleInputChange('email', text)}
+            errorMessage={errors.email}
+          />
 
-        <CheckBox
-          checked={employer}
-          title="Employer"
-          onPress={toggleEmployer}
-          textStyle={FormStyles.checkText}
-          containerStyle={FormStyles.check}
-          checkedColor={colors.accent}
-        />
-      </View>
+          <CheckBox
+            checked={employer}
+            title="Employer"
+            onPress={toggleEmployer}
+            textStyle={FormStyles.checkText}
+            containerStyle={FormStyles.check}
+            checkedColor={colors.accent}
+          />
+        </View>
 
-      <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
-      <View style={TextBoxStyles.box}>
-        <ListButtonElement
-          text="Update"
-          onPress={doUpdate}
-          disabled={loading}
-        />
-      </View>
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Update"
+            onPress={doUpdate}
+            disabled={loading}
+          />
+        </View>
 
-      <StatusBar style="light" backgroundColor={colors.statusbar} />
-    </ScrollView>
+        <StatusBar style="light" backgroundColor={colors.statusbar} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -208,6 +222,8 @@ const styles = StyleSheet.create({
   add: {
     alignSelf: 'flex-end',
     backgroundColor: '#0C0F0A',
+    paddingStart: 3,
+    borderRadius: 5,
   },
 });
 

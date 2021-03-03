@@ -14,11 +14,20 @@ export default StyleSheet.create({
   profileImage: {
     width: 200,
     height: 200,
-    borderRadius: 5,
     justifyContent: 'flex-end',
   },
   loginTitle: {
     fontSize: 30,
     textAlign: 'center',
+  },
+  appTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginBottom: 30,
   },
 });
