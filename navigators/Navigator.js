@@ -13,10 +13,10 @@ import Profile from '../views/Profile';
 import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SingleJob from '../views/SingleJob';
-import {StyleSheet} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
 import Favourite from '../views/Favourite';
+import {colors} from '../utils/variables';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,7 +42,7 @@ const TabScreen = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: '#75B09C',
+        activeTintColor: colors.primary,
         inactiveTintColor: 'gray',
       }}
       sceneContainerStyle={GlobalStyles.appBackground}
@@ -58,7 +58,9 @@ const TabScreen = () => {
 const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
-    <Stack.Navigator screenOptions={{headerStyle: styles.header}}>
+    <Stack.Navigator
+      screenOptions={{headerStyle: {backgroundColor: colors.accent}}}
+    >
       {isLoggedIn ? (
         <>
           <Stack.Screen
@@ -93,11 +95,5 @@ const Navigator = () => {
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#E0BE36',
-  },
-});
 
 export default Navigator;

@@ -7,6 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'expo-status-bar';
 import ListButtonElement from '../components/ListButtonElement';
 import NiceDivider from '../components/NiceDivider';
+import GlobalStyles from '../styles/GlobalStyles';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import {colors} from '../utils/variables';
+import {useEffect} from 'react';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
@@ -24,35 +28,40 @@ const Profile = ({navigation}) => {
     navigation.navigate('Update Profile');
   };
 
+  useEffect(() => {
+    console.log('user', user);
+  }, []);
+
   return (
-    <ScrollView contentContainerStyle={styles.scroll}>
+    <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
       <Avatar
         title={user.full_name[0]}
         source={{uri: user.avatar}}
-        containerStyle={styles.imgContainer}
+        containerStyle={{height: 200, width: 200}}
         avatarStyle={{borderRadius: 100}}
       />
       <Divider style={{height: 10}} />
+
       <Text h4 style={styles.name}>
         {user.full_name}
       </Text>
       <Divider style={{height: 25}} />
-      <View style={[styles.box, styles.info]}>
-        <Text style={[styles.infoText, styles.infoTitle]}>Username</Text>
-        <Text style={[styles.infoText, styles.infoDesc]}>{user.username}</Text>
+
+      <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Username</Text>
+        <Text style={TextBoxStyles.text}>{user.username}</Text>
         <NiceDivider />
-        <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
-        <Text style={[styles.infoText, styles.infoDesc]}>{user.email}</Text>
+        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+        <Text style={TextBoxStyles.text}>{user.email}</Text>
       </View>
 
-      <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+      <NiceDivider color="#FFF0" lineHeight={0} />
 
       <View style={styles.box}>
         <ListButtonElement text="Update Profile" onPress={doUpdate} />
-        <Divider
+        <NiceDivider
+          space={0}
           style={{
-            height: 1,
-            backgroundColor: '#FFF',
             marginStart: 20,
             marginEnd: 20,
           }}
@@ -60,7 +69,7 @@ const Profile = ({navigation}) => {
         <ListButtonElement text="Logout" onPress={doLogout} />
       </View>
 
-      <StatusBar style="light" backgroundColor="#998650" />
+      <StatusBar style="light" backgroundColor={colors.statusbar} />
     </ScrollView>
   );
 };

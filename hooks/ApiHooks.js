@@ -80,14 +80,11 @@ const useLogin = () => {
     };
     try {
       const userData = await doFetch(baseUrl + 'login/', options);
-      // console.log('userData', userData);
       const imgs = await getFilesByTag(
         `${appID}_avatar_${userData.user.user_id}`
       );
-      // console.log('imgs', imgs);
       if (imgs.length > 0) {
         userData.user.avatar = `${uploadsUrl}${imgs.pop().filename}`;
-        // console.log('userData', userData);
       }
       return userData;
     } catch (error) {

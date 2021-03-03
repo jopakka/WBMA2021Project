@@ -3,12 +3,13 @@ import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import {StatusBar} from 'expo-status-bar';
 import FavouriteList from '../components/FavouriteList';
+import {colors} from '../utils/variables';
 
 const Favourite = ({navigation}) => {
   return (
     <View>
       <FavouriteList navigation={navigation} />
-      <StatusBar style="light" backgroundColor="#998650" />
+      <StatusBar style="light" backgroundColor={colors.statusbar} />
     </View>
   );
 };

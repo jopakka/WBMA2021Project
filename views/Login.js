@@ -15,6 +15,12 @@ import {useUser} from '../hooks/ApiHooks';
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 import {Card, ListItem, Text} from 'react-native-elements';
+import GlobalStyles from '../styles/GlobalStyles';
+import NiceDivider from '../components/NiceDivider';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import ListButtonElement from '../components/ListButtonElement';
+import {StatusBar} from 'expo-status-bar';
+import {colors} from '../utils/variables';
 
 const Login = ({navigation}) => {
   const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
@@ -36,56 +42,35 @@ const Login = ({navigation}) => {
       }
     }
   };
+
+  const formToggleAction = () => setFormToggle(!formToggle);
+
   useEffect(() => {
     getToken();
   }, []);
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={GlobalStyles.droidSafeArea}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView>
-          <View style={styles.inner}>
-            <View style={styles.appTitle}>
-              <Text h2>Officium</Text>
-            </View>
-            <View style={styles.form}>
-              <Card>
-                {formToggle ? (
-                  <>
-                    <Card.Title h4>Login</Card.Title>
-                    <Card.Divider />
-                    <LoginForm navigation={navigation} />
-                  </>
-                ) : (
-                  <>
-                    <Card.Title h4>Register</Card.Title>
-                    <Card.Divider />
-                    <RegisterForm navigation={navigation} />
-                  </>
-                )}
-                <ListItem
-                  onPress={() => {
-                    setFormToggle(!formToggle);
-                  }}
-                >
-                  <ListItem.Content>
-                    <Text style={styles.text}>
-                      {formToggle
-                        ? 'No account? Register here.'
-                        : 'Already registered? Login here.'}
-                    </Text>
-                  </ListItem.Content>
-                  <ListItem.Chevron />
-                </ListItem>
-              </Card>
-            </View>
+        <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+          <View style={styles.appTitle}>
+            <Text h2>Officium</Text>
           </View>
+          {formToggle ? (
+            <LoginForm navigation={navigation} formToggle={formToggleAction} />
+          ) : (
+            <RegisterForm
+              navigation={navigation}
+              formToggle={formToggleAction}
+            />
+          )}
         </ScrollView>
       </TouchableWithoutFeedback>
+      <StatusBar style="light" backgroundColor={colors.statusbar} />
     </KeyboardAvoidingView>
   );
 };

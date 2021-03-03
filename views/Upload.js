@@ -25,6 +25,7 @@ import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appID} from '../utils/variables';
 import LocationList from '../components/LocationList';
+import GlobalStyles from '../styles/GlobalStyles';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -155,11 +156,11 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled
-      >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      enabled
+    >
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Card>
           <Text h4 style={styles.title}>
             Post a Job Offer
@@ -232,8 +233,8 @@ const Upload = ({navigation}) => {
           />
           <Button title="Reset" />
         </Card>
-      </KeyboardAvoidingView>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Platform, View, Alert, ScrollView, Switch} from 'react-native';
+import {Text, Platform, View, Alert, ScrollView} from 'react-native';
 import PropTypes from 'prop-types';
-import {CheckBox, Divider, Image, Input} from 'react-native-elements';
+import {CheckBox, Divider, Image} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {StyleSheet} from 'react-native';
@@ -12,8 +12,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
 import {useMedia, useTag} from '../hooks/ApiHooks';
-import {appID, uploadsUrl} from '../utils/variables';
+import {appID, colors, uploadsUrl} from '../utils/variables';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import GlobalStyles from '../styles/GlobalStyles';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import FormStyles from '../styles/FormStyles';
+import FormTextInput from '../components/FormTextInput';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -47,10 +51,10 @@ const UpdateProfile = ({navigation}) => {
 
     if (!result.cancelled) {
       setFile(result);
-      console.log('file', result);
     }
   };
 
+  // Check if has permission to use media library
   const askMedia = async () => {
     if (Platform.OS !== 'web') {
       const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -81,15 +85,14 @@ const UpdateProfile = ({navigation}) => {
       ...otherData,
     };
 
-    // console.log('new user', newUser);
-
     try {
       const token = await AsyncStorage.getItem('userToken');
 
-      console.log('file', file);
-
+      // If there is a file, try to upload it
       if (file) {
         const formData = new FormData();
+
+        // Append file to formdata
         const filename = file.uri.split('/').pop();
         const match = /\.(\w+)$/.exec(filename);
         let type = match ? `${file.type}/${match[1]}` : file.type;
@@ -99,33 +102,39 @@ const UpdateProfile = ({navigation}) => {
           name: filename,
           type: type,
         });
+
+        // Append title to formdata
         formData.append('title', `avatar_${user.user_id}`);
+
+        // Upload file
         const fileUpload = await upload(formData, token);
-        // console.log('fileUpload', fileUpload);
-        const tagResponse = await postTag(
+
+        // Add tag to file
+        await postTag(
           {file_id: fileUpload.file_id, tag: `${appID}_avatar_${user.user_id}`},
           token
         );
+
+        // Get info from uploaded file
         const fileResp = await getFile(fileUpload.file_id);
         newUser.avatar = `${uploadsUrl}${fileResp.filename}`;
       }
 
-      // console.log('tagResponse', tagResponse);
-      const result = await updateUser(data, token);
-      // console.log('doUpdate', result);
+      // Updating user
+      await updateUser(data, token);
       setUser(newUser);
       navigation.pop();
     } catch (e) {
-      console.error('doUpdate', e.message);
+      Alert.alert('Error while updating user', e.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // Toggle employer status
   const toggleEmployer = () => setEmployer(!employer);
 
   useEffect(() => {
-    // console.log('UpdateProfile', user);
     setInputs({
       full_name: user.full_name,
       email: user.email,
@@ -135,12 +144,12 @@ const UpdateProfile = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scroll}>
+    <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
       <Image
         source={{
           uri: file ? file.uri : user.avatar,
         }}
-        containerStyle={styles.img}
+        containerStyle={GlobalStyles.profileImage}
         onPress={pickFile}
       >
         <Ionicons
@@ -150,39 +159,39 @@ const UpdateProfile = ({navigation}) => {
           style={styles.add}
         />
       </Image>
+
       <Divider style={{height: 25}} />
-      <View style={[styles.box, styles.info]}>
-        <Text style={[styles.infoText, styles.infoTitle]}>Full name</Text>
-        <Input
+
+      <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Full name</Text>
+        <FormTextInput
+          autoCapitalize="words"
+          placeholder="Full Name"
           value={inputs.full_name}
           onChangeText={(text) => handleInputChange('full_name', text)}
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
           errorMessage={errors.full_name}
-          errorStyle={{fontSize: 14, color: 'white'}}
         />
-        <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
-        <Input
+
+        <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+        <FormTextInput
           value={inputs.email}
           onChangeText={(text) => handleInputChange('email', text)}
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
           errorMessage={errors.email}
-          errorStyle={{fontSize: 14, color: 'white'}}
         />
+
         <CheckBox
           checked={employer}
           title="Employer"
           onPress={toggleEmployer}
-          textStyle={styles.checkText}
-          containerStyle={styles.check}
-          checkedColor="#E0BE36"
+          textStyle={FormStyles.checkText}
+          containerStyle={FormStyles.check}
+          checkedColor={colors.accent}
         />
       </View>
 
       <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
-      <View style={styles.box}>
+      <View style={TextBoxStyles.box}>
         <ListButtonElement
           text="Update"
           onPress={doUpdate}
@@ -190,78 +199,15 @@ const UpdateProfile = ({navigation}) => {
         />
       </View>
 
-      <StatusBar style="light" backgroundColor="#998650" />
+      <StatusBar style="light" backgroundColor={colors.statusbar} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  scroll: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  img: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
-    justifyContent: 'flex-end',
-  },
   add: {
     alignSelf: 'flex-end',
     backgroundColor: '#0C0F0A',
-  },
-  name: {
-    textAlign: 'center',
-  },
-  box: {
-    width: '100%',
-    backgroundColor: '#75B09C',
-    borderRadius: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
-  },
-  info: {
-    padding: 20,
-  },
-  infoText: {
-    color: 'white',
-    fontSize: 15,
-  },
-  infoTitle: {
-    textTransform: 'uppercase',
-  },
-  infoDesc: {
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#FFF0',
-    padding: 20,
-  },
-  buttonText: {
-    color: 'white',
-  },
-  inputContainer: {
-    borderColor: '#E0BE36',
-    borderBottomWidth: 3,
-  },
-  input: {
-    color: 'white',
-  },
-  checkText: {
-    textTransform: 'uppercase',
-    color: 'white',
-  },
-  check: {
-    backgroundColor: '#FFF0',
-    borderWidth: 0,
-    padding: 0,
-    paddingHorizontal: 0,
   },
 });
 
