@@ -105,9 +105,7 @@ const Upload = ({navigation}) => {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const {status} = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
           alert('Sorry, we need camera roll permissions to make this work!');
         }
@@ -215,11 +213,21 @@ const Upload = ({navigation}) => {
           <View>
             <LocationList />
           </View>
-          <Button
-            title="Choose from library"
-            style={{marginBottom: 50, marginTop: 50}}
-            onPress={() => pickImage(true)}
-          />
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <Button
+              title="Choose from library"
+              style={{marginBottom: 50, marginTop: 50, flex: 1}}
+              containerStyle={{width: '50%'}}
+              onPress={() => pickImage(true)}
+            />
+            <Button
+              title="Take a picture"
+              style={{marginBottom: 50, marginTop: 50, flex: 1}}
+              containerStyle={{width: '50%'}}
+              onPress={() => pickImage(false)}
+            />
+          </View>
+
           {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
           <Button
             title="Upload file"
