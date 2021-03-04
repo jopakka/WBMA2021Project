@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useContext, useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -12,19 +11,18 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {
-  Button,
-  Card,
-  Image,
-  Input,
-  SearchBar,
-  Text,
-} from 'react-native-elements';
+import {Divider, Image, Text} from 'react-native-elements';
 import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appID} from '../utils/variables';
 import LocationList from '../components/LocationList';
+import GlobalStyles from '../styles/GlobalStyles';
+import ListButtonElement from '../components/ListButtonElement';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import FormTextInput from '../components/FormTextInput';
+import NiceDivider from '../components/NiceDivider';
+import LoadingModal from '../components/LoadingModal';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -137,6 +135,16 @@ const Upload = ({navigation}) => {
     }
   };
 
+  const askReset = () => {
+    Alert.alert('Confirm', 'Do you want to clear form?', [
+      {text: 'Cancel'},
+      {
+        text: 'Clear',
+        onPress: doReset,
+      },
+    ]);
+  };
+
   const doReset = () => {
     setImage(null);
     reset();
@@ -153,52 +161,89 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled
-      >
-        <Card>
-          <Text h4 style={styles.title}>
-            Post a Job Offer
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <LoadingModal visible={isUploading} />
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+        <Image
+          source={
+            image ? {uri: image} : require('../assets/image_placeholder.jpg')
+          }
+          containerStyle={GlobalStyles.profileImage}
+          onPress={pickImage}
+        />
+
+        <Divider style={{height: 25}} />
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Choose image from library"
+            onPress={() => pickImage(true)}
+          />
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement
+            text="Take a picture"
+            onPress={() => pickImage(false)}
+          />
+        </View>
+
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Job Title
           </Text>
-          <Image source={{uri: image}} style={styles.image} />
-          <Card.Divider />
-          <Input
+          <FormTextInput
+            autoCapitalize="words"
             placeholder="Job Title"
             value={inputs.title}
             onChangeText={(txt) => handleInputChange('title', txt)}
             errorMessage={uploadErrors.title}
           />
-          <Input
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Summary</Text>
+          <FormTextInput
             placeholder="Summary Of Work"
             value={inputs.description}
             onChangeText={(txt) => handleInputChange('description', txt)}
             errorMessage={uploadErrors.description}
           />
-          <Text style={{textAlign: 'center'}}>Choose the type of salary</Text>
-          <View style={styles.payment}>
-            <View style={{flex: 1}}>
-              <DropDownPicker
-                placeholder="Choose payment method"
-                items={[
-                  {label: 'Hourly Wage', value: 'hourlyWage'},
-                  {label: 'Contract Salary', value: 'contractSalary'},
-                ]}
-                onChangeItem={(item) => {
-                  setPayMethod(item.value);
-                }}
-              />
-            </View>
-            <View style={{flex: 1}}>
-              <Input
-                placeholder="0$"
-                value={inputs.wage}
-                onChangeText={(txt) => handleInputChange('wage', txt)}
-              />
-            </View>
-          </View>
-          <SearchBar
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Payment Method
+          </Text>
+          <NiceDivider lineHeight={0} space={5} />
+          <DropDownPicker
+            defaultValue="hourlyWage"
+            items={[
+              {label: 'Hourly Wage', value: 'hourlyWage'},
+              {label: 'Contract Salary', value: 'contractSalary'},
+            ]}
+            onChangeItem={(item) => {
+              setPayMethod(item.value);
+            }}
+            containerStyle={styles.picker}
+          />
+          <NiceDivider lineHeight={0} space={10} />
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Payment</Text>
+          <FormTextInput
+            placeholder="0€"
+            value={inputs.wage}
+            onChangeText={(txt) => handleInputChange('wage', txt)}
+          />
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Location
+          </Text>
+          <FormTextInput
             placeholder="Search for location"
             onChangeText={(txt) => {
               setSearch(txt);
@@ -213,24 +258,24 @@ const Upload = ({navigation}) => {
           <View>
             <LocationList />
           </View>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Button
-              title="Choose from library"
-              style={{marginBottom: 50, marginTop: 50, flex: 1}}
-              containerStyle={{width: '50%'}}
-              onPress={() => pickImage(true)}
-            />
-            <Button
-              title="Take a picture"
-              style={{marginBottom: 50, marginTop: 50, flex: 1}}
-              containerStyle={{width: '50%'}}
-              onPress={() => pickImage(false)}
-            />
-          </View>
+        </View>
 
-          {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
-          <Button
-            title="Upload file"
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        {/* {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
+        <Button
+          title="Upload file"
+          onPress={doUpload}
+          disabled={
+            uploadErrors.title !== null ||
+            uploadErrors.description !== null ||
+            image === null
+          }
+        /> */}
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Upload job offer"
             onPress={doUpload}
             disabled={
               uploadErrors.title !== null ||
@@ -238,13 +283,26 @@ const Upload = ({navigation}) => {
               image === null
             }
           />
-          <Button title="Reset" />
-        </Card>
-      </KeyboardAvoidingView>
-    </ScrollView>
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement text="Reset form" onPress={askReset} />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 const styles = StyleSheet.create({
+  add: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#0C0F0A',
+    paddingStart: 3,
+    borderRadius: 5,
+  },
   image: {
     flex: 1,
     width: '50%',

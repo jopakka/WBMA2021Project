@@ -11,6 +11,7 @@ import {MainContext} from '../contexts/MainContext';
 import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListButtonElement from '../components/ListButtonElement';
+import GlobalStyles from '../styles/GlobalStyles';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -102,7 +103,7 @@ const SingleJob = ({route, navigation}) => {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Card>
           <Card.Title h3> {file.title}</Card.Title>
           <Card.Divider />
@@ -160,10 +161,6 @@ const SingleJob = ({route, navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  scroll: {
-    padding: 20,
-    alignItems: 'stretch',
-  },
   jobInfo: {
     flexDirection: 'row',
     marginBottom: 15,
