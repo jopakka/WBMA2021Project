@@ -6,11 +6,11 @@ const MainContext = React.createContext({});
 const MainProvider = ({children}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
-  const [userToken, setUserToken] = useState({});
   const [update, setUpdate] = useState(false);
   const [updateComments, setUpdateComments] = useState(false);
   const [locationArray, setLocationArray] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({});
+  const [firstLoad, setFirstLoad] = useState(true);
 
   return (
     <MainContext.Provider
@@ -19,10 +19,10 @@ const MainProvider = ({children}) => {
         setIsLoggedIn,
         user,
         setUser,
-        userToken,
-        setUserToken,
         update,
         setUpdate,
+        firstLoad,
+        setFirstLoad,
         updateComments,
         setUpdateComments,
         locationArray,

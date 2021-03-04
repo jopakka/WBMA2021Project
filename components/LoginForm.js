@@ -18,7 +18,7 @@ const LoginForm = ({navigation, formToggle = () => {}}) => {
   const [loading, setLoading] = useState(false);
   const {inputs, handleInputChange} = useLogInForm();
   const {postLogin} = useLogin();
-  const {setUser, setIsLoggedIn, setUserToken} = useContext(MainContext);
+  const {setUser, setIsLoggedIn} = useContext(MainContext);
 
   const doLogin = async () => {
     setLoading(true);
@@ -26,10 +26,9 @@ const LoginForm = ({navigation, formToggle = () => {}}) => {
       const userData = await postLogin(inputs);
       // console.log('doLogin ok', userData.message);
       // Alert.alert(userData.message);
+      await AsyncStorage.setItem('userToken', userData.token);
       setUser(parse(userData.user, 'full_name'));
       setIsLoggedIn(true);
-      setUserToken(userData.token);
-      await AsyncStorage.setItem('userToken', userData.token);
     } catch (error) {
       // console.log('Login error', error.message);
       Alert.alert('Login error', error.message);
