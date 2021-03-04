@@ -7,10 +7,9 @@ import PropTypes from 'prop-types';
 const List = ({navigation}) => {
   const mediaArray = useLoadMedia();
 
-  // updating profile failes to reverse the list
   return (
     <FlatList
-      data={mediaArray.reverse()}
+      data={mediaArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <ListItem navigation={navigation} singleMedia={item} />
