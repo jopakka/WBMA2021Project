@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Alert, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -12,13 +12,16 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import ListButtonElement from './ListButtonElement';
 import NiceDivider from './NiceDivider';
 import GlobalStyles from '../styles/GlobalStyles';
+import LoadingModal from './LoadingModal';
 
 const LoginForm = ({navigation, formToggle = () => {}}) => {
+  const [loading, setLoading] = useState(false);
   const {inputs, handleInputChange} = useLogInForm();
   const {postLogin} = useLogin();
   const {setUser, setIsLoggedIn, setUserToken} = useContext(MainContext);
 
   const doLogin = async () => {
+    setLoading(true);
     try {
       const userData = await postLogin(inputs);
       // console.log('doLogin ok', userData.message);
@@ -30,11 +33,14 @@ const LoginForm = ({navigation, formToggle = () => {}}) => {
     } catch (error) {
       // console.log('Login error', error.message);
       Alert.alert('Login error', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
+      <LoadingModal visible={loading} />
       <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
         <Text
           style={[

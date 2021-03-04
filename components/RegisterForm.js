@@ -13,9 +13,9 @@ import NiceDivider from './NiceDivider';
 import ListButtonElement from './ListButtonElement';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import GlobalStyles from '../styles/GlobalStyles';
+import LoadingModal from './LoadingModal';
 
 const RegisterForm = ({navigation, formToggle = () => {}}) => {
-  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [employer, setEmpoyer] = useState(false);
   const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
@@ -64,6 +64,7 @@ const RegisterForm = ({navigation, formToggle = () => {}}) => {
       } catch (error) {
         console.log('Registration error', error.message);
         Alert.alert('Registration failed', error.message);
+      } finally {
         setLoading(false);
       }
     }
@@ -71,6 +72,7 @@ const RegisterForm = ({navigation, formToggle = () => {}}) => {
 
   return (
     <>
+      <LoadingModal visible={loading} />
       <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
         <Text
           style={[
