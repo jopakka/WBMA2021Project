@@ -9,6 +9,7 @@ const LocationList = ({navigation}) => {
 
   return (
     <FlatList
+      style={{position: 'absolute', left: 0, top: 0}}
       data={locationArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (

@@ -8,6 +8,7 @@ import {MainContext} from '../contexts/MainContext';
 const LocationListItem = ({singleLocation}) => {
   const {setSelectedLocation} = useContext(MainContext);
   const {setLocationArray} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   console.log('singleLocation values', singleLocation);
   return (
@@ -20,7 +21,7 @@ const LocationListItem = ({singleLocation}) => {
         };
         setSelectedLocation(locationData);
         setLocationArray([]);
-
+        setUpdate(!update);
         Alert.alert('Location', 'Location pressed');
       }}
     >
