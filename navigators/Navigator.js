@@ -17,6 +17,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
 import Favourite from '../views/Favourite';
 import {colors} from '../utils/variables';
+import SplashScreen from '../components/SplashScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -88,10 +89,20 @@ const StackScreen = () => {
   );
 };
 
+const Splash = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Splash Screen" component={SplashScreen} />
+    </Stack.Navigator>
+  );
+};
+
 const Navigator = () => {
+  const {firstLoad} = useContext(MainContext);
+
   return (
     <NavigationContainer>
-      <StackScreen />
+      {firstLoad ? <Splash /> : <StackScreen />}
     </NavigationContainer>
   );
 };

@@ -19,7 +19,7 @@ import {StatusBar} from 'expo-status-bar';
 import {colors} from '../utils/variables';
 
 const Login = ({navigation}) => {
-  const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
+  const {setIsLoggedIn, setUser} = useContext(MainContext);
   const [formToggle, setFormToggle] = useState(true);
   const {checkToken} = useUser();
 
@@ -29,7 +29,6 @@ const Login = ({navigation}) => {
     if (userToken) {
       try {
         const userData = await checkToken(userToken);
-        setUserToken(userToken);
         setIsLoggedIn(true);
         setUser(userData);
         navigation.navigate('Home');

@@ -18,7 +18,7 @@ import LoadingModal from './LoadingModal';
 const RegisterForm = ({navigation, formToggle = () => {}}) => {
   const [loading, setLoading] = useState(false);
   const [employer, setEmpoyer] = useState(false);
-  const {setIsLoggedIn, setUser, setUserToken} = useContext(MainContext);
+  const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {
     inputs,
     handleInputChange,
@@ -53,7 +53,6 @@ const RegisterForm = ({navigation, formToggle = () => {}}) => {
         await postRegister(data);
         // automatic login after register
         const userData = await postLogin(inputs);
-        setUserToken(userData.token);
         await AsyncStorage.setItem('userToken', userData.token);
         setIsLoggedIn(true);
         const newUser = {
