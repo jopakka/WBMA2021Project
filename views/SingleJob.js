@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, ScrollView, StyleSheet, View} from 'react-native';
+import {Alert, Linking, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button, Card, Divider, Input, Text} from 'react-native-elements';
 import {uploadsUrl} from '../utils/variables';
@@ -81,8 +81,19 @@ const SingleJob = ({route, navigation}) => {
     }
   };
 
+  const mailTo = () => {
+    Linking.openURL(`mailto:${owner.email}`);
+  };
+
+  const contactEmp = () => {
+    Alert.alert('Contact employer', 'Do you want to email?', [
+      {text: 'Cancel'},
+      {text: 'Email', onPress: mailTo},
+    ]);
+  };
+
   useEffect(() => {
-    // console.log('SingleFile', file);
+    console.log('SingleFile', file);
     fetchOwner();
   }, []);
 
@@ -107,9 +118,16 @@ const SingleJob = ({route, navigation}) => {
               <Text h4>{owner.full_name}</Text>
             </View>
           </View>
+          <Text>Job description</Text>
           <Text style={styles.userInfo}>{file.description} </Text>
-          <Text style={styles.userInfo}>Pay here</Text>
-          <Button title={'Contact employer'}></Button>
+          <Card.Divider />
+          {file.payMethod === 'hourlyWage' && (
+            <Text style={styles.userInfo}>Hourly pay: {file.wage}$</Text>
+          )}
+          {file.payMethod === 'contractSalary' && (
+            <Text style={styles.userInfo}>contract pay: {file.wage}$</Text>
+          )}
+          <Button title={'Contact employer'} onPress={contactEmp}></Button>
         </Card>
 
         <Card>

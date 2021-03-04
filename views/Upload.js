@@ -21,8 +21,8 @@ import GlobalStyles from '../styles/GlobalStyles';
 import ListButtonElement from '../components/ListButtonElement';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import FormTextInput from '../components/FormTextInput';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import NiceDivider from '../components/NiceDivider';
+import LoadingModal from '../components/LoadingModal';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -103,9 +103,7 @@ const Upload = ({navigation}) => {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const {status} = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
           alert('Sorry, we need camera roll permissions to make this work!');
         }
@@ -137,6 +135,16 @@ const Upload = ({navigation}) => {
     }
   };
 
+  const askReset = () => {
+    Alert.alert('Confirm', 'Do you want to clear form?', [
+      {text: 'Cancel'},
+      {
+        text: 'Clear',
+        onPress: doReset,
+      },
+    ]);
+  };
+
   const doReset = () => {
     setImage(null);
     reset();
@@ -156,6 +164,7 @@ const Upload = ({navigation}) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <LoadingModal visible={isUploading} />
       <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Image
           source={
@@ -163,16 +172,29 @@ const Upload = ({navigation}) => {
           }
           containerStyle={GlobalStyles.profileImage}
           onPress={pickImage}
-        >
-          <Ionicons
-            name="add-circle"
-            size={40}
-            color="white"
-            style={styles.add}
-          />
-        </Image>
+        />
 
         <Divider style={{height: 25}} />
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Choose image from library"
+            onPress={() => pickImage(true)}
+          />
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement
+            text="Take a picture"
+            onPress={() => pickImage(false)}
+          />
+        </View>
+
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
           <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
@@ -240,9 +262,20 @@ const Upload = ({navigation}) => {
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
+        {/* {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
+        <Button
+          title="Upload file"
+          onPress={doUpload}
+          disabled={
+            uploadErrors.title !== null ||
+            uploadErrors.description !== null ||
+            image === null
+          }
+        /> */}
+
         <View style={TextBoxStyles.box}>
           <ListButtonElement
-            text="Post"
+            text="Upload job offer"
             onPress={doUpload}
             disabled={
               uploadErrors.title !== null ||
@@ -257,7 +290,7 @@ const Upload = ({navigation}) => {
               marginEnd: 20,
             }}
           />
-          <ListButtonElement text="Reset form" onPress={doReset} />
+          <ListButtonElement text="Reset form" onPress={askReset} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

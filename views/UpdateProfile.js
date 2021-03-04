@@ -25,6 +25,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import FormStyles from '../styles/FormStyles';
 import FormTextInput from '../components/FormTextInput';
+import LoadingModal from '../components/LoadingModal';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -154,6 +155,7 @@ const UpdateProfile = ({navigation}) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <LoadingModal visible={loading} />
       <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Image
           source={{
@@ -205,11 +207,7 @@ const UpdateProfile = ({navigation}) => {
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={TextBoxStyles.box}>
-          <ListButtonElement
-            text="Update"
-            onPress={doUpdate}
-            disabled={loading}
-          />
+          <ListButtonElement text="Update" onPress={doUpdate} />
         </View>
 
         <StatusBar style="light" backgroundColor={colors.statusbar} />
