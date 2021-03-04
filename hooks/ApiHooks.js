@@ -57,7 +57,7 @@ const useLoadMedia = () => {
         })
       );
       console.log('media array data', media);
-      setMediaArray(media);
+      setMediaArray(media.reverse());
     } catch (error) {
       console.error('loadmedia error', error.message);
     }
