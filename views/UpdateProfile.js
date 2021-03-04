@@ -26,6 +26,7 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import FormStyles from '../styles/FormStyles';
 import FormTextInput from '../components/FormTextInput';
 import LoadingModal from '../components/LoadingModal';
+import NiceDivider from '../components/NiceDivider';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -37,7 +38,7 @@ const UpdateProfile = ({navigation}) => {
   const [employer, setEmployer] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const pickFile = async () => {
+  const pickFile = async (library = true) => {
     const options = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -48,9 +49,13 @@ const UpdateProfile = ({navigation}) => {
     let result = null;
 
     try {
-      const perm = await askMedia();
+      const perm = await askMedia(library);
       if (!perm) return;
-      result = await ImagePicker.launchImageLibraryAsync(options);
+      if (library) {
+        result = await ImagePicker.launchImageLibraryAsync(options);
+      } else {
+        result = await ImagePicker.launchCameraAsync(options);
+      }
     } catch (e) {
       console.error('pickImage', e.message);
     }
@@ -63,12 +68,24 @@ const UpdateProfile = ({navigation}) => {
   };
 
   // Check if has permission to use media library
-  const askMedia = async () => {
+  const askMedia = async (library) => {
     if (Platform.OS !== 'web') {
-      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Sorry, we need camera roll permissons to make this work!');
-        return false;
+      if (library) {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Sorry, we need camera roll permissons to make this work!'
+          );
+          return false;
+        } else {
+          const {status} = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Sorry, we need camera permisson to make this work!');
+            return false;
+          }
+        }
       }
     }
     return true;
@@ -163,16 +180,29 @@ const UpdateProfile = ({navigation}) => {
           }}
           containerStyle={GlobalStyles.profileImage}
           onPress={pickFile}
-        >
-          <Ionicons
-            name="add-circle"
-            size={40}
-            color="white"
-            style={styles.add}
-          />
-        </Image>
+        />
 
         <Divider style={{height: 25}} />
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Choose image from library"
+            onPress={() => pickFile(true)}
+          />
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement
+            text="Take a picture"
+            onPress={() => pickFile(false)}
+          />
+        </View>
+
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
           <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
