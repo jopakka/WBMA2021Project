@@ -72,6 +72,7 @@ const SingleJob = ({route, navigation}) => {
   };
 
   const doDelete = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
     try {
       await deleteFile(file.file_id, userToken);
       setUpdate(!update);
