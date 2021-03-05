@@ -25,16 +25,17 @@ const Home = ({navigation}) => {
     }
     return location;
   };
+
   return (
     <View>
       <SearchBar
         placeholder="Search for location"
-        onChangeText={(txt) => {
-          setSearch(txt);
-          console.log('text', txt);
+        onChangeText={(text) => {
+          setSearch(text);
+          console.log('text', text);
           console.log('search', search);
-          if (txt.length > 2) {
-            fetchLocation(txt);
+          if (text.length > 2) {
+            fetchLocation(text);
           }
         }}
         onClear={() => {
@@ -43,7 +44,7 @@ const Home = ({navigation}) => {
         }}
         value={search}
       />
-      <View style={{position: 'absolute', left: 0, top: 68, zIndex: 1}}>
+      <View style={{position: 'absolute', left: 0, top: 66, zIndex: 1}}>
         <LocationList />
       </View>
       <List navigation={navigation} />

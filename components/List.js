@@ -7,7 +7,6 @@ import {MainContext} from '../contexts/MainContext';
 
 const List = ({navigation}) => {
   const {selectedLocation} = useContext(MainContext);
-  console.log('selectedLocation', selectedLocation);
   const mediaArray = useLoadMedia();
 
   const showSearch = () => {
@@ -39,4 +38,4 @@ const List = ({navigation}) => {
 List.propTypes = {
   navigation: PropTypes.object,
 };
-export default List;
+export default React.memo(List);
