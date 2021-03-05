@@ -239,15 +239,17 @@ const useMedia = () => {
   const updateFile = async (fileId, fileInfo, token) => {
     const options = {
       method: 'PUT',
-      headers: {'x-access-token': token, 'Content-type': 'application/json'},
+      headers: {
+        'x-access-token': token,
+        'Content-type': 'application/json',
+      },
       body: JSON.stringify(fileInfo),
     };
-    console.log('options', options);
     try {
       const result = await doFetch(baseUrl + 'media/' + fileId, options);
       return result;
     } catch (error) {
-      console.error('updatefile error', error.message);
+      throw new Error('updateFile error: ' + error.message);
     }
   };
 
@@ -314,6 +316,7 @@ const useFavourite = () => {
   };
 
   const deleteFavourite = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'DELETE',
       headers: {
@@ -401,6 +404,7 @@ const useComments = () => {
   };
 
   const deleteComment = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'DELETE',
       headers: {'x-access-token': userToken},
@@ -414,6 +418,7 @@ const useComments = () => {
   };
 
   const postComment = async (id, comment) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'POST',
       headers: {

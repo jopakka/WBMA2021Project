@@ -18,6 +18,7 @@ import Upload from '../views/Upload';
 import Favourite from '../views/Favourite';
 import {colors} from '../utils/variables';
 import SplashScreen from '../components/SplashScreen';
+import UpdateJob from '../views/UpdateJob';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -73,6 +74,7 @@ const StackScreen = () => {
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
           <Stack.Screen name="Job Offer" component={SingleJob} />
+          <Stack.Screen name="Update Job" component={UpdateJob} />
         </>
       ) : (
         <>
