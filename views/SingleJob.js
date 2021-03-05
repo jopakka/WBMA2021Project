@@ -77,7 +77,7 @@ const SingleJob = ({route, navigation}) => {
       setUpdate(!update);
       navigation.pop();
     } catch (e) {
-      Alert.alert('Error while deleting comment', e.message);
+      Alert.alert('Error while deleting Post', e.message);
     }
   };
 
@@ -122,10 +122,10 @@ const SingleJob = ({route, navigation}) => {
           <Text style={styles.userInfo}>{file.description} </Text>
           <Card.Divider />
           {file.payMethod === 'hourlyWage' && (
-            <Text style={styles.userInfo}>Hourly pay: {file.wage}$</Text>
+            <Text style={styles.userInfo}>Hourly pay: {file.wage}€</Text>
           )}
           {file.payMethod === 'contractSalary' && (
-            <Text style={styles.userInfo}>contract pay: {file.wage}$</Text>
+            <Text style={styles.userInfo}>contract pay: {file.wage}€</Text>
           )}
           <Button title={'Contact employer'} onPress={contactEmp}></Button>
         </Card>
@@ -137,7 +137,16 @@ const SingleJob = ({route, navigation}) => {
         </Card>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
-
+        {user.user_id === file.user_id && (
+          <View style={styles.box}>
+            <ListButtonElement
+              text="Update Job Offer"
+              onPress={() => {
+                navigation.push('Update Job', {file});
+              }}
+            />
+          </View>
+        )}
         {user.user_id === file.user_id && (
           <View style={styles.box}>
             <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
@@ -202,6 +211,7 @@ const styles = StyleSheet.create({
 });
 
 SingleJob.propTypes = {
+  singleMedia: PropTypes.object,
   route: PropTypes.object,
   navigation: PropTypes.object,
 };
