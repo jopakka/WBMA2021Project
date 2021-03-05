@@ -38,7 +38,6 @@ const UpdateJob = ({navigation, route}) => {
   const {searchLocation} = useLocation();
 
   const doUpdate = async () => {
-    const formData = new FormData();
     const otherData = {
       description: inputs.description,
       payMethod: payMethod,
@@ -47,16 +46,16 @@ const UpdateJob = ({navigation, route}) => {
       coordinates: selectedLocation.coordinates,
       text: selectedLocation.text,
     };
-    formData.append('title', inputs.title);
-    formData.append('description', JSON.stringify(otherData));
 
-    console.log('Formdata information', formData);
-    console.log('File ID', file.file_id);
+    const data = {
+      description: JSON.stringify(otherData),
+      title: inputs.title,
+    };
+    console.log('data', data);
     try {
       setIsUploading(true);
       const userToken = await AsyncStorage.getItem('userToken');
-      // WIP get description to update as formdata instead of inputs.
-      const resp = await updateFile(file.file_id, inputs, userToken);
+      const resp = await updateFile(file.file_id, data, userToken);
       console.log('update response', resp);
       setUpdate(update + 1);
       navigation.pop();
