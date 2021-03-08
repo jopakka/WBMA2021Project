@@ -3,7 +3,12 @@ import {FlatList} from 'react-native';
 import LocationListItem from './LocationListItem';
 import PropTypes from 'prop-types';
 
-const LocationList = ({navigation, content, myOnPress, style = {}}) => {
+const LocationList = ({
+  navigation,
+  content,
+  myOnPress = () => {},
+  style = {},
+}) => {
   // console.log('this is contett', content);
 
   const [locations, setlocations] = useState(content);
