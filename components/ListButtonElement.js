@@ -17,14 +17,23 @@ const ListButtonElement = ({
       onPress={onPress}
       disabled={disabled}
       underlayColor="#A0CA92"
+      style={{backgroundColor: disabled ? '#AAA' : '#FFF0'}}
     >
       <ListItem containerStyle={[styles.buttonContainer, containerStyle]}>
         <ListItem.Content>
-          <ListItem.Title style={{color: color, textTransform: 'uppercase'}}>
+          <ListItem.Title
+            style={{
+              color: disabled ? '#DDD' : color,
+              textTransform: 'uppercase',
+            }}
+          >
             {text}
           </ListItem.Title>
         </ListItem.Content>
-        <ListItem.Chevron color={color} size={chevronSize} />
+        <ListItem.Chevron
+          color={disabled ? '#DDD' : color}
+          size={chevronSize}
+        />
       </ListItem>
     </TouchableHighlight>
   );
