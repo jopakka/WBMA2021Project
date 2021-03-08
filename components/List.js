@@ -1,30 +1,27 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
-import {MainContext} from '../contexts/MainContext';
 
-const List = ({navigation}) => {
-  const {selectedLocation} = useContext(MainContext);
+const List = ({navigation, location = {}}) => {
   const mediaArray = useLoadMedia();
 
   const showSearch = () => {
-    const locationArray = [];
-    if (Object.keys(selectedLocation).length !== 0) {
+    if (Object.keys(location).length !== 0) {
+      const locationArray = [];
       for (const element of mediaArray) {
-        if (element.text === selectedLocation.text) {
+        if (element.text === location.text) {
           locationArray.push(element);
         }
       }
-      return locationArray.reverse();
+      return locationArray;
     } else {
-      console.log(mediaArray);
+      // console.log(mediaArray);
       return mediaArray;
     }
   };
 
-  // updating profile failes to reverse the list
   return (
     <FlatList
       data={showSearch()}
@@ -37,5 +34,6 @@ const List = ({navigation}) => {
 };
 List.propTypes = {
   navigation: PropTypes.object,
+  location: PropTypes.object,
 };
 export default React.memo(List);

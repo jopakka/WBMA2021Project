@@ -33,7 +33,7 @@ const useLoadMedia = () => {
     const options = {
       headers: {'x-access-token': userToken},
     };
-    console.log('options', options);
+    // console.log('options', options);
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
       const favList = await doFetch(baseUrl + 'favourites', options);

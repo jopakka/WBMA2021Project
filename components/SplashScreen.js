@@ -20,7 +20,7 @@ const SplashScreen = ({navigation}) => {
       try {
         const userData = await checkToken(userToken);
         await wait(minWait, startTime);
-        console.log('time', Date.now() - startTime);
+        // console.log('time', Date.now() - startTime);
         setIsLoggedIn(true);
         setUser(userData);
       } catch (error) {
