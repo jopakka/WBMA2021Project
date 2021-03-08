@@ -167,6 +167,7 @@ const SingleJob = ({route, navigation}) => {
         <Input
           placeholder="Enter comment here"
           containerStyle={{backgroundColor: 'white'}}
+          inputContainerStyle={{borderBottomWidth: 0}}
           renderErrorMessage={false}
           value={comment}
           onChangeText={(text) => setComment(text)}
