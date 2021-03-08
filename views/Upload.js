@@ -32,7 +32,7 @@ const Upload = ({navigation}) => {
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
-  const {setLocationArray} = useContext(MainContext);
+  const [locationArray, setLocationArray] = useState([]);
   const {selectedLocation} = useContext(MainContext);
 
   const {upload} = useMedia();
@@ -255,8 +255,10 @@ const Upload = ({navigation}) => {
             }}
             value={search}
           />
-          <View>
-            <LocationList />
+          <View
+            style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 1}}
+          >
+            <LocationList content={locationArray} />
           </View>
         </View>
 
