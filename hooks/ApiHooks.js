@@ -278,8 +278,10 @@ const useLocation = () => {
       const searchResp = await axios(
         'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
           search +
-          '.json?types=place&access_token=' +
-          MAPBOX_TOKEN,
+          '.json?types=place' +
+          '&access_token=' +
+          MAPBOX_TOKEN +
+          '&limit=3',
         options
       );
 
