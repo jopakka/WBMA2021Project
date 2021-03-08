@@ -17,10 +17,10 @@ const List = ({navigation}) => {
           joku.push(element);
         }
       }
-      console.log('array', joku);
       return joku.reverse();
     } else {
-      return mediaArray.reverse();
+      console.log(mediaArray);
+      return mediaArray;
     }
   };
 

@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Platform, View, Alert, ScrollView, Switch} from 'react-native';
+import {
+  Text,
+  Platform,
+  View,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import {CheckBox, Divider, Image, Input} from 'react-native-elements';
+import {CheckBox, Divider, Image} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {StyleSheet} from 'react-native';
@@ -12,8 +19,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
 import {useMedia, useTag} from '../hooks/ApiHooks';
-import {appID, uploadsUrl} from '../utils/variables';
+import {appID, colors, uploadsUrl} from '../utils/variables';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import GlobalStyles from '../styles/GlobalStyles';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import FormStyles from '../styles/FormStyles';
+import FormTextInput from '../components/FormTextInput';
+import LoadingModal from '../components/LoadingModal';
+import NiceDivider from '../components/NiceDivider';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
@@ -25,7 +38,7 @@ const UpdateProfile = ({navigation}) => {
   const [employer, setEmployer] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const pickFile = async () => {
+  const pickFile = async (library = true) => {
     const options = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -36,9 +49,13 @@ const UpdateProfile = ({navigation}) => {
     let result = null;
 
     try {
-      const perm = await askMedia();
+      const perm = await askMedia(library);
       if (!perm) return;
-      result = await ImagePicker.launchImageLibraryAsync(options);
+      if (library) {
+        result = await ImagePicker.launchImageLibraryAsync(options);
+      } else {
+        result = await ImagePicker.launchCameraAsync(options);
+      }
     } catch (e) {
       console.error('pickImage', e.message);
     }
@@ -47,16 +64,28 @@ const UpdateProfile = ({navigation}) => {
 
     if (!result.cancelled) {
       setFile(result);
-      console.log('file', result);
     }
   };
 
-  const askMedia = async () => {
+  // Check if has permission to use media library
+  const askMedia = async (library) => {
     if (Platform.OS !== 'web') {
-      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Sorry, we need camera roll permissons to make this work!');
-        return false;
+      if (library) {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Sorry, we need camera roll permissons to make this work!'
+          );
+          return false;
+        } else {
+          const {status} = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Sorry, we need camera permisson to make this work!');
+            return false;
+          }
+        }
       }
     }
     return true;
@@ -81,15 +110,14 @@ const UpdateProfile = ({navigation}) => {
       ...otherData,
     };
 
-    // console.log('new user', newUser);
-
     try {
       const token = await AsyncStorage.getItem('userToken');
 
-      console.log('file', file);
-
+      // If there is a file, try to upload it
       if (file) {
         const formData = new FormData();
+
+        // Append file to formdata
         const filename = file.uri.split('/').pop();
         const match = /\.(\w+)$/.exec(filename);
         let type = match ? `${file.type}/${match[1]}` : file.type;
@@ -99,33 +127,39 @@ const UpdateProfile = ({navigation}) => {
           name: filename,
           type: type,
         });
+
+        // Append title to formdata
         formData.append('title', `avatar_${user.user_id}`);
+
+        // Upload file
         const fileUpload = await upload(formData, token);
-        // console.log('fileUpload', fileUpload);
-        const tagResponse = await postTag(
+
+        // Add tag to file
+        await postTag(
           {file_id: fileUpload.file_id, tag: `${appID}_avatar_${user.user_id}`},
           token
         );
+
+        // Get info from uploaded file
         const fileResp = await getFile(fileUpload.file_id);
         newUser.avatar = `${uploadsUrl}${fileResp.filename}`;
       }
 
-      // console.log('tagResponse', tagResponse);
-      const result = await updateUser(data, token);
-      // console.log('doUpdate', result);
+      // Updating user
+      await updateUser(data, token);
       setUser(newUser);
       navigation.pop();
     } catch (e) {
-      console.error('doUpdate', e.message);
+      Alert.alert('Error while updating user', e.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // Toggle employer status
   const toggleEmployer = () => setEmployer(!employer);
 
   useEffect(() => {
-    // console.log('UpdateProfile', user);
     setInputs({
       full_name: user.full_name,
       email: user.email,
@@ -135,133 +169,89 @@ const UpdateProfile = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scroll}>
-      <Image
-        source={{
-          uri: file ? file.uri : user.avatar,
-        }}
-        containerStyle={styles.img}
-        onPress={pickFile}
-      >
-        <Ionicons
-          name="add-circle"
-          size={40}
-          color="white"
-          style={styles.add}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <LoadingModal visible={loading} />
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+        <Image
+          source={{
+            uri: file ? file.uri : user.avatar,
+          }}
+          containerStyle={GlobalStyles.profileImage}
+          onPress={pickFile}
         />
-      </Image>
-      <Divider style={{height: 25}} />
-      <View style={[styles.box, styles.info]}>
-        <Text style={[styles.infoText, styles.infoTitle]}>Full name</Text>
-        <Input
-          value={inputs.full_name}
-          onChangeText={(text) => handleInputChange('full_name', text)}
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          errorMessage={errors.full_name}
-          errorStyle={{fontSize: 14, color: 'white'}}
-        />
-        <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
-        <Input
-          value={inputs.email}
-          onChangeText={(text) => handleInputChange('email', text)}
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          errorMessage={errors.email}
-          errorStyle={{fontSize: 14, color: 'white'}}
-        />
-        <CheckBox
-          checked={employer}
-          title="Employer"
-          onPress={toggleEmployer}
-          textStyle={styles.checkText}
-          containerStyle={styles.check}
-          checkedColor="#E0BE36"
-        />
-      </View>
 
-      <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+        <Divider style={{height: 25}} />
 
-      <View style={styles.box}>
-        <ListButtonElement
-          text="Update"
-          onPress={doUpdate}
-          disabled={loading}
-        />
-      </View>
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement
+            text="Choose image from library"
+            onPress={() => pickFile(true)}
+          />
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement
+            text="Take a picture"
+            onPress={() => pickFile(false)}
+          />
+        </View>
 
-      <StatusBar style="light" backgroundColor="#998650" />
-    </ScrollView>
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Full name
+          </Text>
+          <FormTextInput
+            autoCapitalize="words"
+            placeholder="Full Name"
+            value={inputs.full_name}
+            onChangeText={(text) => handleInputChange('full_name', text)}
+            errorMessage={errors.full_name}
+          />
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+          <FormTextInput
+            value={inputs.email}
+            placeholder="Email"
+            onChangeText={(text) => handleInputChange('email', text)}
+            errorMessage={errors.email}
+          />
+
+          <CheckBox
+            checked={employer}
+            title="Employer"
+            onPress={toggleEmployer}
+            textStyle={FormStyles.checkText}
+            containerStyle={FormStyles.check}
+            checkedColor={colors.accent}
+          />
+        </View>
+
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement text="Update" onPress={doUpdate} />
+        </View>
+
+        <StatusBar style="light" backgroundColor={colors.statusbar} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  scroll: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  img: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
-    justifyContent: 'flex-end',
-  },
   add: {
     alignSelf: 'flex-end',
     backgroundColor: '#0C0F0A',
-  },
-  name: {
-    textAlign: 'center',
-  },
-  box: {
-    width: '100%',
-    backgroundColor: '#75B09C',
-    borderRadius: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
-  },
-  info: {
-    padding: 20,
-  },
-  infoText: {
-    color: 'white',
-    fontSize: 15,
-  },
-  infoTitle: {
-    textTransform: 'uppercase',
-  },
-  infoDesc: {
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#FFF0',
-    padding: 20,
-  },
-  buttonText: {
-    color: 'white',
-  },
-  inputContainer: {
-    borderColor: '#E0BE36',
-    borderBottomWidth: 3,
-  },
-  input: {
-    color: 'white',
-  },
-  checkText: {
-    textTransform: 'uppercase',
-    color: 'white',
-  },
-  check: {
-    backgroundColor: '#FFF0',
-    borderWidth: 0,
-    padding: 0,
-    paddingHorizontal: 0,
+    paddingStart: 3,
+    borderRadius: 5,
   },
 });
 

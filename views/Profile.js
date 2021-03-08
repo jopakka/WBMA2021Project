@@ -1,5 +1,5 @@
-import React, {useState, useContext} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Avatar, Divider, Text} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
@@ -7,6 +7,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'expo-status-bar';
 import ListButtonElement from '../components/ListButtonElement';
 import NiceDivider from '../components/NiceDivider';
+import GlobalStyles from '../styles/GlobalStyles';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import {colors} from '../utils/variables';
+import {useEffect} from 'react';
+import LoadingModal from '../components/LoadingModal';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
@@ -14,54 +19,69 @@ const Profile = ({navigation}) => {
 
   const doLogout = async () => {
     setLoading(true);
-    setIsLoggedIn(false);
-    await AsyncStorage.clear();
-    navigation.navigate('Login');
-    setLoading(false);
+    try {
+      setIsLoggedIn(false);
+      await AsyncStorage.clear();
+      navigation.navigate('Login');
+    } catch (e) {
+      Alert.alert('Error', 'While logging out');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const doUpdate = () => {
     navigation.navigate('Update Profile');
   };
 
+  useEffect(() => {
+    console.log('user', user);
+  }, []);
+
   return (
-    <ScrollView contentContainerStyle={styles.scroll}>
-      <Avatar
-        title={user.full_name[0]}
-        source={{uri: user.avatar}}
-        containerStyle={styles.imgContainer}
-        avatarStyle={{borderRadius: 100}}
-      />
-      <Divider style={{height: 10}} />
-      <Text h4 style={styles.name}>
-        {user.full_name}
-      </Text>
-      <Divider style={{height: 25}} />
-      <View style={[styles.box, styles.info]}>
-        <Text style={[styles.infoText, styles.infoTitle]}>Username</Text>
-        <Text style={[styles.infoText, styles.infoDesc]}>{user.username}</Text>
-        <NiceDivider />
-        <Text style={[styles.infoText, styles.infoTitle]}>Email</Text>
-        <Text style={[styles.infoText, styles.infoDesc]}>{user.email}</Text>
-      </View>
-
-      <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
-
-      <View style={styles.box}>
-        <ListButtonElement text="Update Profile" onPress={doUpdate} />
-        <Divider
-          style={{
-            height: 1,
-            backgroundColor: '#FFF',
-            marginStart: 20,
-            marginEnd: 20,
-          }}
+    <>
+      <LoadingModal visible={loading} />
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+        <Avatar
+          title={user.full_name[0]}
+          source={{uri: user.avatar}}
+          containerStyle={GlobalStyles.profileImage}
+          rounded
         />
-        <ListButtonElement text="Logout" onPress={doLogout} />
-      </View>
+        <Divider style={{height: 10}} />
 
-      <StatusBar style="light" backgroundColor="#998650" />
-    </ScrollView>
+        <Text h4 style={styles.name}>
+          {user.full_name}
+        </Text>
+        <Divider style={{height: 25}} />
+
+        <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Username
+          </Text>
+          <Text style={TextBoxStyles.text}>{user.username}</Text>
+          <NiceDivider />
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+          <Text style={TextBoxStyles.text}>{user.email}</Text>
+        </View>
+
+        <NiceDivider color="#FFF0" lineHeight={0} />
+
+        <View style={TextBoxStyles.box}>
+          <ListButtonElement text="Update Profile" onPress={doUpdate} />
+          <NiceDivider
+            space={0}
+            style={{
+              marginStart: 20,
+              marginEnd: 20,
+            }}
+          />
+          <ListButtonElement text="Logout" onPress={doLogout} />
+        </View>
+
+        <StatusBar style="light" backgroundColor={colors.statusbar} />
+      </ScrollView>
+    </>
   );
 };
 

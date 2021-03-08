@@ -4,6 +4,8 @@ import {MainContext} from '../contexts/MainContext';
 import {appID, baseUrl, uploadsUrl} from '../utils/variables';
 import {parse} from '../utils/helpers';
 import {MAPBOX_TOKEN} from '@env';
+import {Alert} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
@@ -24,19 +26,18 @@ const doFetch = async (url, options = {}) => {
 const useLoadMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
-  const {userToken} = useContext(MainContext);
   const {getUser} = useUser();
 
   const loadMedia = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       headers: {'x-access-token': userToken},
     };
+    console.log('options', options);
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
-
       const favList = await doFetch(baseUrl + 'favourites', options);
 
-      console.log('listJson', listJson);
       const media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
@@ -56,10 +57,11 @@ const useLoadMedia = () => {
           return fileJson;
         })
       );
-      console.log('media array data', media);
-      setMediaArray(media);
+      // console.log('media array data', media);
+      setMediaArray(media.reverse());
     } catch (error) {
-      console.error('loadmedia error', error.message);
+      // console.error('loadmedia error', error.message);
+      Alert.alert('Error', 'While fetching media. Please try again');
     }
   };
 
@@ -80,14 +82,11 @@ const useLogin = () => {
     };
     try {
       const userData = await doFetch(baseUrl + 'login/', options);
-      // console.log('userData', userData);
       const imgs = await getFilesByTag(
         `${appID}_avatar_${userData.user.user_id}`
       );
-      // console.log('imgs', imgs);
       if (imgs.length > 0) {
         userData.user.avatar = `${uploadsUrl}${imgs.pop().filename}`;
-        // console.log('userData', userData);
       }
       return userData;
     } catch (error) {
@@ -240,15 +239,17 @@ const useMedia = () => {
   const updateFile = async (fileId, fileInfo, token) => {
     const options = {
       method: 'PUT',
-      headers: {'x-access-token': token, 'Content-type': 'application/json'},
+      headers: {
+        'x-access-token': token,
+        'Content-type': 'application/json',
+      },
       body: JSON.stringify(fileInfo),
     };
-    console.log('options', options);
     try {
       const result = await doFetch(baseUrl + 'media/' + fileId, options);
       return result;
     } catch (error) {
-      console.error('updatefile error', error.message);
+      throw new Error('updateFile error: ' + error.message);
     }
   };
 
@@ -296,8 +297,8 @@ const useLocation = () => {
 };
 
 const useFavourite = () => {
-  const {userToken} = useContext(MainContext);
   const postFavourite = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'POST',
       headers: {
@@ -315,6 +316,7 @@ const useFavourite = () => {
   };
 
   const deleteFavourite = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'DELETE',
       headers: {
@@ -339,11 +341,11 @@ const useFavourite = () => {
 const useLoadFavourites = () => {
   const [favouriteArray, setFavouriteArray] = useState([]);
   const {update} = useContext(MainContext);
-  const {userToken} = useContext(MainContext);
   const {getUser} = useUser();
 
   const getFavourites = async () => {
     try {
+      const userToken = await AsyncStorage.getItem('userToken');
       const options = {
         headers: {
           'Content-Type': 'application/json',
@@ -382,10 +384,10 @@ const useLoadFavourites = () => {
 
 const useComments = () => {
   const {getUser} = useUser();
-  const {userToken} = useContext(MainContext);
 
   const getCommentsByFile = async (id) => {
     try {
+      const userToken = await AsyncStorage.getItem('userToken');
       const response = await doFetch(`${baseUrl}comments/file/${id}`);
       const commentInfo = await Promise.all(
         response.map(async (item) => {
@@ -402,6 +404,7 @@ const useComments = () => {
   };
 
   const deleteComment = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'DELETE',
       headers: {'x-access-token': userToken},
@@ -415,6 +418,7 @@ const useComments = () => {
   };
 
   const postComment = async (id, comment) => {
+    const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       method: 'POST',
       headers: {

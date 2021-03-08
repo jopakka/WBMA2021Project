@@ -7,12 +7,13 @@ import {SearchBar} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
 import {useLocation} from '../hooks/ApiHooks';
 import LocationList from '../components/LocationList';
+import {colors} from '../utils/variables';
 
 const Home = ({navigation}) => {
   const [search, setSearch] = useState('');
   const {setSelectedLocation} = useContext(MainContext);
 
-  const {setLocationArray} = useContext(MainContext);
+  const [locationArray, setLocationArray] = useState([]);
 
   const {searchLocation} = useLocation();
 
@@ -39,16 +40,19 @@ const Home = ({navigation}) => {
           }
         }}
         onClear={() => {
+          setLocationArray([]);
           setSearch('');
           setSelectedLocation({});
         }}
         value={search}
       />
-      <View style={{position: 'absolute', left: 0, top: 66, zIndex: 1}}>
-        <LocationList />
+      <View
+        style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 1}}
+      >
+        <LocationList content={locationArray} />
       </View>
       <List navigation={navigation} />
-      <StatusBar style="light" backgroundColor="#998650" />
+      <StatusBar style="light" backgroundColor={colors.statusbar} />
     </View>
   );
 };

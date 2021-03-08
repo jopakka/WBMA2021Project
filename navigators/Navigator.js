@@ -13,10 +13,12 @@ import Profile from '../views/Profile';
 import UpdateProfile from '../views/UpdateProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SingleJob from '../views/SingleJob';
-import {StyleSheet} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import Upload from '../views/Upload';
 import Favourite from '../views/Favourite';
+import {colors} from '../utils/variables';
+import SplashScreen from '../components/SplashScreen';
+import UpdateJob from '../views/UpdateJob';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,7 +44,7 @@ const TabScreen = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: '#75B09C',
+        activeTintColor: colors.primary,
         inactiveTintColor: 'gray',
       }}
       sceneContainerStyle={GlobalStyles.appBackground}
@@ -58,7 +60,9 @@ const TabScreen = () => {
 const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
-    <Stack.Navigator screenOptions={{headerStyle: styles.header}}>
+    <Stack.Navigator
+      screenOptions={{headerStyle: {backgroundColor: colors.accent}}}
+    >
       {isLoggedIn ? (
         <>
           <Stack.Screen
@@ -70,6 +74,7 @@ const StackScreen = () => {
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
           <Stack.Screen name="Job Offer" component={SingleJob} />
+          <Stack.Screen name="Update Job" component={UpdateJob} />
         </>
       ) : (
         <>
@@ -86,18 +91,22 @@ const StackScreen = () => {
   );
 };
 
-const Navigator = () => {
+const Splash = () => {
   return (
-    <NavigationContainer>
-      <StackScreen />
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Splash Screen" component={SplashScreen} />
+    </Stack.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#E0BE36',
-  },
-});
+const Navigator = () => {
+  const {firstLoad} = useContext(MainContext);
+
+  return (
+    <NavigationContainer>
+      {firstLoad ? <Splash /> : <StackScreen />}
+    </NavigationContainer>
+  );
+};
 
 export default Navigator;

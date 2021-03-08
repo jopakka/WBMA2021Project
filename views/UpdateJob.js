@@ -11,11 +11,10 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Divider, Image, Text} from 'react-native-elements';
-import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
+import {Divider, Text} from 'react-native-elements';
+import {useLocation, useMedia} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
-import {appID} from '../utils/variables';
 import LocationList from '../components/LocationList';
 import GlobalStyles from '../styles/GlobalStyles';
 import ListButtonElement from '../components/ListButtonElement';
@@ -24,25 +23,21 @@ import FormTextInput from '../components/FormTextInput';
 import NiceDivider from '../components/NiceDivider';
 import LoadingModal from '../components/LoadingModal';
 
-const Upload = ({navigation}) => {
-  const [image, setImage] = useState(null);
-  const [filetype, setFiletype] = useState('');
+const UpdateJob = ({navigation, route}) => {
+  const {file} = route.params;
   const [isUploading, setIsUploading] = useState(false);
   const [payMethod, setPayMethod] = useState([]);
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
-  const [locationArray, setLocationArray] = useState([]);
+  const {setLocationArray} = useContext(MainContext);
   const {selectedLocation} = useContext(MainContext);
 
-  const {upload} = useMedia();
-  const {postTag} = useTag();
-  const {handleInputChange, inputs, uploadErrors, reset} = useUploadForm();
+  const {updateFile} = useMedia();
+  const {handleInputChange, inputs, uploadErrors, setInputs} = useUploadForm();
   const {searchLocation} = useLocation();
 
-  const doUpload = async () => {
-    const formData = new FormData();
-
+  const doUpdate = async () => {
     const otherData = {
       description: inputs.description,
       payMethod: payMethod,
@@ -52,54 +47,26 @@ const Upload = ({navigation}) => {
       text: selectedLocation.text,
     };
 
-    formData.append('title', inputs.title);
-    formData.append('description', JSON.stringify(otherData));
-
-    const filename = image.split('/').pop();
-    const match = /\.(\w+)$/.exec(filename);
-    let type = match ? `${filetype}/${match[1]}` : filetype;
-    if (type === 'image/jpg') type = 'image/jpeg';
-    formData.append('file', {
-      uri: image,
-      name: filename,
-      type: type,
-    });
-
-    console.log('Formdata information', formData);
-
+    const data = {
+      description: JSON.stringify(otherData),
+      title: inputs.title,
+    };
+    console.log('data', data);
     try {
       setIsUploading(true);
       const userToken = await AsyncStorage.getItem('userToken');
-      const resp = await upload(formData, userToken);
-      console.log('upload response', resp);
-
-      const tagResponse = await postTag(
-        {file_id: resp.file_id, tag: appID},
-        userToken
-      );
-      console.log('posting appID', tagResponse);
-      Alert.alert(
-        'Upload',
-        'File is uploaded successfully',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              setUpdate(!update);
-              doReset();
-              navigation.goBack();
-            },
-          },
-        ],
-        {cancelable: false}
-      );
+      const resp = await updateFile(file.file_id, data, userToken);
+      console.log('update response', resp);
+      setUpdate(update + 1);
+      navigation.pop();
     } catch (error) {
-      Alert.alert('Upload', 'Upload failed');
-      console.error('upload failed', error);
+      Alert.alert('Update', 'Update failed');
+      console.error('update failed', error);
     } finally {
       setIsUploading(false);
     }
   };
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -111,43 +78,23 @@ const Upload = ({navigation}) => {
     })();
   }, []);
 
-  const pickImage = async (library) => {
-    let result = null;
-
-    const options = {
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    };
-
-    if (library) {
-      result = await ImagePicker.launchImageLibraryAsync(options);
-    } else {
-      result = await ImagePicker.launchCameraAsync(options);
-    }
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setFiletype(result.type);
-      setImage(result.uri);
-    }
-  };
-
   const askReset = () => {
-    Alert.alert('Confirm', 'Do you want to clear form?', [
+    Alert.alert('Confirm', 'Do you want to reset form?', [
       {text: 'Cancel'},
       {
-        text: 'Clear',
+        text: 'Reset',
         onPress: doReset,
       },
     ]);
   };
 
   const doReset = () => {
-    setImage(null);
-    reset();
+    setInputs({
+      title: file.title,
+      description: file.description,
+      wage: file.wage,
+      place_name: file.place_name,
+    });
   };
 
   const fetchLocation = async (txt) => {
@@ -160,40 +107,22 @@ const Upload = ({navigation}) => {
     return location;
   };
 
+  useEffect(() => {
+    console.log('File', file);
+    setInputs({
+      title: file.title,
+      description: file.description,
+      wage: file.wage,
+      payMethod: file.payMethod,
+    });
+  }, []);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <LoadingModal visible={isUploading} />
       <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
-        <Image
-          source={
-            image ? {uri: image} : require('../assets/image_placeholder.jpg')
-          }
-          containerStyle={GlobalStyles.profileImage}
-          onPress={pickImage}
-        />
-
-        <Divider style={{height: 25}} />
-
-        <View style={TextBoxStyles.box}>
-          <ListButtonElement
-            text="Choose image from library"
-            onPress={() => pickImage(true)}
-          />
-          <NiceDivider
-            space={0}
-            style={{
-              marginStart: 20,
-              marginEnd: 20,
-            }}
-          />
-          <ListButtonElement
-            text="Take a picture"
-            onPress={() => pickImage(false)}
-          />
-        </View>
-
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
@@ -255,10 +184,8 @@ const Upload = ({navigation}) => {
             }}
             value={search}
           />
-          <View
-            style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 1}}
-          >
-            <LocationList content={locationArray} />
+          <View>
+            <LocationList />
           </View>
         </View>
 
@@ -277,12 +204,10 @@ const Upload = ({navigation}) => {
 
         <View style={TextBoxStyles.box}>
           <ListButtonElement
-            text="Upload job offer"
-            onPress={doUpload}
+            text="Update job offer"
+            onPress={doUpdate}
             disabled={
-              uploadErrors.title !== null ||
-              uploadErrors.description !== null ||
-              image === null
+              uploadErrors.title !== null || uploadErrors.description !== null
             }
           />
           <NiceDivider
@@ -333,8 +258,9 @@ const styles = StyleSheet.create({
   },
 });
 
-Upload.propTypes = {
+UpdateJob.propTypes = {
+  route: PropTypes.object,
   navigation: PropTypes.object,
 };
 
-export default Upload;
+export default UpdateJob;

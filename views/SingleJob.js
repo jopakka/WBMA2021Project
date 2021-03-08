@@ -11,6 +11,7 @@ import {MainContext} from '../contexts/MainContext';
 import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListButtonElement from '../components/ListButtonElement';
+import GlobalStyles from '../styles/GlobalStyles';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -71,12 +72,13 @@ const SingleJob = ({route, navigation}) => {
   };
 
   const doDelete = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
     try {
       await deleteFile(file.file_id, userToken);
       setUpdate(!update);
       navigation.pop();
     } catch (e) {
-      Alert.alert('Error while deleting comment', e.message);
+      Alert.alert('Error while deleting Post', e.message);
     }
   };
 
@@ -102,7 +104,7 @@ const SingleJob = ({route, navigation}) => {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Card>
           <Card.Title h3> {file.title}</Card.Title>
           <Card.Divider />
@@ -121,10 +123,10 @@ const SingleJob = ({route, navigation}) => {
           <Text style={styles.userInfo}>{file.description} </Text>
           <Card.Divider />
           {file.payMethod === 'hourlyWage' && (
-            <Text style={styles.userInfo}>Hourly pay: {file.wage}$</Text>
+            <Text style={styles.userInfo}>Hourly pay: {file.wage}€</Text>
           )}
           {file.payMethod === 'contractSalary' && (
-            <Text style={styles.userInfo}>contract pay: {file.wage}$</Text>
+            <Text style={styles.userInfo}>contract pay: {file.wage}€</Text>
           )}
           <Button title={'Contact employer'} onPress={contactEmp}></Button>
         </Card>
@@ -136,7 +138,16 @@ const SingleJob = ({route, navigation}) => {
         </Card>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
-
+        {user.user_id === file.user_id && (
+          <View style={styles.box}>
+            <ListButtonElement
+              text="Update Job Offer"
+              onPress={() => {
+                navigation.push('Update Job', {file});
+              }}
+            />
+          </View>
+        )}
         {user.user_id === file.user_id && (
           <View style={styles.box}>
             <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
@@ -160,10 +171,6 @@ const SingleJob = ({route, navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  scroll: {
-    padding: 20,
-    alignItems: 'stretch',
-  },
   jobInfo: {
     flexDirection: 'row',
     marginBottom: 15,
@@ -205,6 +212,7 @@ const styles = StyleSheet.create({
 });
 
 SingleJob.propTypes = {
+  singleMedia: PropTypes.object,
   route: PropTypes.object,
   navigation: PropTypes.object,
 };
