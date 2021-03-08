@@ -30,11 +30,13 @@ const Home = ({navigation}) => {
     console.log('search', search);
     if (search.length > 2) {
       fetchLocation(search);
+    } else {
+      setLocationArray([]);
     }
   }, [search]);
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <SearchBar
         placeholder="Search for location"
         onChangeText={(text) => {
@@ -47,12 +49,12 @@ const Home = ({navigation}) => {
         }}
         value={search}
       />
+      <List navigation={navigation} />
       <View
-        style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 1}}
+        style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 100}}
       >
         <LocationList content={locationArray} />
       </View>
-      <List navigation={navigation} />
       <StatusBar style="light" backgroundColor={colors.statusbar} />
     </View>
   );

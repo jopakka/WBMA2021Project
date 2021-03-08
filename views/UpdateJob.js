@@ -57,7 +57,7 @@ const UpdateJob = ({navigation, route}) => {
       const userToken = await AsyncStorage.getItem('userToken');
       const resp = await updateFile(file.file_id, data, userToken);
       console.log('update response', resp);
-      setUpdate(update + 1);
+      setUpdate(!update);
       navigation.pop();
     } catch (error) {
       Alert.alert('Update', 'Update failed');

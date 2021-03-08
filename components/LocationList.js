@@ -4,15 +4,15 @@ import LocationListItem from './LocationListItem';
 import PropTypes from 'prop-types';
 
 const LocationList = ({navigation, content}) => {
-  console.log('this is contett', content);
+  // console.log('this is contett', content);
 
   const [locations, setlocations] = useState(content);
 
   useEffect(() => {
     setlocations(content);
   }, [content]);
+  // console.log('this is state', locations);
 
-  console.log('this is state', locations);
   return (
     <FlatList
       style={{flex: 1, position: 'absolute', left: 0, top: 0}}
