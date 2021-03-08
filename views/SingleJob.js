@@ -12,6 +12,7 @@ import {TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListButtonElement from '../components/ListButtonElement';
 import GlobalStyles from '../styles/GlobalStyles';
+import NiceDivider from '../components/NiceDivider';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -104,7 +105,12 @@ const SingleJob = ({route, navigation}) => {
 
   return (
     <>
-      <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+      <ScrollView
+        contentContainerStyle={[
+          GlobalStyles.scrollView,
+          {alignItems: 'stretch'},
+        ]}
+      >
         <Card>
           <Card.Title h3> {file.title}</Card.Title>
           <Card.Divider />
@@ -146,10 +152,13 @@ const SingleJob = ({route, navigation}) => {
                 navigation.push('Update Job', {file});
               }}
             />
-          </View>
-        )}
-        {user.user_id === file.user_id && (
-          <View style={styles.box}>
+            <NiceDivider
+              space={0}
+              style={{
+                marginStart: 20,
+                marginEnd: 20,
+              }}
+            />
             <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
           </View>
         )}
@@ -157,6 +166,7 @@ const SingleJob = ({route, navigation}) => {
       {user !== null && (
         <Input
           placeholder="Enter comment here"
+          containerStyle={{backgroundColor: 'white'}}
           renderErrorMessage={false}
           value={comment}
           onChangeText={(text) => setComment(text)}
