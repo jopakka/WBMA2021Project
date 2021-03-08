@@ -10,14 +10,14 @@ const List = ({navigation}) => {
   const mediaArray = useLoadMedia();
 
   const showSearch = () => {
-    const joku = [];
+    const locationArray = [];
     if (Object.keys(selectedLocation).length !== 0) {
       for (const element of mediaArray) {
         if (element.text === selectedLocation.text) {
-          joku.push(element);
+          locationArray.push(element);
         }
       }
-      return joku.reverse();
+      return locationArray.reverse();
     } else {
       console.log(mediaArray);
       return mediaArray;

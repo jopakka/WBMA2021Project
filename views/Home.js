@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import List from '../components/List';
@@ -26,6 +26,12 @@ const Home = ({navigation}) => {
     }
     return location;
   };
+  useEffect(() => {
+    console.log('search', search);
+    if (search.length > 2) {
+      fetchLocation(search);
+    }
+  }, [search]);
 
   return (
     <View>
@@ -33,11 +39,6 @@ const Home = ({navigation}) => {
         placeholder="Search for location"
         onChangeText={(text) => {
           setSearch(text);
-          console.log('text', text);
-          console.log('search', search);
-          if (text.length > 2) {
-            fetchLocation(text);
-          }
         }}
         onClear={() => {
           setLocationArray([]);

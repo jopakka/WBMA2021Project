@@ -5,17 +5,16 @@ import {TouchableOpacity} from 'react-native';
 import {Alert} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 
-const LocationListItem = ({singleLocation, setState}) => {
+const LocationListItem = ({singleLocation, callBack}) => {
   const {setSelectedLocation} = useContext(MainContext);
   const {update, setUpdate} = useContext(MainContext);
 
   console.log('singleLocation values', singleLocation);
-  console.log('this is parent callback', setState);
 
   return (
     <TouchableOpacity
       onPress={() => {
-        setState([]);
+        callBack([]);
         const locationData = {
           place_name: singleLocation.place_name,
           text: singleLocation.text,
@@ -38,7 +37,7 @@ const LocationListItem = ({singleLocation, setState}) => {
 
 LocationListItem.propTypes = {
   singleLocation: PropTypes.object,
-  setState: PropTypes.func,
+  callBack: PropTypes.func,
 };
 
 export default LocationListItem;
