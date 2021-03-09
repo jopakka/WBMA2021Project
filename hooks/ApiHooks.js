@@ -270,8 +270,6 @@ const useMedia = () => {
 };
 
 const useLocation = () => {
-  const [locationArray, setLocationArray] = useState([]);
-
   const searchLocation = async (search) => {
     const options = {
       method: 'GET',
@@ -285,12 +283,11 @@ const useLocation = () => {
         options
       );
 
-      setLocationArray(searchResp.data.features);
+      return searchResp.data.features;
     } catch (error) {
       console.error('Search failed', error);
       throw new Error(error.message);
     }
-    return locationArray;
   };
 
   return {searchLocation};

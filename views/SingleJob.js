@@ -22,7 +22,6 @@ const SingleJob = ({route, navigation}) => {
     updateComments,
     setUpdateComments,
     user,
-    userToken,
     update,
     setUpdate,
   } = useContext(MainContext);
