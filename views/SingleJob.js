@@ -104,10 +104,6 @@ const SingleJob = ({route, navigation}) => {
     fetchComments();
   }, [updateComments]);
 
-  const openmapFunctio = () => {
-    openMap({latitude: 37.4847, longitude: 122.1477});
-  };
-
   return (
     <>
       <ScrollView
@@ -134,12 +130,13 @@ const SingleJob = ({route, navigation}) => {
           <Text style={styles.userInfo}>{file.description} </Text>
           <Card.Divider />
           <Button
+            title={file.text}
             onPress={() => {
-              openmapFunctio();
+              openMap({
+                end: file.place_name,
+              });
             }}
-          >
-            {file.text}
-          </Button>
+          ></Button>
           <Card.Divider />
           {file.payMethod === 'hourlyWage' && (
             <Text style={styles.userInfo}>Hourly pay: {file.wage}€</Text>
