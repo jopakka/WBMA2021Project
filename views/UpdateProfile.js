@@ -79,12 +79,12 @@ const UpdateProfile = ({navigation}) => {
             'Sorry, we need camera roll permissons to make this work!'
           );
           return false;
-        } else {
-          const {status} = await ImagePicker.requestCameraPermissionsAsync();
-          if (status !== 'granted') {
-            Alert.alert('Sorry, we need camera permisson to make this work!');
-            return false;
-          }
+        }
+      } else {
+        const {status} = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Sorry, we need camera permisson to make this work!');
+          return false;
         }
       }
     }
@@ -212,7 +212,10 @@ const UpdateProfile = ({navigation}) => {
             autoCapitalize="words"
             placeholder="Full Name"
             value={inputs.full_name}
-            onChangeText={(text) => handleInputChange('full_name', text)}
+            onChangeText={(text) => {
+              handleInputChange('full_name', text);
+              console.log('errors', errors);
+            }}
             errorMessage={errors.full_name}
           />
 
@@ -237,7 +240,11 @@ const UpdateProfile = ({navigation}) => {
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={TextBoxStyles.box}>
-          <ListButtonElement text="Update" onPress={doUpdate} />
+          <ListButtonElement
+            text="Update"
+            onPress={doUpdate}
+            disabled={errors.email !== null || errors.full_name !== null}
+          />
         </View>
 
         <StatusBar style="light" backgroundColor={colors.statusbar} />

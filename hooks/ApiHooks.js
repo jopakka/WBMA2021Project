@@ -33,7 +33,7 @@ const useLoadMedia = () => {
     const options = {
       headers: {'x-access-token': userToken},
     };
-    console.log('options', options);
+    // console.log('options', options);
     try {
       const listJson = await doFetch(baseUrl + 'tags/' + appID);
       const favList = await doFetch(baseUrl + 'favourites', options);
@@ -278,8 +278,10 @@ const useLocation = () => {
       const searchResp = await axios(
         'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
           search +
-          '.json?types=place&access_token=' +
-          MAPBOX_TOKEN,
+          '.json?types=place' +
+          '&access_token=' +
+          MAPBOX_TOKEN +
+          '&limit=3',
         options
       );
 

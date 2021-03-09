@@ -29,11 +29,12 @@ const Upload = ({navigation}) => {
   const [filetype, setFiletype] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [payMethod, setPayMethod] = useState([]);
+  const [searchBool, setSearchBool] = useState(false);
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
   const [locationArray, setLocationArray] = useState([]);
-  const {selectedLocation} = useContext(MainContext);
+  const [location, setLocation] = useState({});
 
   const {upload} = useMedia();
   const {postTag} = useTag();
@@ -47,9 +48,9 @@ const Upload = ({navigation}) => {
       description: inputs.description,
       payMethod: payMethod,
       wage: inputs.wage,
-      place_name: selectedLocation.place_name,
-      coordinates: selectedLocation.coordinates,
-      text: selectedLocation.text,
+      place_name: location.place_name,
+      coordinates: location.coordinates,
+      text: location.text,
     };
 
     formData.append('title', inputs.title);
@@ -100,6 +101,7 @@ const Upload = ({navigation}) => {
       setIsUploading(false);
     }
   };
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -110,6 +112,19 @@ const Upload = ({navigation}) => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    console.log('search', search);
+    if (search.length > 2) {
+      fetchLocation(search);
+    } else {
+      setLocationArray([]);
+    }
+  }, [searchBool]);
+
+  useEffect(() => {
+    setSearch(location.text);
+  }, [location]);
 
   const pickImage = async (library) => {
     let result = null;
@@ -246,20 +261,16 @@ const Upload = ({navigation}) => {
           <FormTextInput
             placeholder="Search for location"
             onChangeText={(txt) => {
+              setSearchBool(!searchBool);
               setSearch(txt);
-              console.log('text', txt);
-              console.log('search', search);
-              if (txt.length > 2) {
-                fetchLocation(txt);
-              }
             }}
             value={search}
           />
-          <View
-            style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 1}}
-          >
-            <LocationList content={locationArray} />
-          </View>
+          <LocationList
+            content={locationArray}
+            style={styles.locationList}
+            myOnPress={(loc) => setLocation(loc)}
+          />
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
@@ -330,6 +341,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 40,
+  },
+  locationList: {
+    position: 'relative',
+    top: -20,
+    marginBottom: -20,
   },
 });
 

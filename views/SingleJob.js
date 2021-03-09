@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListButtonElement from '../components/ListButtonElement';
 import GlobalStyles from '../styles/GlobalStyles';
 import NiceDivider from '../components/NiceDivider';
+import openMap from 'react-native-open-maps';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -126,6 +127,15 @@ const SingleJob = ({route, navigation}) => {
           </View>
           <Text>Job description</Text>
           <Text style={styles.userInfo}>{file.description} </Text>
+          <Card.Divider />
+          <Button
+            title={file.text}
+            onPress={() => {
+              openMap({
+                end: file.place_name,
+              });
+            }}
+          ></Button>
           <Card.Divider />
           {file.payMethod === 'hourlyWage' && (
             <Text style={styles.userInfo}>Hourly pay: {file.wage}€</Text>

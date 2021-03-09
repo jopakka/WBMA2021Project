@@ -5,11 +5,11 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Alert} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 
-const LocationListItem = ({singleLocation, callBack}) => {
+const LocationListItem = ({singleLocation, callBack, myOnPress}) => {
   const {setSelectedLocation} = useContext(MainContext);
   const {update, setUpdate} = useContext(MainContext);
 
-  console.log('singleLocation values', singleLocation);
+  // console.log('singleLocation values', singleLocation);
 
   return (
     <TouchableOpacity
@@ -23,7 +23,8 @@ const LocationListItem = ({singleLocation, callBack}) => {
         setSelectedLocation(locationData);
 
         setUpdate(!update);
-        Alert.alert('Location', 'Location pressed');
+        myOnPress(locationData);
+        // Alert.alert('Location', 'Location pressed');
       }}
     >
       <RNEListItem bottomDivider>
@@ -38,6 +39,7 @@ const LocationListItem = ({singleLocation, callBack}) => {
 LocationListItem.propTypes = {
   singleLocation: PropTypes.object,
   callBack: PropTypes.func,
+  myOnPress: PropTypes.func,
 };
 
 export default LocationListItem;
