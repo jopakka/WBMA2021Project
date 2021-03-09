@@ -58,7 +58,7 @@ const UpdateJob = ({navigation, route}) => {
       const resp = await updateFile(file.file_id, data, userToken);
       console.log('update response', resp);
       setUpdate(!update);
-      navigation.pop();
+      navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Update', 'Update failed');
       console.error('update failed', error);
