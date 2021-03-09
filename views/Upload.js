@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Divider, Image, Text} from 'react-native-elements';
-import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
+import {useLocation, useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
-import {appID} from '../utils/variables';
+import {appID, employeeTAg, employerTAg} from '../utils/variables';
 import LocationList from '../components/LocationList';
 import GlobalStyles from '../styles/GlobalStyles';
 import ListButtonElement from '../components/ListButtonElement';
@@ -23,6 +23,7 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import FormTextInput from '../components/FormTextInput';
 import NiceDivider from '../components/NiceDivider';
 import LoadingModal from '../components/LoadingModal';
+import {parse} from '../utils/helpers';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -33,6 +34,7 @@ const Upload = ({navigation}) => {
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
+  const {user} = useContext(MainContext);
   const [locationArray, setLocationArray] = useState([]);
   const [location, setLocation] = useState({});
 
@@ -44,14 +46,16 @@ const Upload = ({navigation}) => {
   const doUpload = async () => {
     const formData = new FormData();
 
-    const otherData = {
-      description: inputs.description,
-      payMethod: payMethod,
-      wage: inputs.wage,
-      place_name: location.place_name,
-      coordinates: location.coordinates,
-      text: location.text,
-    };
+    const otherData = user.employer
+      ? {
+          description: inputs.description,
+          payMethod: payMethod,
+          wage: inputs.wage,
+          place_name: location.place_name,
+          coordinates: location.coordinates,
+          text: location.text,
+        }
+      : {};
 
     formData.append('title', inputs.title);
     formData.append('description', JSON.stringify(otherData));
@@ -74,11 +78,20 @@ const Upload = ({navigation}) => {
       const resp = await upload(formData, userToken);
       console.log('upload response', resp);
 
-      const tagResponse = await postTag(
-        {file_id: resp.file_id, tag: appID},
-        userToken
-      );
-      console.log('posting appID', tagResponse);
+      if (user.employer) {
+        const tagResponse = await postTag(
+          {file_id: resp.file_id, tag: employerTAg},
+          userToken
+        );
+        console.log('posting employer', tagResponse);
+      } else {
+        const tagResponse = await postTag(
+          {file_id: resp.file_id, tag: employeeTAg},
+          userToken
+        );
+        console.log('posting employee', tagResponse);
+      }
+
       Alert.alert(
         'Upload',
         'File is uploaded successfully',
@@ -212,65 +225,75 @@ const Upload = ({navigation}) => {
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Job Title
-          </Text>
-          <FormTextInput
-            autoCapitalize="words"
-            placeholder="Job Title"
-            value={inputs.title}
-            onChangeText={(txt) => handleInputChange('title', txt)}
-            errorMessage={uploadErrors.title}
-          />
+          {user.employer ? (
+            <>
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Job Title
+              </Text>
+              <FormTextInput
+                autoCapitalize="words"
+                placeholder="Job Title"
+                value={inputs.title}
+                onChangeText={(txt) => handleInputChange('title', txt)}
+                errorMessage={uploadErrors.title}
+              />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Summary</Text>
-          <FormTextInput
-            placeholder="Summary Of Work"
-            value={inputs.description}
-            onChangeText={(txt) => handleInputChange('description', txt)}
-            errorMessage={uploadErrors.description}
-          />
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Summary
+              </Text>
+              <FormTextInput
+                placeholder="Summary Of Work"
+                value={inputs.description}
+                onChangeText={(txt) => handleInputChange('description', txt)}
+                errorMessage={uploadErrors.description}
+              />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Payment Method
-          </Text>
-          <NiceDivider lineHeight={0} space={5} />
-          <DropDownPicker
-            defaultValue="hourlyWage"
-            items={[
-              {label: 'Hourly Wage', value: 'hourlyWage'},
-              {label: 'Contract Salary', value: 'contractSalary'},
-            ]}
-            onChangeItem={(item) => {
-              setPayMethod(item.value);
-            }}
-            containerStyle={styles.picker}
-          />
-          <NiceDivider lineHeight={0} space={10} />
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Payment Method
+              </Text>
+              <NiceDivider lineHeight={0} space={5} />
+              <DropDownPicker
+                defaultValue="hourlyWage"
+                items={[
+                  {label: 'Hourly Wage', value: 'hourlyWage'},
+                  {label: 'Contract Salary', value: 'contractSalary'},
+                ]}
+                onChangeItem={(item) => {
+                  setPayMethod(item.value);
+                }}
+                containerStyle={styles.picker}
+              />
+              <NiceDivider lineHeight={0} space={10} />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Payment</Text>
-          <FormTextInput
-            placeholder="0€"
-            value={inputs.wage}
-            onChangeText={(txt) => handleInputChange('wage', txt)}
-          />
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Payment
+              </Text>
+              <FormTextInput
+                placeholder="0€"
+                value={inputs.wage}
+                onChangeText={(txt) => handleInputChange('wage', txt)}
+              />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Location
-          </Text>
-          <FormTextInput
-            placeholder="Search for location"
-            onChangeText={(txt) => {
-              setSearchBool(!searchBool);
-              setSearch(txt);
-            }}
-            value={search}
-          />
-          <LocationList
-            content={locationArray}
-            style={styles.locationList}
-            myOnPress={(loc) => setLocation(loc)}
-          />
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Location
+              </Text>
+              <FormTextInput
+                placeholder="Search for location"
+                onChangeText={(txt) => {
+                  setSearchBool(!searchBool);
+                  setSearch(txt);
+                }}
+                value={search}
+              />
+              <LocationList
+                content={locationArray}
+                style={styles.locationList}
+                myOnPress={(loc) => setLocation(loc)}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />

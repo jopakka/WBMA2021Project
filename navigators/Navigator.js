@@ -50,7 +50,7 @@ const TabScreen = () => {
       sceneContainerStyle={GlobalStyles.appBackground}
     >
       <Tab.Screen name="Home" component={Home} />
-      {user.employer && <Tab.Screen name="Upload" component={Upload} />}
+      <Tab.Screen name="Upload" component={Upload} />
       <Tab.Screen name="Favourites" component={Favourite} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

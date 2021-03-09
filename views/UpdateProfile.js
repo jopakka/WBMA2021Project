@@ -30,6 +30,7 @@ import NiceDivider from '../components/NiceDivider';
 
 const UpdateProfile = ({navigation}) => {
   const {user, setUser} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
   const {updateUser} = useUser();
   const {upload, getFile} = useMedia();
   const {postTag} = useTag();
@@ -153,6 +154,7 @@ const UpdateProfile = ({navigation}) => {
       Alert.alert('Error while updating user', e.message);
     } finally {
       setLoading(false);
+      setUpdate(!update);
     }
   };
 

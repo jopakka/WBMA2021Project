@@ -1,6 +1,8 @@
 const uploadsUrl = 'https://media-new.mw.metropolia.fi/wbma/uploads/';
 const baseUrl = 'https://media-new.mw.metropolia.fi/wbma/';
 const appID = 'Officium';
+const employerTAg = 'employer';
+const employeeTAg = 'employee';
 
 const colors = {
   accent: '#E0BE36',
@@ -8,4 +10,4 @@ const colors = {
   statusbar: '#998650',
 };
 
-export {uploadsUrl, baseUrl, appID, colors};
+export {uploadsUrl, baseUrl, appID, colors, employerTAg, employeeTAg};
