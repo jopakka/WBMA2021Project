@@ -9,8 +9,7 @@ const List = ({navigation, location = {}}) => {
   const mediaArray = useLoadMedia();
 
   const {update, setUpdate} = useContext(MainContext);
-
-  const [refreshing, setRefreshing] = useState(false);
+  const {refresh, setRefresh} = useContext(MainContext);
 
   const showSearch = () => {
     if (Object.keys(location).length !== 0) {
@@ -30,11 +29,10 @@ const List = ({navigation, location = {}}) => {
   return (
     <FlatList
       onRefresh={() => {
-        setRefreshing(true);
+        setRefresh(true);
         setUpdate(!update);
-        setRefreshing(false);
       }}
-      refreshing={refreshing}
+      refreshing={refresh}
       data={showSearch()}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (

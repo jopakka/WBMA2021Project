@@ -8,11 +8,12 @@ import {MainContext} from '../contexts/MainContext';
 const FavouriteList = ({navigation}) => {
   const favouriteArray = useLoadFavourites();
   const {update, setUpdate} = useContext(MainContext);
-  const {refresh} = useContext(MainContext);
+  const {refresh, setRefresh} = useContext(MainContext);
 
   return (
     <FlatList
       onRefresh={() => {
+        setRefresh(true);
         setUpdate(!update);
       }}
       refreshing={refresh}

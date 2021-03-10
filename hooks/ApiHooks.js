@@ -37,7 +37,6 @@ const useLoadMedia = () => {
   const {getUser} = useUser();
 
   const loadMedia = async () => {
-    setRefresh(true);
     const userToken = await AsyncStorage.getItem('userToken');
     const options = {
       headers: {'x-access-token': userToken},
@@ -74,10 +73,11 @@ const useLoadMedia = () => {
       );
       // console.log('media array data', media);
       setMediaArray(media.reverse());
-      setRefresh(false);
     } catch (error) {
       // console.error('loadmedia error', error.message);
       Alert.alert('Error', 'While fetching media. Please try again');
+    } finally {
+      setRefresh(false);
     }
   };
 
@@ -358,6 +358,7 @@ const useLoadFavourites = () => {
   const [favouriteArray, setFavouriteArray] = useState([]);
   const {update} = useContext(MainContext);
   const {user} = useContext(MainContext);
+  const {setRefresh} = useContext(MainContext);
   const {getUser} = useUser();
 
   const getFavourites = async () => {
@@ -402,6 +403,8 @@ const useLoadFavourites = () => {
       setFavouriteArray(filtered.reverse());
     } catch (error) {
       console.error('getFavourites error', error.message);
+    } finally {
+      setRefresh(false);
     }
   };
 
