@@ -1,15 +1,18 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import PropTypes from 'prop-types';
-import {uploadsUrl} from '../utils/variables';
-import {Avatar, ListItem as RNEListItem} from 'react-native-elements';
+import {colors, uploadsUrl} from '../utils/variables';
+import {Avatar, ListItem as RNEListItem, Text} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native';
 import {useFavourite} from '../hooks/ApiHooks';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {View} from 'react-native';
+import {MainContext} from '../contexts/MainContext';
 
 const ListItem = ({singleMedia, navigation}) => {
   const [iconStatus, setIconStatus] = useState(singleMedia.favourite);
+
+  const {user} = useContext(MainContext);
 
   const {postFavourite, deleteFavourite} = useFavourite();
 
@@ -26,16 +29,34 @@ const ListItem = ({singleMedia, navigation}) => {
           source={{uri: uploadsUrl + singleMedia.thumbnails.w160}}
         />
         <RNEListItem.Content>
-          <RNEListItem.Title h4>{singleMedia.title}</RNEListItem.Title>
+          <RNEListItem.Title h4>
+            {singleMedia.payMethod === 'contractSalary' ? (
+              <>
+                <Text>{singleMedia.title}</Text>
+                <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                  {!user.employer ? ` (${singleMedia.wage}$)` : ''}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text>{singleMedia.title}</Text>
+                <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                  {!user.employer ? ` (${singleMedia.wage}$/h)` : ''}
+                </Text>
+              </>
+            )}
+          </RNEListItem.Title>
           <RNEListItem.Subtitle>
             {singleMedia.userinfo.full_name}
           </RNEListItem.Subtitle>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', paddingTop: 5}}>
             <RNEListItem.Subtitle style={{flex: 1}}>
-              {singleMedia.text}
+              <Ionicons name={'location-outline'} />
+              {` ${singleMedia.text}`}
             </RNEListItem.Subtitle>
             <RNEListItem.Subtitle style={{flex: 1}}>
-              {moment(singleMedia.time_added).format('MMM D GGGG')}
+              <Ionicons name={'time-outline'} />
+              {` ${moment(singleMedia.time_added).format('MMM D, h:mm')}`}
             </RNEListItem.Subtitle>
           </View>
         </RNEListItem.Content>
@@ -65,7 +86,11 @@ const ListItem = ({singleMedia, navigation}) => {
             }
           }}
         >
-          <Ionicons name={iconStatus ? 'star' : 'star-outline'} size={50} />
+          <Ionicons
+            name={iconStatus ? 'star' : 'star-outline'}
+            size={25}
+            color={colors.primary}
+          />
         </TouchableOpacity>
       </RNEListItem>
     </TouchableOpacity>

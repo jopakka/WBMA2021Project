@@ -53,6 +53,18 @@ const Home = ({navigation}) => {
           setSearch('');
           setLocation({});
         }}
+        inputContainerStyle={{backgroundColor: colors.primary}}
+        leftIconContainerStyle={{backgroundColor: colors.primary}}
+        inputStyle={{backgroundColor: colors.primary, color: 'white'}}
+        containerStyle={{
+          backgroundColor: 'white',
+          borderTopWidth: 0,
+          borderBottomWidth: 0,
+        }}
+        searchIcon={{color: 'white'}}
+        round={true}
+        placeholderTextColor={'white'}
+        clearIcon={{color: 'white'}}
         value={search}
       />
       <List navigation={navigation} location={location} />
