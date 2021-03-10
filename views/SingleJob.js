@@ -23,7 +23,6 @@ const SingleJob = ({route, navigation}) => {
     updateComments,
     setUpdateComments,
     user,
-    userToken,
     update,
     setUpdate,
   } = useContext(MainContext);
@@ -67,7 +66,7 @@ const SingleJob = ({route, navigation}) => {
   };
 
   const askDelete = () => {
-    Alert.alert('Are you sure?', 'Do you want to this job offer?', [
+    Alert.alert('Are you sure?', 'Do you want to delete this job offer?', [
       {text: 'Cancel'},
       {text: 'Delete', onPress: doDelete},
     ]);

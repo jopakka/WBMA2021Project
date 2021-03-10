@@ -202,6 +202,7 @@ const Upload = ({navigation}) => {
       <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
         <Image
           source={
+            // eslint-disable-next-line no-undef
             image ? {uri: image} : require('../assets/image_placeholder.jpg')
           }
           containerStyle={GlobalStyles.profileImage}

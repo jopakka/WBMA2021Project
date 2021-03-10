@@ -162,10 +162,8 @@ const UpdateProfile = ({navigation}) => {
   const toggleEmployer = () => setEmployer(!employer);
 
   useEffect(() => {
-    setInputs({
-      full_name: user.full_name,
-      email: user.email,
-    });
+    handleInputChange('full_name', user.full_name);
+    handleInputChange('email', user.email);
     setFile();
     setEmployer(user.employer);
   }, []);
