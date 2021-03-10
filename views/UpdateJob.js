@@ -28,14 +28,16 @@ const UpdateJob = ({navigation, route}) => {
   const [isUploading, setIsUploading] = useState(false);
   const [payMethod, setPayMethod] = useState([]);
   const [search, setSearch] = useState('');
+  const [searchBool, setSearchBool] = useState(false);
 
   const {update, setUpdate} = useContext(MainContext);
-  const {setLocationArray} = useContext(MainContext);
   const {selectedLocation} = useContext(MainContext);
 
   const {updateFile} = useMedia();
   const {handleInputChange, inputs, uploadErrors, setInputs} = useUploadForm();
   const {searchLocation} = useLocation();
+  const [location, setLocation] = useState({});
+  const [locationArray, setLocationArray] = useState([]);
 
   const doUpdate = async () => {
     const otherData = {
@@ -106,7 +108,14 @@ const UpdateJob = ({navigation, route}) => {
     }
     return location;
   };
-
+  useEffect(() => {
+    console.log('search', search);
+    if (search.length > 2) {
+      fetchLocation(search);
+    } else {
+      setLocationArray([]);
+    }
+  }, [searchBool]);
   useEffect(() => {
     console.log('File', file);
     setInputs({
@@ -175,14 +184,15 @@ const UpdateJob = ({navigation, route}) => {
           <FormTextInput
             placeholder="Search for location"
             onChangeText={(txt) => {
+              setSearchBool(!searchBool);
               setSearch(txt);
-              console.log('text', txt);
-              console.log('search', search);
-              if (txt.length > 2) {
-                fetchLocation(txt);
-              }
             }}
             value={search}
+          />
+          <LocationList
+            content={locationArray}
+            style={styles.locationList}
+            myOnPress={(loc) => setLocation(loc)}
           />
           <View>
             <LocationList />
@@ -255,6 +265,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 40,
+  },
+  locationList: {
+    position: 'relative',
+    top: -20,
+    marginBottom: -20,
   },
 });
 
