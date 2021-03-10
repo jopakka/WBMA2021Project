@@ -91,7 +91,7 @@ const Upload = ({navigation}) => {
         console.log('posting employer', tagResponse);
       } else {
         const tagResponse = await postTag(
-          {file_id: resp.file_id, tag: employeeTAg},
+          {file_id: resp.file_id, tag: appID + '_' + employeeTAg},
           userToken
         );
         await postTag({file_id: resp.file_id, tag: appID}, userToken);
@@ -134,7 +134,7 @@ const Upload = ({navigation}) => {
 
   useEffect(() => {
     console.log('search', search);
-    if (search.length > 2) {
+    if (search !== undefined && search.length > 2) {
       fetchLocation(search);
     } else {
       setLocationArray([]);
