@@ -45,21 +45,18 @@ const Upload = ({navigation}) => {
   const doUpload = async () => {
     const formData = new FormData();
 
-    const otherData = user.employer
-      ? {
-          description: inputs.description,
-          payMethod: payMethod,
-          wage: inputs.wage,
-          place_name: location.place_name,
-          coordinates: location.coordinates,
-          text: location.text,
-        }
-      : {
-          description: inputs.description,
-          place_name: location.place_name,
-          coordinates: location.coordinates,
-          text: location.text,
-        };
+    const otherData = {
+      description: inputs.description,
+      place_name: location.place_name,
+      coordinates: location.coordinates,
+      text: location.text,
+      job: user.employer,
+    };
+
+    if (user.employer) {
+      otherData.payMethod = payMethod;
+      otherData.wage = inputs.wage;
+    }
 
     formData.append('title', inputs.title);
     formData.append('description', JSON.stringify(otherData));
@@ -74,28 +71,23 @@ const Upload = ({navigation}) => {
       type: type,
     });
 
-    console.log('Formdata information', formData);
-
     try {
       setIsUploading(true);
       const userToken = await AsyncStorage.getItem('userToken');
       const resp = await upload(formData, userToken);
-      console.log('upload response', resp);
 
       if (user.employer) {
-        const tagResponse = await postTag(
+        await postTag(
           {file_id: resp.file_id, tag: appID + '_' + employerTAg},
           userToken
         );
         await postTag({file_id: resp.file_id, tag: appID}, userToken);
-        console.log('posting employer', tagResponse);
       } else {
-        const tagResponse = await postTag(
-          {file_id: resp.file_id, tag: employeeTAg},
+        await postTag(
+          {file_id: resp.file_id, tag: appID + '_' + employeeTAg},
           userToken
         );
         await postTag({file_id: resp.file_id, tag: appID}, userToken);
-        console.log('posting employee', tagResponse);
       }
 
       Alert.alert(
@@ -115,7 +107,6 @@ const Upload = ({navigation}) => {
       );
     } catch (error) {
       Alert.alert('Upload', 'Upload failed');
-      console.error('upload failed', error);
     } finally {
       setIsUploading(false);
     }
@@ -133,8 +124,7 @@ const Upload = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    console.log('search', search);
-    if (search.length > 2) {
+    if (search !== undefined && search.length > 2) {
       fetchLocation(search);
     } else {
       setLocationArray([]);
@@ -160,8 +150,6 @@ const Upload = ({navigation}) => {
     } else {
       result = await ImagePicker.launchCameraAsync(options);
     }
-
-    console.log(result);
 
     if (!result.cancelled) {
       setFiletype(result.type);
