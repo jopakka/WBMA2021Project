@@ -1,11 +1,16 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {FlatList} from 'react-native';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
+import {MainContext} from '../contexts/MainContext';
 
 const List = ({navigation, location = {}}) => {
   const mediaArray = useLoadMedia();
+
+  const {update, setUpdate} = useContext(MainContext);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const showSearch = () => {
     if (Object.keys(location).length !== 0) {
@@ -24,6 +29,12 @@ const List = ({navigation, location = {}}) => {
 
   return (
     <FlatList
+      onRefresh={() => {
+        setRefreshing(true);
+        setUpdate(!update);
+        setRefreshing(false);
+      }}
+      refreshing={refreshing}
       data={showSearch()}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
