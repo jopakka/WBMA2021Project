@@ -294,6 +294,7 @@ const useLocation = () => {
           '.json?types=place' +
           '&access_token=' +
           MAPBOX_TOKEN +
+          '&country=FI' +
           '&limit=3',
         options
       );
