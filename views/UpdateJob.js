@@ -30,8 +30,9 @@ const UpdateJob = ({navigation, route}) => {
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
-  const {setLocationArray} = useContext(MainContext);
   const {selectedLocation} = useContext(MainContext);
+  const [locationArray, setLocationArray] = useState([]);
+  const [location, setLocation] = useState({});
 
   const {updateFile} = useMedia();
   const {handleInputChange, inputs, uploadErrors, setInputs} = useUploadForm();
@@ -95,6 +96,10 @@ const UpdateJob = ({navigation, route}) => {
       wage: file.wage,
       place_name: file.place_name,
     });
+    handleInputChange('title', file.title);
+    handleInputChange('description', file.description);
+    handleInputChange('wage', file.wage);
+    setSearch(file.place_name);
   };
 
   const fetchLocation = async (txt) => {
@@ -109,12 +114,7 @@ const UpdateJob = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('File', file);
-    setInputs({
-      title: file.title,
-      description: file.description,
-      wage: file.wage,
-      payMethod: file.payMethod,
-    });
+    doReset();
   }, []);
 
   return (
@@ -184,9 +184,11 @@ const UpdateJob = ({navigation, route}) => {
             }}
             value={search}
           />
-          <View>
-            <LocationList />
-          </View>
+          <LocationList
+            content={locationArray}
+            style={styles.locationList}
+            myOnPress={(loc) => setLocation(loc)}
+          />
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
@@ -255,6 +257,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 40,
+  },
+  locationList: {
+    position: 'relative',
+    top: -20,
+    marginBottom: -20,
   },
 });
 
