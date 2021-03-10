@@ -142,7 +142,7 @@ const Upload = ({navigation}) => {
   }, [searchBool]);
 
   useEffect(() => {
-    setSearch(location.text);
+    setSearch(location.place_name);
   }, [location]);
 
   const pickImage = async (library) => {

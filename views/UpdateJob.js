@@ -32,12 +32,12 @@ const UpdateJob = ({navigation, route}) => {
 
   const {update, setUpdate} = useContext(MainContext);
   const {selectedLocation} = useContext(MainContext);
+  const [locationArray, setLocationArray] = useState([]);
+  const [location, setLocation] = useState({});
 
   const {updateFile} = useMedia();
-  const {handleInputChange, inputs, uploadErrors, setInputs} = useUploadForm();
+  const {handleInputChange, inputs, uploadErrors} = useUploadForm();
   const {searchLocation} = useLocation();
-  const [location, setLocation] = useState({});
-  const [locationArray, setLocationArray] = useState([]);
 
   const doUpdate = async () => {
     const otherData = {
@@ -80,6 +80,16 @@ const UpdateJob = ({navigation, route}) => {
     })();
   }, []);
 
+  useEffect(() => {
+    console.log('File', file);
+    doReset();
+  }, []);
+
+  useEffect(() => {
+    setSearch(location.place_name);
+    console.log('location', location);
+  }, [location]);
+
   const askReset = () => {
     Alert.alert('Confirm', 'Do you want to reset form?', [
       {text: 'Cancel'},
@@ -91,12 +101,10 @@ const UpdateJob = ({navigation, route}) => {
   };
 
   const doReset = () => {
-    setInputs({
-      title: file.title,
-      description: file.description,
-      wage: file.wage,
-      place_name: file.place_name,
-    });
+    handleInputChange('title', file.title);
+    handleInputChange('description', file.description);
+    handleInputChange('wage', file.wage);
+    setLocation({coordinates: file.coordinates, place_name: file.place_name});
   };
 
   const fetchLocation = async (txt) => {
@@ -108,6 +116,7 @@ const UpdateJob = ({navigation, route}) => {
     }
     return location;
   };
+
   useEffect(() => {
     console.log('search', search);
     if (search.length > 2) {
@@ -116,15 +125,6 @@ const UpdateJob = ({navigation, route}) => {
       setLocationArray([]);
     }
   }, [searchBool]);
-  useEffect(() => {
-    console.log('File', file);
-    setInputs({
-      title: file.title,
-      description: file.description,
-      wage: file.wage,
-      payMethod: file.payMethod,
-    });
-  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -194,9 +194,6 @@ const UpdateJob = ({navigation, route}) => {
             style={styles.locationList}
             myOnPress={(loc) => setLocation(loc)}
           />
-          <View>
-            <LocationList />
-          </View>
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
