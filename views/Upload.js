@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Divider, Image, Text} from 'react-native-elements';
-import {useLocation, useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appID, employeeTAg, employerTAg} from '../utils/variables';
@@ -23,7 +23,6 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import FormTextInput from '../components/FormTextInput';
 import NiceDivider from '../components/NiceDivider';
 import LoadingModal from '../components/LoadingModal';
-import {parse} from '../utils/helpers';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
@@ -55,7 +54,12 @@ const Upload = ({navigation}) => {
           coordinates: location.coordinates,
           text: location.text,
         }
-      : {};
+      : {
+          description: inputs.description,
+          place_name: location.place_name,
+          coordinates: location.coordinates,
+          text: location.text,
+        };
 
     formData.append('title', inputs.title);
     formData.append('description', JSON.stringify(otherData));
@@ -80,15 +84,17 @@ const Upload = ({navigation}) => {
 
       if (user.employer) {
         const tagResponse = await postTag(
-          {file_id: resp.file_id, tag: employerTAg},
+          {file_id: resp.file_id, tag: appID + '_' + employerTAg},
           userToken
         );
+        await postTag({file_id: resp.file_id, tag: appID}, userToken);
         console.log('posting employer', tagResponse);
       } else {
         const tagResponse = await postTag(
           {file_id: resp.file_id, tag: employeeTAg},
           userToken
         );
+        await postTag({file_id: resp.file_id, tag: appID}, userToken);
         console.log('posting employee', tagResponse);
       }
 
@@ -292,7 +298,45 @@ const Upload = ({navigation}) => {
               />
             </>
           ) : (
-            <></>
+            <>
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Job Title
+              </Text>
+              <FormTextInput
+                autoCapitalize="words"
+                placeholder="Job Title"
+                value={inputs.title}
+                onChangeText={(txt) => handleInputChange('title', txt)}
+                errorMessage={uploadErrors.title}
+              />
+
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Summary
+              </Text>
+              <FormTextInput
+                placeholder="Summary Of Work"
+                value={inputs.description}
+                onChangeText={(txt) => handleInputChange('description', txt)}
+                errorMessage={uploadErrors.description}
+              />
+
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Location
+              </Text>
+              <FormTextInput
+                placeholder="Search for location"
+                onChangeText={(txt) => {
+                  setSearchBool(!searchBool);
+                  setSearch(txt);
+                }}
+                value={search}
+              />
+              <LocationList
+                content={locationArray}
+                style={styles.locationList}
+                myOnPress={(loc) => setLocation(loc)}
+              />
+            </>
           )}
         </View>
 

@@ -42,57 +42,36 @@ const useLoadMedia = () => {
     };
     // console.log('options', options);
     try {
-      if (user.employer) {
-        const listJson = await doFetch(baseUrl + 'tags/' + employeeTAg);
-        const favList = await doFetch(baseUrl + 'favourites', options);
+      const listJson = await doFetch(
+        baseUrl +
+          'tags/' +
+          appID +
+          '_' +
+          (user.employer ? employeeTAg : employerTAg)
+      );
+      const favList = await doFetch(baseUrl + 'favourites', options);
 
-        const media = await Promise.all(
-          listJson.map(async (item) => {
-            let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
-            fileJson = parse(fileJson, 'description');
+      const media = await Promise.all(
+        listJson.map(async (item) => {
+          let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
+          fileJson = parse(fileJson, 'description');
 
-            let userinfo = await getUser(item.user_id, userToken);
-            userinfo = parse(userinfo, 'full_name');
-            fileJson.userinfo = userinfo;
+          let userinfo = await getUser(item.user_id, userToken);
+          userinfo = parse(userinfo, 'full_name');
+          fileJson.userinfo = userinfo;
 
-            fileJson.favourite = false;
-            for (const element of favList) {
-              if (element.file_id === item.file_id) {
-                fileJson.favourite = true;
-                break;
-              }
+          fileJson.favourite = false;
+          for (const element of favList) {
+            if (element.file_id === item.file_id) {
+              fileJson.favourite = true;
+              break;
             }
-            return fileJson;
-          })
-        );
-        // console.log('media array data', media);
-        setMediaArray(media.reverse());
-      } else {
-        const listJson = await doFetch(baseUrl + 'tags/' + employerTAg);
-        const favList = await doFetch(baseUrl + 'favourites', options);
-
-        const media = await Promise.all(
-          listJson.map(async (item) => {
-            let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
-            fileJson = parse(fileJson, 'description');
-
-            let userinfo = await getUser(item.user_id, userToken);
-            userinfo = parse(userinfo, 'full_name');
-            fileJson.userinfo = userinfo;
-
-            fileJson.favourite = false;
-            for (const element of favList) {
-              if (element.file_id === item.file_id) {
-                fileJson.favourite = true;
-                break;
-              }
-            }
-            return fileJson;
-          })
-        );
-        // console.log('media array data', media);
-        setMediaArray(media.reverse());
-      }
+          }
+          return fileJson;
+        })
+      );
+      // console.log('media array data', media);
+      setMediaArray(media.reverse());
     } catch (error) {
       // console.error('loadmedia error', error.message);
       Alert.alert('Error', 'While fetching media. Please try again');
@@ -374,6 +353,7 @@ const useFavourite = () => {
 const useLoadFavourites = () => {
   const [favouriteArray, setFavouriteArray] = useState([]);
   const {update} = useContext(MainContext);
+  const {user} = useContext(MainContext);
   const {getUser} = useUser();
 
   const getFavourites = async () => {
@@ -392,8 +372,8 @@ const useLoadFavourites = () => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
 
-          const tagz = await doFetch(baseUrl + 'tags/file/' + item.file_id);
-          fileJson.tags = tagz[0];
+          const fileTags = await doFetch(baseUrl + 'tags/file/' + item.file_id);
+          fileJson.tags = fileTags[0];
           console.log('tags', fileJson.tags);
 
           let userinfo = await getUser(fileJson.user_id, userToken);
@@ -402,12 +382,20 @@ const useLoadFavourites = () => {
           fileJson.userinfo = userinfo;
           fileJson.favourite = true;
           console.log('fileJson', fileJson);
+
           return fileJson;
         })
       );
 
+      const filtered = favourites.filter((e) => {
+        return user.employer
+          ? e.tags.tag === appID + '_' + employeeTAg
+          : e.tags.tag === appID + '_' + employerTAg;
+      });
+      console.log('filtered favourites', filtered);
+
       console.log('favourite files', favourites);
-      setFavouriteArray(favourites);
+      setFavouriteArray(filtered);
     } catch (error) {
       console.error('getFavourites error', error.message);
     }
