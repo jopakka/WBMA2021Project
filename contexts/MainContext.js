@@ -11,6 +11,7 @@ const MainProvider = ({children}) => {
   const [locationArray, setLocationArray] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({});
   const [firstLoad, setFirstLoad] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   return (
     <MainContext.Provider
@@ -29,6 +30,8 @@ const MainProvider = ({children}) => {
         setLocationArray,
         selectedLocation,
         setSelectedLocation,
+        refresh,
+        setRefresh,
       }}
     >
       {children}

@@ -7,7 +7,7 @@ import {colors} from '../utils/variables';
 
 const Favourite = ({navigation}) => {
   return (
-    <View>
+    <View style={{flex: 1}}>
       <FavouriteList navigation={navigation} />
       <StatusBar style="light" backgroundColor={colors.statusbar} />
     </View>
