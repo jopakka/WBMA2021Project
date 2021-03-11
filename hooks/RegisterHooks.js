@@ -89,7 +89,7 @@ const useSignUpForm = (callback) => {
   };
 
   const checkUserAvailable = async (event) => {
-    console.log('username input', event.nativeEvent.text);
+    // console.log('username input', event.nativeEvent.text);
     try {
       const result = await checkIsUserAvailable(event.nativeEvent.text);
       if (!result) {

@@ -63,7 +63,7 @@ const SingleJob = ({route, navigation}) => {
     if (tempComment.length === 0) return;
     try {
       const response = await postComment(file.file_id, tempComment);
-      console.log('doSendComment', response);
+      // console.log('doSendComment', response);
       setUpdateComments(!updateComments);
       setComment('');
     } catch (e) {
@@ -101,7 +101,7 @@ const SingleJob = ({route, navigation}) => {
   };
 
   useEffect(() => {
-    console.log('SingleFile', file);
+    // console.log('SingleFile', file);
     fetchOwner();
   }, []);
 

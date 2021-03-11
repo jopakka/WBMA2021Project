@@ -213,7 +213,7 @@ const UpdateProfile = ({navigation}) => {
             value={inputs.full_name}
             onChangeText={(text) => {
               handleInputChange('full_name', text);
-              console.log('errors', errors);
+              // console.log('errors', errors);
             }}
             errorMessage={errors.full_name}
           />

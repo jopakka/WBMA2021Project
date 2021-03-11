@@ -28,7 +28,7 @@ const CommentListItem = ({singleComment, bottomDivider}) => {
     // console.log('Trying to delete comment: ' + singleComment.comment_id);
     try {
       const response = await deleteComment(singleComment.comment_id);
-      console.log('deleteComment response', response);
+      // console.log('deleteComment response', response);
       setUpdateComments(!updateComments);
     } catch (e) {
       console.error('Error while deleting comment', e.message);

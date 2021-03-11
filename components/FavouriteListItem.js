@@ -67,7 +67,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
                 const favourite = await deleteFavourite(singleMedia.file_id);
                 singleMedia.favourite = false;
                 setIconStatus(false);
-                console.log('favourite deleted', favourite);
+                // console.log('favourite deleted', favourite);
               } catch (error) {
                 console.error(error.message);
               }
@@ -78,7 +78,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
                 });
                 singleMedia.favourite = true;
                 setIconStatus(true);
-                console.log('favourite posted', favourite);
+                // console.log('favourite posted', favourite);
               } catch (error) {
                 console.error(error.message);
               }
