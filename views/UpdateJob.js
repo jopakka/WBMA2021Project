@@ -40,9 +40,9 @@ const UpdateJob = ({navigation, route}) => {
 
   const doUpdate = async () => {
     const otherData = {
-      description: inputs.description,
+      description: inputs.description.trimStart(),
       payMethod: payMethod,
-      wage: inputs.wage,
+      wage: inputs.wage.trimStart(),
       place_name: selectedLocation.place_name,
       coordinates: selectedLocation.coordinates,
       text: selectedLocation.text,
@@ -50,7 +50,7 @@ const UpdateJob = ({navigation, route}) => {
 
     const data = {
       description: JSON.stringify(otherData),
-      title: inputs.title,
+      title: inputs.title.trimStart(),
     };
     // console.log('data', data);
     try {
@@ -134,7 +134,7 @@ const UpdateJob = ({navigation, route}) => {
           <FormTextInput
             placeholder={file.job ? 'Job Title' : 'Your title'}
             value={inputs.title}
-            onChangeText={(txt) => handleInputChange('title', txt)}
+            onChangeText={(txt) => handleInputChange('title', txt.trimStart())}
             errorMessage={uploadErrors.title}
           />
 
@@ -142,7 +142,9 @@ const UpdateJob = ({navigation, route}) => {
           <FormTextInput
             placeholder={file.job ? 'Summary Of Work' : 'Tell about yourself'}
             value={inputs.description}
-            onChangeText={(txt) => handleInputChange('description', txt)}
+            onChangeText={(txt) =>
+              handleInputChange('description', txt.trimStart())
+            }
             errorMessage={uploadErrors.description}
           />
 
@@ -171,7 +173,9 @@ const UpdateJob = ({navigation, route}) => {
               <FormTextInput
                 placeholder="0$"
                 value={inputs.wage}
-                onChangeText={(txt) => handleInputChange('wage', txt)}
+                onChangeText={(txt) =>
+                  handleInputChange('wage', txt.trimStart())
+                }
               />
             </>
           )}

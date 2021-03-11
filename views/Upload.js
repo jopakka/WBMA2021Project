@@ -46,7 +46,7 @@ const Upload = ({navigation}) => {
     const formData = new FormData();
 
     const otherData = {
-      description: inputs.description,
+      description: inputs.description.trimStart(),
       place_name: location.place_name,
       coordinates: location.coordinates,
       text: location.text,
@@ -55,10 +55,13 @@ const Upload = ({navigation}) => {
 
     if (user.employer) {
       otherData.payMethod = payMethod;
-      otherData.wage = inputs.wage;
+      otherData.wage = inputs.wage.trimStart();
     }
 
-    formData.append('title', user.employer ? inputs.title : user.full_name);
+    formData.append(
+      'title',
+      user.employer ? inputs.title.trimStart() : user.full_name
+    );
     formData.append('description', JSON.stringify(otherData));
 
     const filename = image.split('/').pop();
@@ -224,7 +227,7 @@ const Upload = ({navigation}) => {
           <FormTextInput
             placeholder={user.employer ? 'Job Title' : 'Your title'}
             value={inputs.title}
-            onChangeText={(txt) => handleInputChange('title', txt)}
+            onChangeText={(txt) => handleInputChange('title', txt.trimStart())}
             errorMessage={uploadErrors.title}
           />
 
@@ -234,7 +237,9 @@ const Upload = ({navigation}) => {
               user.employer ? 'Summary Of Work' : 'Tell about yourself'
             }
             value={inputs.description}
-            onChangeText={(txt) => handleInputChange('description', txt)}
+            onChangeText={(txt) =>
+              handleInputChange('description', txt.trimStart())
+            }
             errorMessage={uploadErrors.description}
           />
 
@@ -263,7 +268,9 @@ const Upload = ({navigation}) => {
               <FormTextInput
                 placeholder="0$"
                 value={inputs.wage}
-                onChangeText={(txt) => handleInputChange('wage', txt)}
+                onChangeText={(txt) =>
+                  handleInputChange('wage', txt.trimStart())
+                }
               />
             </>
           )}

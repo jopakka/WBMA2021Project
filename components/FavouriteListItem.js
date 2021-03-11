@@ -30,19 +30,18 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
         />
         <RNEListItem.Content>
           <RNEListItem.Title h4>
-            {singleMedia.payMethod === 'contractSalary' ? (
+            <Text>{singleMedia.title}</Text>
+            {singleMedia.job && (
               <>
-                <Text>{singleMedia.title}</Text>
-                <Text style={{fontSize: 18, color: '#7C7C79'}}>
-                  {!user.employer ? ` (${singleMedia.wage}$)` : ''}
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text>{singleMedia.title}</Text>
-                <Text style={{fontSize: 18, color: '#7C7C79'}}>
-                  {!user.employer ? ` (${singleMedia.wage}$/h)` : ''}
-                </Text>
+                {singleMedia.payMethod === 'contractSalary' ? (
+                  <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                    {!user.employer ? ` (${singleMedia.wage}$)` : ''}
+                  </Text>
+                ) : (
+                  <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                    {!user.employer ? ` (${singleMedia.wage}$/h)` : ''}
+                  </Text>
+                )}
               </>
             )}
           </RNEListItem.Title>

@@ -96,17 +96,17 @@ const UpdateProfile = ({navigation}) => {
 
     const otherData = {
       employer: employer,
-      full_name: inputs.full_name,
+      full_name: inputs.full_name.trimStart(),
     };
 
     const data = {
-      email: inputs.email,
+      email: inputs.email.trimStart(),
       full_name: JSON.stringify(otherData),
     };
 
     const newUser = {
       ...user,
-      email: inputs.email,
+      email: data.email,
       ...otherData,
     };
 
