@@ -69,7 +69,13 @@ const Home = ({navigation}) => {
       />
       <List navigation={navigation} location={location} />
       <View
-        style={{flex: 1, position: 'absolute', left: 0, top: 59, zIndex: 100}}
+        style={{
+          flex: 1,
+          position: 'absolute',
+          left: 0,
+          top: 59,
+          zIndex: 100,
+        }}
       >
         <LocationList
           content={locationArray}
