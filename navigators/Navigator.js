@@ -80,6 +80,10 @@ const StackScreen = () => {
       screenOptions={{
         headerStyle: {backgroundColor: colors.primary},
         headerTintColor: '#FFF',
+        headerTitleStyle: {
+          fontWeight: '500',
+          fontSize: 20,
+        },
       }}
     >
       {isLoggedIn ? (
@@ -89,10 +93,6 @@ const StackScreen = () => {
             component={TabScreen}
             options={({route}) => ({
               headerTitle: getHeaderTitle(route),
-              headerTitleStyle: {
-                fontWeight: '500',
-                fontSize: 20,
-              },
             })}
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
