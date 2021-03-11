@@ -17,7 +17,6 @@ import List from '../components/List';
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState({});
 
   const doLogout = async () => {
     setLoading(true);
@@ -80,8 +79,13 @@ const Profile = ({navigation}) => {
           />
           <ListButtonElement text="Logout" onPress={doLogout} />
         </View>
-
-        <List navigation={navigation} location={location} />
+        <NiceDivider color="#FFF0" lineHeight={0} />
+        <View style={TextBoxStyles.box}>
+          <Text h1 style={{textAlign: 'center', color: 'white'}}>
+            Your posts
+          </Text>
+          <List navigation={navigation} myFilesOnly={true} />
+        </View>
         <StatusBar style="light" backgroundColor={colors.statusbar} />
       </ScrollView>
     </>

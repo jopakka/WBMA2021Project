@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import {useLoadFavourites} from '../hooks/ApiHooks';
@@ -8,18 +8,16 @@ import {MainContext} from '../contexts/MainContext';
 const FavouriteList = ({navigation}) => {
   const favouriteArray = useLoadFavourites();
   const {update, setUpdate} = useContext(MainContext);
-
-  const [refreshing, setRefreshing] = useState(false);
+  const {refresh, setRefresh} = useContext(MainContext);
 
   return (
     <FlatList
       onRefresh={() => {
-        setRefreshing(true);
+        setRefresh(true);
         setUpdate(!update);
-        setRefreshing(false);
       }}
-      refreshing={refreshing}
-      data={favouriteArray.reverse()}
+      refreshing={refresh}
+      data={favouriteArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <FavouriteListItem navigation={navigation} singleMedia={item} />

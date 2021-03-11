@@ -29,10 +29,11 @@ const doFetch = async (url, options = {}) => {
   }
 };
 
-const useLoadMedia = () => {
+const useLoadMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
   const {user} = useContext(MainContext);
+  const {setRefresh} = useContext(MainContext);
   const {getUser} = useUser();
 
   const loadMedia = async () => {
@@ -51,7 +52,7 @@ const useLoadMedia = () => {
       );
       const favList = await doFetch(baseUrl + 'favourites', options);
 
-      const media = await Promise.all(
+      let media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
@@ -70,11 +71,16 @@ const useLoadMedia = () => {
           return fileJson;
         })
       );
+      if (myFilesOnly) {
+        media = media.filter((item) => item.user_id === user.user_id);
+      }
       // console.log('media array data', media);
       setMediaArray(media.reverse());
     } catch (error) {
       // console.error('loadmedia error', error.message);
       Alert.alert('Error', 'While fetching media. Please try again');
+    } finally {
+      setRefresh(false);
     }
   };
 
@@ -249,15 +255,6 @@ const useMedia = () => {
     }
   };
 
-  const getOwnFile = async (userId) => {
-    try {
-      const resp = await doFetch(baseUrl + 'media/user/' + userId);
-      return resp;
-    } catch (e) {
-      throw new Error('getOwnFile error', e.message);
-    }
-  };
-
   const updateFile = async (fileId, fileInfo, token) => {
     const options = {
       method: 'PUT',
@@ -288,7 +285,7 @@ const useMedia = () => {
     }
   };
 
-  return {upload, getFile, getOwnFile, updateFile, deleteFile};
+  return {upload, getFile, updateFile, deleteFile};
 };
 
 const useLocation = () => {
@@ -364,6 +361,7 @@ const useLoadFavourites = () => {
   const [favouriteArray, setFavouriteArray] = useState([]);
   const {update} = useContext(MainContext);
   const {user} = useContext(MainContext);
+  const {setRefresh} = useContext(MainContext);
   const {getUser} = useUser();
 
   const getFavourites = async () => {
@@ -405,9 +403,11 @@ const useLoadFavourites = () => {
       console.log('filtered favourites', filtered);
 
       console.log('favourite files', favourites);
-      setFavouriteArray(filtered);
+      setFavouriteArray(filtered.reverse());
     } catch (error) {
       console.error('getFavourites error', error.message);
+    } finally {
+      setRefresh(false);
     }
   };
 

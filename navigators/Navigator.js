@@ -19,7 +19,6 @@ import Favourite from '../views/Favourite';
 import {colors} from '../utils/variables';
 import SplashScreen from '../components/SplashScreen';
 import UpdateJob from '../views/UpdateJob';
-import {Button} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,13 +55,29 @@ const TabScreen = () => {
     </Tab.Navigator>
   );
 };
+const getHeaderTitle = (route) => {
+  const {user} = useContext(MainContext);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
 
-const StackScreen = (navigation) => {
+  switch (routeName) {
+    case 'Home':
+      return user.employer ? 'Recommended employees' : 'Recommended jobs';
+    case 'Upload':
+      return user.employer
+        ? 'Publish a job advertisement'
+        : 'Publish an employee notice';
+    case 'Favourites':
+      return 'Favourites';
+    case 'Profile':
+      return 'My Profile';
+  }
+};
+const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
 
   return (
     <Stack.Navigator
-      screenOptions={{headerStyle: {backgroundColor: colors.accent}}}
+      screenOptions={{headerStyle: {backgroundColor: colors.primary}}}
     >
       {isLoggedIn ? (
         <>
@@ -70,11 +85,12 @@ const StackScreen = (navigation) => {
             name="Home"
             component={TabScreen}
             options={({route}) => ({
-              headerTitle: getFocusedRouteNameFromRoute(route),
-              headerRight: () =>
-                getFocusedRouteNameFromRoute(route) === 'Profile' && (
-                  <Button title="Toggle drawer" />
-                ),
+              headerTitle: getHeaderTitle(route),
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: '500',
+                fontSize: 20,
+              },
             })}
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
