@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Card, Divider, Image, Text} from 'react-native-elements';
+import {Divider, Image, Text} from 'react-native-elements';
 import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -203,7 +203,9 @@ const Upload = ({navigation}) => {
           }}
           onPress={pickImage}
         />
-        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
+
+        <Divider style={{height: 25}} />
+
         <View style={TextBoxStyles.box}>
           <ListButtonElement
             text="Choose image from library"
@@ -225,63 +227,29 @@ const Upload = ({navigation}) => {
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
-<<<<<<< HEAD
-          {user.employer ? (
-            <>
-              <Text
-                style={[
-                  {
-                    color: 'white',
-                    marginBottom: 30,
-                    textAlign: 'center',
-                    textDecorationLine: 'underline',
-                  },
-                  TextBoxStyles.title,
-                ]}
-                h4
-              >
-                Information
-              </Text>
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                Job title
-              </Text>
-              <FormTextInput
-                autoCapitalize="words"
-                placeholder="Job Title"
-                value={inputs.title}
-                onChangeText={(txt) => handleInputChange('title', txt)}
-                errorMessage={uploadErrors.title}
-              />
-
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                Summary of work tasks
-              </Text>
-              <FormTextInput
-                placeholder="Summary Of Work"
-                value={inputs.description}
-                onChangeText={(txt) => handleInputChange('description', txt)}
-                errorMessage={uploadErrors.description}
-              />
-
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-=======
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            {user.employer ? 'Job Title' : 'Your title'}
+          <Text
+            style={[
+              {
+                color: 'white',
+                marginBottom: 30,
+                textAlign: 'center',
+                textDecorationLine: 'underline',
+              },
+              TextBoxStyles.title,
+            ]}
+            h4
+          >
+            Information
+          </Text>
+          <Text
+            style={[
+              {color: 'white', fontSize: 13, fontWeight: 'bold'},
+              TextBoxStyles.title,
+            ]}
+          >
+            {user.employer
+              ? 'Job Title'
+              : 'What kind of job you are looking for?'}
           </Text>
           <FormTextInput
             placeholder={user.employer ? 'Job Title' : 'Your title'}
@@ -290,11 +258,18 @@ const Upload = ({navigation}) => {
             errorMessage={uploadErrors.title}
           />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Summary</Text>
+          <Text
+            style={[
+              {color: 'white', fontSize: 13, fontWeight: 'bold'},
+              TextBoxStyles.title,
+            ]}
+          >
+            {user.employer
+              ? 'Summary of work tasks'
+              : 'Summary of your skills and expertise'}
+          </Text>
           <FormTextInput
-            placeholder={
-              user.employer ? 'Summary Of Work' : 'Tell about yourself'
-            }
+            placeholder={user.employer ? 'Summary' : 'Tell about yourself'}
             value={inputs.description}
             onChangeText={(txt) =>
               handleInputChange('description', txt.trimStart())
@@ -304,8 +279,12 @@ const Upload = ({navigation}) => {
 
           {user.employer && (
             <>
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
->>>>>>> master
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 Payment Method
               </Text>
               <NiceDivider lineHeight={0} space={5} />
@@ -333,111 +312,23 @@ const Upload = ({navigation}) => {
               <FormTextInput
                 placeholder="0$"
                 value={inputs.wage}
-<<<<<<< HEAD
-                onChangeText={(txt) => handleInputChange('wage', txt)}
-              />
-
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                The location of the workplace
-              </Text>
-              <FormTextInput
-                placeholder="Search for location"
-                onChangeText={(txt) => {
-                  setSearchBool(!searchBool);
-                  setSearch(txt);
-                }}
-                value={search}
-              />
-              <LocationList
-                content={locationArray}
-                style={styles.locationList}
-                myOnPress={(loc) => setLocation(loc)}
-              />
-            </>
-          ) : (
-            <>
-              <Text
-                style={[
-                  {
-                    color: 'white',
-                    marginBottom: 30,
-                    textAlign: 'center',
-                    textDecorationLine: 'underline',
-                  },
-                  TextBoxStyles.title,
-                ]}
-                h4
-              >
-                Information
-              </Text>
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                what kind of jobs are you looking for?
-              </Text>
-              <FormTextInput
-                autoCapitalize="words"
-                placeholder="Job Title"
-                value={inputs.title}
-                onChangeText={(txt) => handleInputChange('title', txt)}
-                errorMessage={uploadErrors.title}
-              />
-
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                Summary of your skills and expertise
-              </Text>
-              <FormTextInput
-                placeholder="Summary Of Work"
-                value={inputs.description}
-                onChangeText={(txt) => handleInputChange('description', txt)}
-                errorMessage={uploadErrors.description}
-              />
-
-              <Text
-                style={[
-                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
-                  TextBoxStyles.title,
-                ]}
-              >
-                The location where you are looking for jobs
-              </Text>
-              <FormTextInput
-                placeholder="Search for location"
-                onChangeText={(txt) => {
-                  setSearchBool(!searchBool);
-                  setSearch(txt);
-                }}
-                value={search}
-              />
-              <LocationList
-                content={locationArray}
-                style={styles.locationList}
-                myOnPress={(loc) => setLocation(loc)}
-=======
                 onChangeText={(txt) =>
                   handleInputChange('wage', txt.trimStart())
                 }
                 keyboardType="numeric"
->>>>>>> master
               />
             </>
           )}
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Location
+          <Text
+            style={[
+              {color: 'white', fontSize: 13, fontWeight: 'bold'},
+              TextBoxStyles.title,
+            ]}
+          >
+            {user.employer
+              ? 'The location of the workplace'
+              : 'The location where you are looking for job'}
           </Text>
           <FormTextInput
             placeholder="Search for location"
