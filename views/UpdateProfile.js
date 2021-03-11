@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {CheckBox, Divider, Image} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {StyleSheet} from 'react-native';
 import useProfileForm from '../hooks/ProfileHooks';
 import * as ImagePicker from 'expo-image-picker';
 import {useUser} from '../hooks/ApiHooks';
@@ -20,7 +19,6 @@ import ListButtonElement from '../components/ListButtonElement';
 import {StatusBar} from 'expo-status-bar';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {appID, colors, uploadsUrl} from '../utils/variables';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import GlobalStyles from '../styles/GlobalStyles';
 import TextBoxStyles from '../styles/TextBoxStyles';
 import FormStyles from '../styles/FormStyles';
@@ -34,7 +32,7 @@ const UpdateProfile = ({navigation}) => {
   const {updateUser} = useUser();
   const {upload, getFile} = useMedia();
   const {postTag} = useTag();
-  const {inputs, handleInputChange, errors, setInputs} = useProfileForm();
+  const {inputs, handleInputChange, errors} = useProfileForm();
   const [file, setFile] = useState();
   const [employer, setEmployer] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,17 +95,17 @@ const UpdateProfile = ({navigation}) => {
 
     const otherData = {
       employer: employer,
-      full_name: inputs.full_name,
+      full_name: inputs.full_name.trim(),
     };
 
     const data = {
-      email: inputs.email,
+      email: inputs.email.trim(),
       full_name: JSON.stringify(otherData),
     };
 
     const newUser = {
       ...user,
-      email: inputs.email,
+      email: data.email,
       ...otherData,
     };
 
@@ -214,7 +212,7 @@ const UpdateProfile = ({navigation}) => {
             value={inputs.full_name}
             onChangeText={(text) => {
               handleInputChange('full_name', text);
-              console.log('errors', errors);
+              // console.log('errors', errors);
             }}
             errorMessage={errors.full_name}
           />
@@ -252,15 +250,6 @@ const UpdateProfile = ({navigation}) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  add: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#0C0F0A',
-    paddingStart: 3,
-    borderRadius: 5,
-  },
-});
 
 UpdateProfile.propTypes = {
   navigation: PropTypes.object,

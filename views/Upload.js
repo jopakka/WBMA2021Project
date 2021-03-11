@@ -28,14 +28,14 @@ const Upload = ({navigation}) => {
   const [image, setImage] = useState(null);
   const [filetype, setFiletype] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [payMethod, setPayMethod] = useState([]);
+  const [payMethod, setPayMethod] = useState('hourlyWage');
   const [searchBool, setSearchBool] = useState(false);
   const [search, setSearch] = useState('');
 
   const {update, setUpdate} = useContext(MainContext);
   const {user} = useContext(MainContext);
   const [locationArray, setLocationArray] = useState([]);
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState(null);
 
   const {upload} = useMedia();
   const {postTag} = useTag();
@@ -46,7 +46,7 @@ const Upload = ({navigation}) => {
     const formData = new FormData();
 
     const otherData = {
-      description: inputs.description,
+      description: inputs.description.trim(),
       place_name: location.place_name,
       coordinates: location.coordinates,
       text: location.text,
@@ -55,10 +55,10 @@ const Upload = ({navigation}) => {
 
     if (user.employer) {
       otherData.payMethod = payMethod;
-      otherData.wage = inputs.wage;
+      otherData.wage = inputs.wage.trim();
     }
 
-    formData.append('title', inputs.title);
+    formData.append('title', inputs.title.trim());
     formData.append('description', JSON.stringify(otherData));
 
     const filename = image.split('/').pop();
@@ -131,10 +131,6 @@ const Upload = ({navigation}) => {
     }
   }, [searchBool]);
 
-  useEffect(() => {
-    setSearch(location.place_name);
-  }, [location]);
-
   const pickImage = async (library) => {
     let result = null;
 
@@ -169,17 +165,19 @@ const Upload = ({navigation}) => {
 
   const doReset = () => {
     setImage(null);
+    setLocation(null);
+    setLocationArray([]);
+    setSearch('');
     reset();
   };
 
   const fetchLocation = async (txt) => {
     try {
-      const location = await searchLocation(txt);
-      setLocationArray(location);
+      const locationArray = await searchLocation(txt);
+      setLocationArray(locationArray);
     } catch (error) {
       console.error('fetch location error', error.message);
     }
-    return location;
   };
 
   return (
@@ -227,6 +225,7 @@ const Upload = ({navigation}) => {
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
+<<<<<<< HEAD
           {user.employer ? (
             <>
               <Text
@@ -280,6 +279,33 @@ const Upload = ({navigation}) => {
                   TextBoxStyles.title,
                 ]}
               >
+=======
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            {user.employer ? 'Job Title' : 'Your title'}
+          </Text>
+          <FormTextInput
+            placeholder={user.employer ? 'Job Title' : 'Your title'}
+            value={inputs.title}
+            onChangeText={(txt) => handleInputChange('title', txt.trimStart())}
+            errorMessage={uploadErrors.title}
+          />
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Summary</Text>
+          <FormTextInput
+            placeholder={
+              user.employer ? 'Summary Of Work' : 'Tell about yourself'
+            }
+            value={inputs.description}
+            onChangeText={(txt) =>
+              handleInputChange('description', txt.trimStart())
+            }
+            errorMessage={uploadErrors.description}
+          />
+
+          {user.employer && (
+            <>
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+>>>>>>> master
                 Payment Method
               </Text>
               <NiceDivider lineHeight={0} space={5} />
@@ -305,8 +331,9 @@ const Upload = ({navigation}) => {
                 Payment
               </Text>
               <FormTextInput
-                placeholder="0€"
+                placeholder="0$"
                 value={inputs.wage}
+<<<<<<< HEAD
                 onChangeText={(txt) => handleInputChange('wage', txt)}
               />
 
@@ -399,32 +426,50 @@ const Upload = ({navigation}) => {
                 content={locationArray}
                 style={styles.locationList}
                 myOnPress={(loc) => setLocation(loc)}
+=======
+                onChangeText={(txt) =>
+                  handleInputChange('wage', txt.trimStart())
+                }
+                keyboardType="numeric"
+>>>>>>> master
               />
             </>
           )}
+
+          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+            Location
+          </Text>
+          <FormTextInput
+            placeholder="Search for location"
+            onChangeText={(txt) => {
+              setSearchBool(!searchBool);
+              setSearch(txt);
+            }}
+            value={search}
+            errorMessage={
+              'Selected Location: ' +
+              (location !== null ? location.place_name : '')
+            }
+            containerStyle={{marginBottom: 20}}
+          />
+          <LocationList
+            content={locationArray}
+            style={styles.locationList}
+            myOnPress={(loc) => setLocation(loc)}
+          />
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
 
-        {/* {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
-        <Button
-          title="Upload file"
-          onPress={doUpload}
-          disabled={
-            uploadErrors.title !== null ||
-            uploadErrors.description !== null ||
-            image === null
-          }
-        /> */}
-
         <View style={TextBoxStyles.box}>
           <ListButtonElement
-            text="Upload job offer"
+            text={user.employer ? 'Upload job offer' : 'Upload employee notice'}
             onPress={doUpload}
             disabled={
-              uploadErrors.title !== null ||
+              (uploadErrors.title !== null && user.employer) ||
               uploadErrors.description !== null ||
-              image === null
+              image === null ||
+              location === null
             }
           />
           <NiceDivider

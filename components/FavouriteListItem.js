@@ -30,19 +30,18 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
         />
         <RNEListItem.Content>
           <RNEListItem.Title h4>
-            {singleMedia.payMethod === 'contractSalary' ? (
+            <Text>{singleMedia.title}</Text>
+            {singleMedia.job && (
               <>
-                <Text>{singleMedia.title}</Text>
-                <Text style={{fontSize: 18, color: '#7C7C79'}}>
-                  {!user.employer ? ` (${singleMedia.wage}$)` : ''}
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text>{singleMedia.title}</Text>
-                <Text style={{fontSize: 18, color: '#7C7C79'}}>
-                  {!user.employer ? ` (${singleMedia.wage}$/h)` : ''}
-                </Text>
+                {singleMedia.payMethod === 'contractSalary' ? (
+                  <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                    {!user.employer ? ` (${singleMedia.wage}$)` : ''}
+                  </Text>
+                ) : (
+                  <Text style={{fontSize: 18, color: '#7C7C79'}}>
+                    {!user.employer ? ` (${singleMedia.wage}$/h)` : ''}
+                  </Text>
+                )}
               </>
             )}
           </RNEListItem.Title>
@@ -68,7 +67,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
                 const favourite = await deleteFavourite(singleMedia.file_id);
                 singleMedia.favourite = false;
                 setIconStatus(false);
-                console.log('favourite deleted', favourite);
+                // console.log('favourite deleted', favourite);
               } catch (error) {
                 console.error(error.message);
               }
@@ -79,7 +78,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
                 });
                 singleMedia.favourite = true;
                 setIconStatus(true);
-                console.log('favourite posted', favourite);
+                // console.log('favourite posted', favourite);
               } catch (error) {
                 console.error(error.message);
               }

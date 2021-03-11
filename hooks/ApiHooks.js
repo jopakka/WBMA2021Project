@@ -122,7 +122,7 @@ const useLogin = () => {
 
 const useUser = () => {
   const postRegister = async (inputs) => {
-    console.log('trying to create user', inputs);
+    // console.log('trying to create user', inputs);
     const fetchOptions = {
       method: 'POST',
       headers: {
@@ -132,7 +132,7 @@ const useUser = () => {
     };
     try {
       const json = await doFetch(baseUrl + 'users', fetchOptions);
-      console.log('register resp', json);
+      // console.log('register resp', json);
       return json;
     } catch (e) {
       throw new Error(e.message);
@@ -242,7 +242,7 @@ const useMedia = () => {
       data: fd,
       url: baseUrl + 'media',
     };
-    console.log('apihooks upload', options);
+    // console.log('apihooks upload', options);
     try {
       const response = await axios(options);
       return response.data;
@@ -387,14 +387,14 @@ const useLoadFavourites = () => {
 
           const fileTags = await doFetch(baseUrl + 'tags/file/' + item.file_id);
           fileJson.tags = fileTags[0];
-          console.log('tags', fileJson.tags);
+          // console.log('tags', fileJson.tags);
 
           let userinfo = await getUser(fileJson.user_id, userToken);
           userinfo = parse(userinfo, 'full_name');
-          console.log('userinfo', userinfo);
+          // console.log('userinfo', userinfo);
           fileJson.userinfo = userinfo;
           fileJson.favourite = true;
-          console.log('fileJson', fileJson);
+          // console.log('fileJson', fileJson);
 
           return fileJson;
         })
@@ -405,9 +405,9 @@ const useLoadFavourites = () => {
           ? e.tags.tag === appID + '_' + employeeTAg
           : e.tags.tag === appID + '_' + employerTAg;
       });
-      console.log('filtered favourites', filtered);
+      // console.log('filtered favourites', filtered);
 
-      console.log('favourite files', favourites);
+      // console.log('favourite files', favourites);
       setFavouriteArray(filtered.reverse());
     } catch (error) {
       console.error('getFavourites error', error.message);
