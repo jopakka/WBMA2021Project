@@ -29,7 +29,7 @@ const doFetch = async (url, options = {}) => {
   }
 };
 
-const useLoadMedia = () => {
+const useLoadMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
   const {user} = useContext(MainContext);
@@ -52,7 +52,7 @@ const useLoadMedia = () => {
       );
       const favList = await doFetch(baseUrl + 'favourites', options);
 
-      const media = await Promise.all(
+      let media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
@@ -71,6 +71,9 @@ const useLoadMedia = () => {
           return fileJson;
         })
       );
+      if (myFilesOnly) {
+        media = media.filter((item) => item.user_id === user.user_id);
+      }
       // console.log('media array data', media);
       setMediaArray(media.reverse());
     } catch (error) {

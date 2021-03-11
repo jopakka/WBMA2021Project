@@ -74,6 +74,7 @@ const getHeaderTitle = (route) => {
 };
 const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -130,5 +131,4 @@ const Navigator = () => {
     </NavigationContainer>
   );
 };
-
 export default Navigator;

@@ -12,6 +12,7 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import {colors} from '../utils/variables';
 import {useEffect} from 'react';
 import LoadingModal from '../components/LoadingModal';
+import List from '../components/List';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
@@ -42,27 +43,31 @@ const Profile = ({navigation}) => {
     <>
       <LoadingModal visible={loading} />
       <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
-        <Avatar
-          title={user.full_name[0]}
-          source={{uri: user.avatar}}
-          containerStyle={GlobalStyles.profileImage}
-          rounded
-        />
-        <Divider style={{height: 10}} />
-
-        <Text h4 style={styles.name}>
-          {user.full_name}
-        </Text>
-        <Divider style={{height: 25}} />
-
-        <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Username
-          </Text>
-          <Text style={TextBoxStyles.text}>{user.username}</Text>
-          <NiceDivider />
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
-          <Text style={TextBoxStyles.text}>{user.email}</Text>
+        <View
+          style={[
+            TextBoxStyles.box,
+            TextBoxStyles.paddingBox,
+            {flex: 1, flexDirection: 'row'},
+          ]}
+        >
+          <Avatar
+            title={user.full_name[0]}
+            source={{uri: user.avatar}}
+            containerStyle={GlobalStyles.profileImage}
+            rounded
+          />
+          <View>
+            <Text h4 style={styles.name}>
+              {user.full_name}
+            </Text>
+            <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              Username
+            </Text>
+            <Text style={TextBoxStyles.text}>{user.username}</Text>
+            <NiceDivider />
+            <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Email</Text>
+            <Text style={TextBoxStyles.text}>{user.email}</Text>
+          </View>
         </View>
 
         <NiceDivider color="#FFF0" lineHeight={0} />
@@ -78,7 +83,13 @@ const Profile = ({navigation}) => {
           />
           <ListButtonElement text="Logout" onPress={doLogout} />
         </View>
-
+        <NiceDivider color="#FFF0" lineHeight={0} />
+        <View style={TextBoxStyles.box}>
+          <Text h1 style={{textAlign: 'center', color: 'white'}}>
+            Your posts
+          </Text>
+          <List navigation={navigation} myFilesOnly={true} />
+        </View>
         <StatusBar style="light" backgroundColor={colors.statusbar} />
       </ScrollView>
     </>
@@ -129,6 +140,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
   },
 });
 

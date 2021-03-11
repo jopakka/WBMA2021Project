@@ -1,12 +1,12 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {FlatList} from 'react-native';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
-const List = ({navigation, location = {}}) => {
-  const mediaArray = useLoadMedia();
+const List = ({navigation, location = {}, myFilesOnly}) => {
+  const mediaArray = useLoadMedia(myFilesOnly);
 
   const {update, setUpdate} = useContext(MainContext);
   const {refresh, setRefresh} = useContext(MainContext);
@@ -44,5 +44,6 @@ const List = ({navigation, location = {}}) => {
 List.propTypes = {
   navigation: PropTypes.object,
   location: PropTypes.object,
+  myFilesOnly: PropTypes.bool,
 };
 export default React.memo(List);
