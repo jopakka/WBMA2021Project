@@ -17,6 +17,7 @@ import {Text} from 'react-native-elements';
 import GlobalStyles from '../styles/GlobalStyles';
 import {StatusBar} from 'expo-status-bar';
 import {colors} from '../utils/variables';
+import {SafeAreaView} from 'react-native';
 
 const Login = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
@@ -50,22 +51,27 @@ const Login = ({navigation}) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
-          <View style={GlobalStyles.appTitleContainer}>
-            <Text style={GlobalStyles.appTitle}>Officium</Text>
-          </View>
-          {formToggle ? (
-            <LoginForm navigation={navigation} formToggle={formToggleAction} />
-          ) : (
-            <RegisterForm
-              navigation={navigation}
-              formToggle={formToggleAction}
-            />
-          )}
-        </ScrollView>
-      </TouchableWithoutFeedback>
-      <StatusBar style="light" backgroundColor={colors.statusbar} />
+      <SafeAreaView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={GlobalStyles.scrollView}>
+            <View style={GlobalStyles.appTitleContainer}>
+              <Text style={GlobalStyles.appTitle}>Officium</Text>
+            </View>
+            {formToggle ? (
+              <LoginForm
+                navigation={navigation}
+                formToggle={formToggleAction}
+              />
+            ) : (
+              <RegisterForm
+                navigation={navigation}
+                formToggle={formToggleAction}
+              />
+            )}
+          </ScrollView>
+        </TouchableWithoutFeedback>
+        <StatusBar style="light" backgroundColor={colors.statusbar} />
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
