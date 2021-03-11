@@ -8,7 +8,13 @@ const CommentList = ({comments = []}) => {
     <>
       {comments.length !== 0 ? (
         comments.map((element, index) => {
-          return <CommentListItem key={index} singleComment={element} />;
+          return (
+            <CommentListItem
+              key={index}
+              singleComment={element}
+              bottomDivider={index !== comments.length - 1}
+            />
+          );
         })
       ) : (
         <Text>No comments</Text>
