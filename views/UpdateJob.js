@@ -40,9 +40,9 @@ const UpdateJob = ({navigation, route}) => {
 
   const doUpdate = async () => {
     const otherData = {
-      description: inputs.description.trimStart(),
+      description: inputs.description.trim(),
       payMethod: payMethod,
-      wage: inputs.wage.trimStart(),
+      wage: inputs.wage.trim(),
       place_name: selectedLocation.place_name,
       coordinates: selectedLocation.coordinates,
       text: selectedLocation.text,
@@ -50,7 +50,7 @@ const UpdateJob = ({navigation, route}) => {
 
     const data = {
       description: JSON.stringify(otherData),
-      title: inputs.title.trimStart(),
+      title: inputs.title.trim(),
     };
     // console.log('data', data);
     try {
@@ -176,6 +176,7 @@ const UpdateJob = ({navigation, route}) => {
                 onChangeText={(txt) =>
                   handleInputChange('wage', txt.trimStart())
                 }
+                keyboardType="numeric"
               />
             </>
           )}

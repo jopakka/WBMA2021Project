@@ -46,7 +46,7 @@ const Upload = ({navigation}) => {
     const formData = new FormData();
 
     const otherData = {
-      description: inputs.description.trimStart(),
+      description: inputs.description.trim(),
       place_name: location.place_name,
       coordinates: location.coordinates,
       text: location.text,
@@ -55,13 +55,10 @@ const Upload = ({navigation}) => {
 
     if (user.employer) {
       otherData.payMethod = payMethod;
-      otherData.wage = inputs.wage.trimStart();
+      otherData.wage = inputs.wage.trim();
     }
 
-    formData.append(
-      'title',
-      user.employer ? inputs.title.trimStart() : user.full_name
-    );
+    formData.append('title', inputs.title.trim());
     formData.append('description', JSON.stringify(otherData));
 
     const filename = image.split('/').pop();
@@ -271,6 +268,7 @@ const Upload = ({navigation}) => {
                 onChangeText={(txt) =>
                   handleInputChange('wage', txt.trimStart())
                 }
+                keyboardType="numeric"
               />
             </>
           )}

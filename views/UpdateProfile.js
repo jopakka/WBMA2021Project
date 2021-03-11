@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {CheckBox, Divider, Image} from 'react-native-elements';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {StyleSheet} from 'react-native';
 import useProfileForm from '../hooks/ProfileHooks';
 import * as ImagePicker from 'expo-image-picker';
 import {useUser} from '../hooks/ApiHooks';
@@ -96,11 +95,11 @@ const UpdateProfile = ({navigation}) => {
 
     const otherData = {
       employer: employer,
-      full_name: inputs.full_name.trimStart(),
+      full_name: inputs.full_name.trim(),
     };
 
     const data = {
-      email: inputs.email.trimStart(),
+      email: inputs.email.trim(),
       full_name: JSON.stringify(otherData),
     };
 
