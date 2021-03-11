@@ -1,12 +1,14 @@
-import React, {useContext, useState} from 'react';
-import {FlatList} from 'react-native';
+import React, {useContext} from 'react';
+import {FlatList, Text} from 'react-native';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
+import TextBoxStyles from '../styles/TextBoxStyles';
+import {View} from 'react-native';
 
-const List = ({navigation, location = {}}) => {
-  const mediaArray = useLoadMedia();
+const List = ({navigation, location = {}, myFilesOnly}) => {
+  const mediaArray = useLoadMedia(myFilesOnly);
 
   const {update, setUpdate} = useContext(MainContext);
   const {refresh, setRefresh} = useContext(MainContext);
@@ -32,6 +34,13 @@ const List = ({navigation, location = {}}) => {
         setRefresh(true);
         setUpdate(!update);
       }}
+      ListEmptyComponent={
+        <View>
+          <Text style={[TextBoxStyles.text, {margin: 20}]}>
+            This place seems to be empty, how about posting something
+          </Text>
+        </View>
+      }
       refreshing={refresh}
       data={showSearch()}
       keyExtractor={(item, index) => index.toString()}
@@ -44,5 +53,6 @@ const List = ({navigation, location = {}}) => {
 List.propTypes = {
   navigation: PropTypes.object,
   location: PropTypes.object,
+  myFilesOnly: PropTypes.bool,
 };
 export default React.memo(List);

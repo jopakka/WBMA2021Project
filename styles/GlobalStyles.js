@@ -8,13 +8,16 @@ export default StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   scrollView: {
-    padding: 20,
+    paddingVertical: 10,
     alignItems: 'center',
   },
   profileImage: {
-    width: 200,
-    height: 200,
+    width: '30%',
+    height: undefined,
+    aspectRatio: 1,
     justifyContent: 'flex-end',
+    alignSelf: 'center',
+    marginRight: 20,
   },
   loginTitle: {
     fontSize: 30,
