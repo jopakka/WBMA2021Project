@@ -5,6 +5,7 @@ import ListItem from './ListItem';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import TextBoxStyles from '../styles/TextBoxStyles';
+import {View} from 'react-native';
 
 const List = ({navigation, location = {}, myFilesOnly}) => {
   const mediaArray = useLoadMedia(myFilesOnly);
@@ -34,9 +35,11 @@ const List = ({navigation, location = {}, myFilesOnly}) => {
         setUpdate(!update);
       }}
       ListEmptyComponent={
-        <Text style={[TextBoxStyles.text, {margin: 20}]}>
-          This place seems to be empty, how about posting something
-        </Text>
+        <View>
+          <Text style={[TextBoxStyles.text, {margin: 20}]}>
+            This place seems to be empty, how about posting something
+          </Text>
+        </View>
       }
       refreshing={refresh}
       data={showSearch()}
