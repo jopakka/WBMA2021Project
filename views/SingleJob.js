@@ -146,23 +146,27 @@ const SingleJob = ({route, navigation}) => {
           </RNEListItem.Content>
         </RNEListItem>
 
-        <NiceDivider color="#FFF0" />
+        {file.job && (
+          <>
+            <NiceDivider color="#FFF0" />
 
-        <RNEListItem
-          bottomDivider
-          containerStyle={{justifyContent: 'space-between'}}
-        >
-          <Text style={[styles.desc, styles.descTitle]}>Salary Type</Text>
-          <Text style={styles.desc}>
-            {file.payMethod === 'contractSalary' ? 'Contract' : 'Hourly'}
-          </Text>
-        </RNEListItem>
-        <RNEListItem containerStyle={{justifyContent: 'space-between'}}>
-          <Text style={[styles.desc, styles.descTitle]}>Salary</Text>
-          <Text style={styles.desc}>
-            {file.wage} {file.payMethod === 'contractSalary' ? '$' : '$/h'}
-          </Text>
-        </RNEListItem>
+            <RNEListItem
+              bottomDivider
+              containerStyle={{justifyContent: 'space-between'}}
+            >
+              <Text style={[styles.desc, styles.descTitle]}>Salary Type</Text>
+              <Text style={styles.desc}>
+                {file.payMethod === 'contractSalary' ? 'Contract' : 'Hourly'}
+              </Text>
+            </RNEListItem>
+            <RNEListItem containerStyle={{justifyContent: 'space-between'}}>
+              <Text style={[styles.desc, styles.descTitle]}>Salary</Text>
+              <Text style={styles.desc}>
+                {file.wage} {file.payMethod === 'contractSalary' ? '$' : '$/h'}
+              </Text>
+            </RNEListItem>
+          </>
+        )}
 
         <NiceDivider color="#FFF0" />
 
@@ -209,23 +213,29 @@ const SingleJob = ({route, navigation}) => {
             </>
           ) : (
             <>
+              {file.job && (
+                <>
+                  <ListButtonElement
+                    text="Show Driving Directions"
+                    onPress={() => {
+                      openMap({
+                        end: file.place_name,
+                      });
+                    }}
+                  />
+                  <NiceDivider
+                    space={0}
+                    style={{
+                      marginStart: 20,
+                      marginEnd: 20,
+                    }}
+                  />
+                </>
+              )}
               <ListButtonElement
-                text="Show Driving Directions"
-                onPress={() => {
-                  openMap({
-                    end: file.place_name,
-                  });
-                }}
-              />
-              <NiceDivider
-                space={0}
-                style={{
-                  marginStart: 20,
-                  marginEnd: 20,
-                }}
-              />
-              <ListButtonElement
-                text="Send email to employer"
+                text={
+                  file.job ? 'Send email to employer' : 'Send email to employee'
+                }
                 onPress={contactEmp}
               />
             </>
