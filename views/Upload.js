@@ -223,7 +223,7 @@ const Upload = ({navigation}) => {
           {user.employer ? (
             <>
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Job Title
+                Job title
               </Text>
               <FormTextInput
                 autoCapitalize="words"
@@ -234,7 +234,7 @@ const Upload = ({navigation}) => {
               />
 
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Summary
+                Summary of work assignments
               </Text>
               <FormTextInput
                 placeholder="Summary Of Work"
@@ -270,7 +270,7 @@ const Upload = ({navigation}) => {
               />
 
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Location
+                The location of the workplace
               </Text>
               <FormTextInput
                 placeholder="Search for location"
@@ -289,7 +289,7 @@ const Upload = ({navigation}) => {
           ) : (
             <>
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Job Title
+                what kind of jobs are you looking for?
               </Text>
               <FormTextInput
                 autoCapitalize="words"
@@ -300,7 +300,7 @@ const Upload = ({navigation}) => {
               />
 
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Summary
+                Summary of your skills and expertise
               </Text>
               <FormTextInput
                 placeholder="Summary Of Work"
@@ -310,7 +310,7 @@ const Upload = ({navigation}) => {
               />
 
               <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Location
+                The location where you are looking for jobs
               </Text>
               <FormTextInput
                 placeholder="Search for location"

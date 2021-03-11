@@ -43,7 +43,7 @@ const Home = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SearchBar
-        placeholder="Search for location"
+        placeholder="Search job by location"
         onChangeText={(text) => {
           setSearch(text);
           setSearchBool(!searchBool);
@@ -69,7 +69,7 @@ const Home = ({navigation}) => {
       />
       <List navigation={navigation} location={location} />
       <View
-        style={{flex: 1, position: 'absolute', left: 0, top: 66, zIndex: 100}}
+        style={{flex: 1, position: 'absolute', left: 0, top: 59, zIndex: 100}}
       >
         <LocationList
           content={locationArray}
