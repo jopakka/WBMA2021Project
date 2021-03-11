@@ -43,13 +43,20 @@ const useLoadMedia = (myFilesOnly) => {
     };
     // console.log('options', options);
     try {
-      const listJson = await doFetch(
-        baseUrl +
-          'tags/' +
-          appID +
-          '_' +
-          (user.employer ? employeeTAg : employerTAg)
-      );
+      let listJson;
+
+      if (!myFilesOnly) {
+        listJson = await doFetch(
+          baseUrl +
+            'tags/' +
+            appID +
+            '_' +
+            (user.employer ? employeeTAg : employerTAg)
+        );
+      } else {
+        listJson = await doFetch(baseUrl + 'media/user', options);
+      }
+
       const favList = await doFetch(baseUrl + 'favourites', options);
 
       let media = await Promise.all(
@@ -71,9 +78,7 @@ const useLoadMedia = (myFilesOnly) => {
           return fileJson;
         })
       );
-      if (myFilesOnly) {
-        media = media.filter((item) => item.user_id === user.user_id);
-      }
+      media = media.filter((item) => item.title !== 'avatar_' + user.user_id);
       // console.log('media array data', media);
       setMediaArray(media.reverse());
     } catch (error) {

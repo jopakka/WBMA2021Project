@@ -58,7 +58,7 @@ const Profile = ({navigation}) => {
             ratio
           />
           <View>
-            <Text h4 style={styles.name}>
+            <Text h4 style={[styles.name, {marginBottom: 10}]}>
               {user.full_name}
             </Text>
             <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
@@ -86,7 +86,18 @@ const Profile = ({navigation}) => {
         </View>
         <NiceDivider color="#FFF0" lineHeight={0} />
         <View style={TextBoxStyles.box}>
-          <Text h1 style={{textAlign: 'center', color: 'white'}}>
+          <Text
+            h4
+            style={[
+              styles.name,
+              {
+                textAlign: 'center',
+                color: 'white',
+                marginTop: 20,
+                marginBottom: 20,
+              },
+            ]}
+          >
             Your posts
           </Text>
           <List navigation={navigation} myFilesOnly={true} />
