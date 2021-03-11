@@ -2,9 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Linking, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  Card,
-  Divider,
   Input,
   Text,
   ListItem as RNEListItem,
@@ -62,7 +59,7 @@ const SingleJob = ({route, navigation}) => {
   };
 
   const doSendComment = async () => {
-    const tempComment = comment.trim();
+    const tempComment = comment.trimStart();
     if (tempComment.length === 0) return;
     try {
       const response = await postComment(file.file_id, tempComment);
@@ -75,7 +72,7 @@ const SingleJob = ({route, navigation}) => {
   };
 
   const askDelete = () => {
-    Alert.alert('Are you sure?', 'Do you want to delete this job offer?', [
+    Alert.alert('Are you sure?', 'Do you want to delete this?', [
       {text: 'Cancel'},
       {text: 'Delete', onPress: doDelete},
     ]);
@@ -197,7 +194,7 @@ const SingleJob = ({route, navigation}) => {
           {user.user_id === file.user_id ? (
             <>
               <ListButtonElement
-                text="Update Job Offer"
+                text={file.job ? 'Update Job Offer' : 'Update employee notice'}
                 onPress={() => {
                   navigation.push('Update Job', {file});
                 }}
@@ -209,7 +206,10 @@ const SingleJob = ({route, navigation}) => {
                   marginEnd: 20,
                 }}
               />
-              <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
+              <ListButtonElement
+                text={file.job ? 'Delete Job Offer' : 'Delete employee notice'}
+                onPress={askDelete}
+              />
             </>
           ) : (
             <>
