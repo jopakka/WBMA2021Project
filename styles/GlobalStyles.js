@@ -8,7 +8,7 @@ export default StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   scrollView: {
-    padding: 20,
+    paddingVertical: 10,
     alignItems: 'center',
   },
   profileImage: {

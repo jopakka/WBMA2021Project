@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import {Avatar, ListItem as RNEListItem} from 'react-native-elements';
 import moment from 'moment';
 import {MainContext} from '../contexts/MainContext';
-import {Alert} from 'react-native';
+import {Alert, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native';
 import {useComments} from '../hooks/ApiHooks';
 
-const CommentListItem = ({singleComment}) => {
+const CommentListItem = ({singleComment, bottomDivider}) => {
   const {user, updateComments, setUpdateComments} = useContext(MainContext);
   const {deleteComment} = useComments();
 
@@ -40,16 +40,20 @@ const CommentListItem = ({singleComment}) => {
   }, []);
 
   return (
-    <RNEListItem>
+    <RNEListItem bottomDivider={bottomDivider} style={{marginBottom: 2}}>
       <Avatar source={{uri: singleComment.user.avatar}} rounded size="medium" />
       <RNEListItem.Content>
         <RNEListItem.Title>{singleComment.comment}</RNEListItem.Title>
-        <RNEListItem.Subtitle>
-          Posted by: {singleComment.user.full_name}
-        </RNEListItem.Subtitle>
-        <RNEListItem.Subtitle>
-          Posted at: {moment(singleComment.time_added).format('D.M.Y h:mm a')}
-        </RNEListItem.Subtitle>
+        <View style={{flexDirection: 'row', paddingTop: 5}}>
+          <RNEListItem.Subtitle style={{flex: 1}}>
+            <Ionicons name={'person-outline'} />
+            {` ${singleComment.user.full_name}`}
+          </RNEListItem.Subtitle>
+          <RNEListItem.Subtitle style={{flex: 1}}>
+            <Ionicons name={'time-outline'} />
+            {` ${moment(singleComment.time_added).format('MMM D, h:mm')}`}
+          </RNEListItem.Subtitle>
+        </View>
       </RNEListItem.Content>
       {user.user_id === singleComment.user_id && (
         <TouchableOpacity onPress={doAskDelete}>
@@ -62,6 +66,7 @@ const CommentListItem = ({singleComment}) => {
 
 CommentListItem.propTypes = {
   singleComment: PropTypes.object,
+  bottomDivider: PropTypes.bool,
 };
 
 export default CommentListItem;

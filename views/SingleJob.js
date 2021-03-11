@@ -1,7 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Linking, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Card, Divider, Input, Text} from 'react-native-elements';
+import {
+  Button,
+  Card,
+  Divider,
+  Input,
+  Text,
+  ListItem as RNEListItem,
+  Avatar,
+} from 'react-native-elements';
 import {uploadsUrl} from '../utils/variables';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUser, useComments, useMedia} from '../hooks/ApiHooks';
@@ -14,6 +22,7 @@ import ListButtonElement from '../components/ListButtonElement';
 import GlobalStyles from '../styles/GlobalStyles';
 import NiceDivider from '../components/NiceDivider';
 import openMap from 'react-native-open-maps';
+import moment from 'moment';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -111,66 +120,127 @@ const SingleJob = ({route, navigation}) => {
           {alignItems: 'stretch'},
         ]}
       >
-        <Card>
-          <Card.Title h3> {file.title}</Card.Title>
-          <Card.Divider />
-          <View style={styles.jobInfo}>
-            <Card.Image
-              source={{uri: uploadsUrl + file.filename}}
-              style={styles.img}
-              resizeMode="contain"
-            />
-            <View>
-              <Text h3>Job poster</Text>
-              <Text h4>{owner.full_name}</Text>
+        <RNEListItem containerStyle={{paddingVertical: 20}}>
+          <Avatar
+            size="large"
+            rounded
+            source={{uri: uploadsUrl + file.thumbnails.w160}}
+          />
+          <RNEListItem.Content>
+            <RNEListItem.Title h4>
+              <Text>{file.title}</Text>
+            </RNEListItem.Title>
+            <RNEListItem.Subtitle>
+              {file.userinfo.full_name}
+            </RNEListItem.Subtitle>
+            <View style={{flexDirection: 'row', paddingTop: 5}}>
+              <RNEListItem.Subtitle style={{flex: 1}}>
+                <Ionicons name={'location-outline'} />
+                {` ${file.text}`}
+              </RNEListItem.Subtitle>
+              <RNEListItem.Subtitle style={{flex: 1}}>
+                <Ionicons name={'time-outline'} />
+                {` ${moment(file.time_added).format('MMM D, h:mm')}`}
+              </RNEListItem.Subtitle>
             </View>
-          </View>
-          <Text>Job description</Text>
-          <Text style={styles.userInfo}>{file.description} </Text>
-          <Card.Divider />
-          <Button
-            title={file.text}
-            onPress={() => {
-              openMap({
-                end: file.place_name,
-              });
-            }}
-          ></Button>
-          <Card.Divider />
-          {file.payMethod === 'hourlyWage' && (
-            <Text style={styles.userInfo}>Hourly pay: {file.wage}€</Text>
-          )}
-          {file.payMethod === 'contractSalary' && (
-            <Text style={styles.userInfo}>contract pay: {file.wage}€</Text>
-          )}
-          <Button title={'Contact employer'} onPress={contactEmp}></Button>
-        </Card>
+          </RNEListItem.Content>
+        </RNEListItem>
 
-        <Card>
-          <Card.Title>Comments</Card.Title>
-          <Card.Divider />
-          <CommentList comments={comments} />
-        </Card>
+        {file.job && (
+          <>
+            <NiceDivider color="#FFF0" />
 
-        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
-        {user.user_id === file.user_id && (
-          <View style={styles.box}>
-            <ListButtonElement
-              text="Update Job Offer"
-              onPress={() => {
-                navigation.push('Update Job', {file});
-              }}
-            />
-            <NiceDivider
-              space={0}
-              style={{
-                marginStart: 20,
-                marginEnd: 20,
-              }}
-            />
-            <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
-          </View>
+            <RNEListItem
+              bottomDivider
+              containerStyle={{justifyContent: 'space-between'}}
+            >
+              <Text style={[styles.desc, styles.descTitle]}>Salary Type</Text>
+              <Text style={styles.desc}>
+                {file.payMethod === 'contractSalary' ? 'Contract' : 'Hourly'}
+              </Text>
+            </RNEListItem>
+            <RNEListItem containerStyle={{justifyContent: 'space-between'}}>
+              <Text style={[styles.desc, styles.descTitle]}>Salary</Text>
+              <Text style={styles.desc}>
+                {file.wage} {file.payMethod === 'contractSalary' ? '$' : '$/h'}
+              </Text>
+            </RNEListItem>
+          </>
         )}
+
+        <NiceDivider color="#FFF0" />
+
+        <RNEListItem
+          containerStyle={{flexDirection: 'column', alignItems: 'flex-start'}}
+        >
+          <Text style={[styles.desc, styles.descTitle, styles.descTitleBottom]}>
+            Summary
+          </Text>
+          <Text style={styles.desc}>{file.description}</Text>
+        </RNEListItem>
+
+        <NiceDivider color="#FFF0" />
+
+        <RNEListItem
+          containerStyle={{
+            flexDirection: 'column',
+            alignItems: 'stretch',
+          }}
+        >
+          <Text style={[styles.desc, styles.descTitle]}>Comments</Text>
+          <CommentList comments={comments} />
+        </RNEListItem>
+
+        <NiceDivider color="#FFF0" />
+
+        <View style={styles.box}>
+          {user.user_id === file.user_id ? (
+            <>
+              <ListButtonElement
+                text="Update Job Offer"
+                onPress={() => {
+                  navigation.push('Update Job', {file});
+                }}
+              />
+              <NiceDivider
+                space={0}
+                style={{
+                  marginStart: 20,
+                  marginEnd: 20,
+                }}
+              />
+              <ListButtonElement text="Delete Job Offer" onPress={askDelete} />
+            </>
+          ) : (
+            <>
+              {file.job && (
+                <>
+                  <ListButtonElement
+                    text="Show Driving Directions"
+                    onPress={() => {
+                      openMap({
+                        end: file.place_name,
+                      });
+                    }}
+                  />
+                  <NiceDivider
+                    space={0}
+                    style={{
+                      marginStart: 20,
+                      marginEnd: 20,
+                    }}
+                  />
+                </>
+              )}
+              <ListButtonElement
+                text={
+                  file.job ? 'Send email to employer' : 'Send email to employee'
+                }
+                onPress={contactEmp}
+              />
+            </>
+          )}
+        </View>
       </ScrollView>
       {user !== null && (
         <Input
@@ -191,30 +261,14 @@ const SingleJob = ({route, navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  jobInfo: {
-    flexDirection: 'row',
-    marginBottom: 15,
-    justifyContent: 'center',
-  },
-  userDetails: {
-    flexGrow: 1,
-  },
-  img: {
-    height: 100,
-    width: 100,
-    aspectRatio: 1,
-    borderRadius: 40,
-    marginEnd: 10,
-  },
   desc: {
+    fontSize: 16,
+  },
+  descTitle: {
     fontWeight: 'bold',
   },
-  userInfo: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-  contact: {
-    height: 30,
+  descTitleBottom: {
+    marginBottom: 8,
   },
   box: {
     width: '100%',
