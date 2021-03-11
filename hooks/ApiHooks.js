@@ -29,7 +29,7 @@ const doFetch = async (url, options = {}) => {
   }
 };
 
-const useLoadMedia = () => {
+const useLoadMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
   const {user} = useContext(MainContext);
@@ -43,16 +43,23 @@ const useLoadMedia = () => {
     };
     // console.log('options', options);
     try {
-      const listJson = await doFetch(
-        baseUrl +
-          'tags/' +
-          appID +
-          '_' +
-          (user.employer ? employeeTAg : employerTAg)
-      );
+      let listJson;
+
+      if (!myFilesOnly) {
+        listJson = await doFetch(
+          baseUrl +
+            'tags/' +
+            appID +
+            '_' +
+            (user.employer ? employeeTAg : employerTAg)
+        );
+      } else {
+        listJson = await doFetch(baseUrl + 'media/user', options);
+      }
+
       const favList = await doFetch(baseUrl + 'favourites', options);
 
-      const media = await Promise.all(
+      let media = await Promise.all(
         listJson.map(async (item) => {
           let fileJson = await doFetch(baseUrl + 'media/' + item.file_id);
           fileJson = parse(fileJson, 'description');
@@ -71,6 +78,7 @@ const useLoadMedia = () => {
           return fileJson;
         })
       );
+      media = media.filter((item) => item.title !== 'avatar_' + user.user_id);
       // console.log('media array data', media);
       setMediaArray(media.reverse());
     } catch (error) {
