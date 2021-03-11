@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, Text} from 'react-native';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
+import TextBoxStyles from '../styles/TextBoxStyles';
 
 const List = ({navigation, location = {}, myFilesOnly}) => {
   const mediaArray = useLoadMedia(myFilesOnly);
@@ -32,6 +33,11 @@ const List = ({navigation, location = {}, myFilesOnly}) => {
         setRefresh(true);
         setUpdate(!update);
       }}
+      ListEmptyComponent={
+        <Text style={[TextBoxStyles.text, {margin: 20}]}>
+          This place seems to be empty, how about posting something
+        </Text>
+      }
       refreshing={refresh}
       data={showSearch()}
       keyExtractor={(item, index) => index.toString()}

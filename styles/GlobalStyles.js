@@ -12,9 +12,12 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   profileImage: {
-    width: 200,
-    height: 200,
+    width: '30%',
+    height: undefined,
+    aspectRatio: 1,
     justifyContent: 'flex-end',
+    alignSelf: 'center',
+    marginRight: 20,
   },
   loginTitle: {
     fontSize: 30,

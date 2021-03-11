@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Avatar, Divider, Text} from 'react-native-elements';
+import {Avatar, Text} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'expo-status-bar';
@@ -55,6 +55,7 @@ const Profile = ({navigation}) => {
             source={{uri: user.avatar}}
             containerStyle={GlobalStyles.profileImage}
             rounded
+            ratio
           />
           <View>
             <Text h4 style={styles.name}>
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
   },
   name: {
     textAlign: 'center',
+    color: 'white',
   },
   box: {
     width: '100%',
