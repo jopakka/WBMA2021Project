@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {View, useWindowDimensions} from 'react-native';
 import PropTypes from 'prop-types';
 import List from '../components/List';
 import {StatusBar} from 'expo-status-bar';
@@ -13,6 +13,7 @@ const Home = ({navigation}) => {
   const [searchBool, setSearchBool] = useState(false);
   const [location, setLocation] = useState({});
   const [locationArray, setLocationArray] = useState([]);
+  const screenWidth = useWindowDimensions().width;
 
   const {searchLocation} = useLocation();
 
@@ -80,6 +81,7 @@ const Home = ({navigation}) => {
         <LocationList
           content={locationArray}
           myOnPress={(loc) => setLocation(loc)}
+          style={{width: screenWidth}}
         />
       </View>
       <StatusBar style="light" backgroundColor={colors.statusbar} />
