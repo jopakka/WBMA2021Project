@@ -30,10 +30,9 @@ const UpdateJob = ({navigation, route}) => {
   const [search, setSearch] = useState('');
   const [searchBool, setSearchBool] = useState(false);
 
-  const {update, setUpdate} = useContext(MainContext);
-  const {selectedLocation} = useContext(MainContext);
+  const {update, setUpdate, selectedLocation} = useContext(MainContext);
   const [locationArray, setLocationArray] = useState([]);
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState(null);
 
   const {updateFile} = useMedia();
   const {handleInputChange, inputs, uploadErrors} = useUploadForm();
@@ -53,17 +52,17 @@ const UpdateJob = ({navigation, route}) => {
       description: JSON.stringify(otherData),
       title: inputs.title,
     };
-    console.log('data', data);
+    // console.log('data', data);
     try {
       setIsUploading(true);
       const userToken = await AsyncStorage.getItem('userToken');
-      const resp = await updateFile(file.file_id, data, userToken);
-      console.log('update response', resp);
+      await updateFile(file.file_id, data, userToken);
+      // console.log('update response', resp);
       setUpdate(!update);
       navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Update', 'Update failed');
-      console.error('update failed', error);
+      // console.error('update failed', error);
     } finally {
       setIsUploading(false);
     }
@@ -81,14 +80,9 @@ const UpdateJob = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('File', file);
+    // console.log('File', file);
     doReset();
   }, []);
-
-  useEffect(() => {
-    setSearch(location.place_name);
-    console.log('location', location);
-  }, [location]);
 
   const askReset = () => {
     Alert.alert('Confirm', 'Do you want to reset form?', [
@@ -109,16 +103,15 @@ const UpdateJob = ({navigation, route}) => {
 
   const fetchLocation = async (txt) => {
     try {
-      const location = await searchLocation(txt);
-      setLocationArray(location);
+      const locationArray = await searchLocation(txt);
+      setLocationArray(locationArray);
     } catch (error) {
       console.error('fetch location error', error.message);
     }
-    return location;
   };
 
   useEffect(() => {
-    console.log('search', search);
+    // console.log('search', search);
     if (search.length > 2) {
       fetchLocation(search);
     } else {
@@ -136,11 +129,10 @@ const UpdateJob = ({navigation, route}) => {
 
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
           <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Job Title
+            {file.job ? 'Job Title' : 'Your title'}
           </Text>
           <FormTextInput
-            autoCapitalize="words"
-            placeholder="Job Title"
+            placeholder={file.job ? 'Job Title' : 'Your title'}
             value={inputs.title}
             onChangeText={(txt) => handleInputChange('title', txt)}
             errorMessage={uploadErrors.title}
@@ -148,35 +140,41 @@ const UpdateJob = ({navigation, route}) => {
 
           <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Summary</Text>
           <FormTextInput
-            placeholder="Summary Of Work"
+            placeholder={file.job ? 'Summary Of Work' : 'Tell about yourself'}
             value={inputs.description}
             onChangeText={(txt) => handleInputChange('description', txt)}
             errorMessage={uploadErrors.description}
           />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-            Payment Method
-          </Text>
-          <NiceDivider lineHeight={0} space={5} />
-          <DropDownPicker
-            defaultValue="hourlyWage"
-            items={[
-              {label: 'Hourly Wage', value: 'hourlyWage'},
-              {label: 'Contract Salary', value: 'contractSalary'},
-            ]}
-            onChangeItem={(item) => {
-              setPayMethod(item.value);
-            }}
-            containerStyle={styles.picker}
-          />
-          <NiceDivider lineHeight={0} space={10} />
+          {file.job && (
+            <>
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Payment Method
+              </Text>
+              <NiceDivider lineHeight={0} space={5} />
+              <DropDownPicker
+                defaultValue="hourlyWage"
+                items={[
+                  {label: 'Hourly Wage', value: 'hourlyWage'},
+                  {label: 'Contract Salary', value: 'contractSalary'},
+                ]}
+                onChangeItem={(item) => {
+                  setPayMethod(item.value);
+                }}
+                containerStyle={styles.picker}
+              />
+              <NiceDivider lineHeight={0} space={10} />
 
-          <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>Payment</Text>
-          <FormTextInput
-            placeholder="0€"
-            value={inputs.wage}
-            onChangeText={(txt) => handleInputChange('wage', txt)}
-          />
+              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+                Payment
+              </Text>
+              <FormTextInput
+                placeholder="0$"
+                value={inputs.wage}
+                onChangeText={(txt) => handleInputChange('wage', txt)}
+              />
+            </>
+          )}
 
           <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
             Location
@@ -188,6 +186,11 @@ const UpdateJob = ({navigation, route}) => {
               setSearch(txt);
             }}
             value={search}
+            errorMessage={
+              'Selected Location: ' +
+              (location !== null ? location.place_name : '')
+            }
+            containerStyle={{marginBottom: 20}}
           />
           <LocationList
             content={locationArray}
@@ -197,17 +200,6 @@ const UpdateJob = ({navigation, route}) => {
         </View>
 
         <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
-
-        {/* {isUploading && <ActivityIndicator size="large" color="#0000ff" />}
-        <Button
-          title="Upload file"
-          onPress={doUpload}
-          disabled={
-            uploadErrors.title !== null ||
-            uploadErrors.description !== null ||
-            image === null
-          }
-        /> */}
 
         <View style={TextBoxStyles.box}>
           <ListButtonElement

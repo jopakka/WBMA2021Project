@@ -2,9 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Linking, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  Card,
-  Divider,
   Input,
   Text,
   ListItem as RNEListItem,
