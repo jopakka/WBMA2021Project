@@ -76,7 +76,10 @@ const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
     <Stack.Navigator
-      screenOptions={{headerStyle: {backgroundColor: colors.primary}}}
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.primary},
+        headerTintColor: '#FFF',
+      }}
     >
       {isLoggedIn ? (
         <>
@@ -85,7 +88,6 @@ const StackScreen = () => {
             component={TabScreen}
             options={({route}) => ({
               headerTitle: getHeaderTitle(route),
-              headerTintColor: '#fff',
               headerTitleStyle: {
                 fontWeight: '500',
                 fontSize: 20,
