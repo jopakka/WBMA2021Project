@@ -12,10 +12,12 @@ import TextBoxStyles from '../styles/TextBoxStyles';
 import {colors} from '../utils/variables';
 import {useEffect} from 'react';
 import LoadingModal from '../components/LoadingModal';
+import List from '../components/List';
 
 const Profile = ({navigation}) => {
   const {user, setIsLoggedIn} = useContext(MainContext);
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState({});
 
   const doLogout = async () => {
     setLoading(true);
@@ -79,6 +81,7 @@ const Profile = ({navigation}) => {
           <ListButtonElement text="Logout" onPress={doLogout} />
         </View>
 
+        <List navigation={navigation} location={location} />
         <StatusBar style="light" backgroundColor={colors.statusbar} />
       </ScrollView>
     </>
@@ -129,6 +132,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
   },
 });
 

@@ -19,12 +19,12 @@ import Favourite from '../views/Favourite';
 import {colors} from '../utils/variables';
 import SplashScreen from '../components/SplashScreen';
 import UpdateJob from '../views/UpdateJob';
+import {Button} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const TabScreen = () => {
-  const {user} = useContext(MainContext);
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -57,8 +57,9 @@ const TabScreen = () => {
   );
 };
 
-const StackScreen = () => {
+const StackScreen = (navigation) => {
   const {isLoggedIn} = useContext(MainContext);
+
   return (
     <Stack.Navigator
       screenOptions={{headerStyle: {backgroundColor: colors.accent}}}
@@ -70,6 +71,10 @@ const StackScreen = () => {
             component={TabScreen}
             options={({route}) => ({
               headerTitle: getFocusedRouteNameFromRoute(route),
+              headerRight: () =>
+                getFocusedRouteNameFromRoute(route) === 'Profile' && (
+                  <Button title="Toggle drawer" />
+                ),
             })}
           />
           <Stack.Screen name="Update Profile" component={UpdateProfile} />
@@ -108,5 +113,4 @@ const Navigator = () => {
     </NavigationContainer>
   );
 };
-
 export default Navigator;

@@ -249,6 +249,15 @@ const useMedia = () => {
     }
   };
 
+  const getOwnFile = async (userId) => {
+    try {
+      const resp = await doFetch(baseUrl + 'media/user/' + userId);
+      return resp;
+    } catch (e) {
+      throw new Error('getOwnFile error', e.message);
+    }
+  };
+
   const updateFile = async (fileId, fileInfo, token) => {
     const options = {
       method: 'PUT',
@@ -279,7 +288,7 @@ const useMedia = () => {
     }
   };
 
-  return {upload, getFile, updateFile, deleteFile};
+  return {upload, getFile, getOwnFile, updateFile, deleteFile};
 };
 
 const useLocation = () => {
