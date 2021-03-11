@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Divider, Image, Text} from 'react-native-elements';
+import {Card, Divider, Image, Text} from 'react-native-elements';
 import {useLocation, useMedia, useTag} from '../hooks/ApiHooks';
 import {useUploadForm} from '../hooks/UploadHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -193,12 +193,19 @@ const Upload = ({navigation}) => {
             // eslint-disable-next-line no-undef
             image ? {uri: image} : require('../assets/image_placeholder.jpg')
           }
-          containerStyle={GlobalStyles.profileImage}
+          containerStyle={{
+            width: '50%',
+            height: undefined,
+            aspectRatio: 1,
+            justifyContent: 'flex-end',
+            alignSelf: 'center',
+            marginRight: 20,
+            marginTop: 10,
+            borderRadius: 30,
+          }}
           onPress={pickImage}
         />
-
-        <Divider style={{height: 25}} />
-
+        <Divider style={{height: 20, backgroundColor: '#FFF0'}} />
         <View style={TextBoxStyles.box}>
           <ListButtonElement
             text="Choose image from library"
@@ -222,7 +229,26 @@ const Upload = ({navigation}) => {
         <View style={[TextBoxStyles.box, TextBoxStyles.paddingBox]}>
           {user.employer ? (
             <>
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {
+                    color: 'white',
+                    marginBottom: 30,
+                    textAlign: 'center',
+                    textDecorationLine: 'underline',
+                  },
+                  TextBoxStyles.title,
+                ]}
+                h4
+              >
+                Information
+              </Text>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 Job title
               </Text>
               <FormTextInput
@@ -233,8 +259,13 @@ const Upload = ({navigation}) => {
                 errorMessage={uploadErrors.title}
               />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
-                Summary of work assignments
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
+                Summary of work tasks
               </Text>
               <FormTextInput
                 placeholder="Summary Of Work"
@@ -243,7 +274,12 @@ const Upload = ({navigation}) => {
                 errorMessage={uploadErrors.description}
               />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 Payment Method
               </Text>
               <NiceDivider lineHeight={0} space={5} />
@@ -260,7 +296,12 @@ const Upload = ({navigation}) => {
               />
               <NiceDivider lineHeight={0} space={10} />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 Payment
               </Text>
               <FormTextInput
@@ -269,7 +310,12 @@ const Upload = ({navigation}) => {
                 onChangeText={(txt) => handleInputChange('wage', txt)}
               />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 The location of the workplace
               </Text>
               <FormTextInput
@@ -288,7 +334,26 @@ const Upload = ({navigation}) => {
             </>
           ) : (
             <>
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {
+                    color: 'white',
+                    marginBottom: 30,
+                    textAlign: 'center',
+                    textDecorationLine: 'underline',
+                  },
+                  TextBoxStyles.title,
+                ]}
+                h4
+              >
+                Information
+              </Text>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 what kind of jobs are you looking for?
               </Text>
               <FormTextInput
@@ -299,7 +364,12 @@ const Upload = ({navigation}) => {
                 errorMessage={uploadErrors.title}
               />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 Summary of your skills and expertise
               </Text>
               <FormTextInput
@@ -309,7 +379,12 @@ const Upload = ({navigation}) => {
                 errorMessage={uploadErrors.description}
               />
 
-              <Text style={[TextBoxStyles.text, TextBoxStyles.title]}>
+              <Text
+                style={[
+                  {color: 'white', fontSize: 13, fontWeight: 'bold'},
+                  TextBoxStyles.title,
+                ]}
+              >
                 The location where you are looking for jobs
               </Text>
               <FormTextInput

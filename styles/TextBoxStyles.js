@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 export default StyleSheet.create({
   box: {
-    width: '100%',
+    width: '95%',
     backgroundColor: '#75B09C',
     borderRadius: 2,
     shadowColor: '#000',

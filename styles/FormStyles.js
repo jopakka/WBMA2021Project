@@ -5,7 +5,7 @@ export default StyleSheet.create({
     color: 'white',
   },
   formInputContainer: {
-    borderColor: colors.accent,
+    borderColor: 'white',
     borderBottomWidth: 3,
   },
   checkText: {

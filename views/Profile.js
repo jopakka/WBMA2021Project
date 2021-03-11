@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Avatar, Text} from 'react-native-elements';
+import {Avatar, Card, Text} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar} from 'expo-status-bar';
