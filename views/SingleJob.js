@@ -20,6 +20,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import NiceDivider from '../components/NiceDivider';
 import openMap from 'react-native-open-maps';
 import moment from 'moment';
+import TextBoxStyles from '../styles/TextBoxStyles';
 
 const SingleJob = ({route, navigation}) => {
   const {file} = route.params;
@@ -190,7 +191,7 @@ const SingleJob = ({route, navigation}) => {
 
         <NiceDivider color="#FFF0" />
 
-        <View style={styles.box}>
+        <View style={[TextBoxStyles.box, {alignSelf: 'center'}]}>
           {user.user_id === file.user_id ? (
             <>
               <ListButtonElement
